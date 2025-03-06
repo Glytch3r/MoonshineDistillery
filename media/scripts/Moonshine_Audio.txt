@@ -1,0 +1,80 @@
+
+module Base
+{
+
+	sound MoonshineDing
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineDing.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+	sound MoonshineSlosh
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineSlosh.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+
+	sound MoonshinePack
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshinePack.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+	sound MoonshineUnpack
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineUnpack.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+	sound MoonshineBuild
+	{
+		category = Object,
+		clip
+		{
+			file = media/sound/MoonshineBuild.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+	sound MoonshineDistiller
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineDistiller.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
+}
+
+

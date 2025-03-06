@@ -1,0 +1,296 @@
+module MoonDist {
+	imports { Base }
+
+	/* -----------------------    flavors*        --------------------------- */
+
+	/* -----------------------    clear*        --------------------------- */
+	item MoonshineClear
+	{
+		DisplayName = Clear Moonshine,
+		Icon = MoonshineClear,
+		ReplaceOnUse = EmptyCeramicJug,
+		StaticModel = Moonshine,
+		WorldStaticModel = MoonshineGroundClear,
+
+		FoodType = Liquor,
+		AlcoholPower = 2,
+		Alcoholic = TRUE,
+		CantBeFrozen = TRUE,
+		Packaged = TRUE,
+		HungerChange = -20,
+		ThirstChange = -20,
+		UnhappyChange = -10,
+		Calories = 700,
+		Carbohydrates = 0,
+		Lipids = 0,
+		Proteins = 0,
+
+		DisplayCategory = Food,
+		Type = Food,
+		EvolvedRecipe = Beverage:4;Beverage2:4;HotDrink:4;HotDrinkRed:4;HotDrinkWhite:4;HotDrinkSpiffo:4;HotDrinkTea:4;WineInGlass:4;PastaPot:4;PastaPan:4,
+
+		EatType = BleachBottle,
+
+
+		CustomContextMenu = Drink,
+		CustomEatSound = DrinkingFromBottleGlass,
+	}
+
+    item MoonshineCaseClear
+    {
+        DisplayName	=	Case of Clear Moonshine,
+        DisplayCategory = Material,
+        DisplayCategory = Cooking,
+        Weight	=	1.8,
+        Type	=	Normal,
+        Icon	=	MoonshineCase,
+        SurvivalGear = TRUE,
+        WorldStaticModel = MoonshineCaseClear,
+    }
+	/* -----------------------    apple*        --------------------------- */
+	item MoonshineApple
+	{
+		DisplayName = Apple Moonshine,
+		Icon = Moonshine,
+		ReplaceOnUse = EmptyCeramicJug,
+		StaticModel = Moonshine,
+		WorldStaticModel = MoonshineGroundApple,
+
+		FoodType = Liquor,
+		AlcoholPower = 2,
+		Alcoholic = TRUE,
+		CantBeFrozen = TRUE,
+		Packaged = TRUE,
+		HungerChange = -20,
+		ThirstChange = -20,
+		UnhappyChange = -10,
+		Calories = 700,
+		Carbohydrates = 0,
+		Lipids = 0,
+		Proteins = 0,
+
+		DisplayCategory = Food,
+		Type = Food,
+		EvolvedRecipe = Beverage:4;Beverage2:4;HotDrink:4;HotDrinkRed:4;HotDrinkWhite:4;HotDrinkSpiffo:4;HotDrinkTea:4;WineInGlass:4;PastaPot:4;PastaPan:4,
+
+		EatType = BleachBottle,
+
+
+		CustomContextMenu = Drink,
+		CustomEatSound = DrinkingFromBottleGlass,
+	}
+
+    item MoonshineCaseApple
+    {
+        DisplayName	=	Case of Apple Moonshine,
+        DisplayCategory = Material,
+        DisplayCategory = Cooking,
+        Weight	=	1.8,
+        Type	=	Normal,
+        Icon	=	MoonshineCase,
+        SurvivalGear = TRUE,
+        WorldStaticModel = MoonshineCaseApple,
+    }
+    /* -----------------------    peach*        --------------------------- */
+	item MoonshinePeach
+	{
+		DisplayName = Peach Moonshine,
+		Icon = Moonshine,
+		ReplaceOnUse = EmptyCeramicJug,
+		StaticModel = Moonshine,
+		WorldStaticModel = MoonshineGroundPeach,
+
+		FoodType = Liquor,
+		AlcoholPower = 2,
+		Alcoholic = TRUE,
+		CantBeFrozen = TRUE,
+		Packaged = TRUE,
+		HungerChange = -20,
+		ThirstChange = -20,
+		UnhappyChange = -10,
+		Calories = 700,
+		Carbohydrates = 0,
+		Lipids = 0,
+		Proteins = 0,
+
+		DisplayCategory = Food,
+		Type = Food,
+		EvolvedRecipe = Beverage:4;Beverage2:4;HotDrink:4;HotDrinkRed:4;HotDrinkWhite:4;HotDrinkSpiffo:4;HotDrinkTea:4;WineInGlass:4;PastaPot:4;PastaPan:4,
+
+		EatType = BleachBottle,
+
+
+		CustomContextMenu = Drink,
+		CustomEatSound = DrinkingFromBottleGlass,
+	}
+
+    item MoonshineCasePeach
+    {
+        DisplayName	=	Case of Peach Moonshine,
+        DisplayCategory = Material,
+        DisplayCategory = Cooking,
+        Weight	=	1.8,
+        Type	=	Normal,
+		Icon	=	MoonshineCase,
+        SurvivalGear = TRUE,
+        WorldStaticModel = MoonshineCasePeach,
+    }
+	/* -----------------------      mag*      --------------------------- */
+    item MoonshineMag
+    {
+        DisplayName	=	Moonshine and Distilling,
+        DisplayCategory = SkillBook,
+        Weight	=	0.1,
+        Type	=	Literature,
+        Icon	=	MoonshineMag,
+
+        TeachedRecipes  =   Build Moonshine Distiller;Build Boiler;Build Thumper;Build Thermometer;Build Still Cap;Build Drain Port;Craft Clear Moonshine;Craft Apple Moonshine;Craft Peach Moonshine;Gather Moonshine Mash into a Bucket;Separate the Mash from Unfermented Moonshine,
+        ReplaceOnUse    =   MoonshineMag,
+        StaticModel = Magazine,
+        WorldStaticModel = MoonshineMag,
+    }
+
+
+	/* -----------------------      jug*      --------------------------- */
+    item EmptyCeramicJug
+	{
+		DisplayName	=	Ceramic Jug,
+		ReplaceTypes = PetrolSource MoonshinePetrol;WaterSource MoonshineWaterFull,
+		ReplaceOnUseOn	=	WaterSource-MoonshineWaterFull,
+		Icon	=	Moonshine,
+		StaticModel = Moonshine,
+		WorldStaticModel = MoonshineGround,
+
+	    DisplayCategory = WaterContainer,
+		Weight	=	0.3,
+		CanStoreWater = TRUE,
+		Type	=	Normal,
+		Tags = EmptyPetrol,
+	}
+    item CeramicJugBox
+    {
+        DisplayName	=	Box of Ceramic Jugs,
+        DisplayCategory = Material,
+        DisplayCategory = Cooking,
+        Weight	=	0.8,
+        Type	=	Normal,
+		Icon	=	CeramicJugBox,
+        SurvivalGear = TRUE,
+        WorldStaticModel = CeramicJugBox,
+    }
+
+    item MoonshinePetrol
+	{
+		DisplayName	=	Jug of Gasoline,
+		ReplaceOnDeplete = EmptyCeramicJug,
+		WorldStaticModel = MoonshineGround,
+		Icon = Moonshine,
+		StaticModel = Moonshine,
+
+		DisplayCategory = VehicleMaintenance,
+		Type = Drainable,
+		Weight = 1,
+		UseDelta = 1,
+		UseWhileEquipped = FALSE,
+		Tags = Petrol,
+	}
+
+	item MoonshineWaterFull
+	{
+		DisplayName = Water Jug,
+		Icon = Moonshine,
+		WorldStaticModel = MoonshineGround,
+		StaticModel = Moonshine,
+		ReplaceOnUseOn = WaterSource-MoonshineWaterFull,
+		ReplaceOnDeplete = EmptyCeramicJug,
+
+		DisplayCategory = Water,
+		Type = Drainable,
+		Weight = 1,
+		CanStoreWater = TRUE,
+		EatType = BleachBottle,
+		FillFromDispenserSound = GetWaterFromDispenserGlass,
+		FillFromTapSound = GetWaterFromTapGlass,
+		IsCookable = TRUE,
+		IsWaterSource = TRUE,
+		UseDelta = 0.04,
+		UseWhileEquipped = FALSE,
+		CustomEatSound = DrinkingFromBottleGlass,
+	}
+	/* -----------------------    bucket*        --------------------------- */
+
+	item BucketMoonshineMash
+	{
+		DisplayName	=	Bucket of Moonshine Mash,
+	    DisplayCategory = Water,
+		IsWaterSource	=	TRUE,
+		Weight	=	4,
+		CanStoreWater	=	TRUE,
+		FillFromDispenserSound = GetWaterFromDispenserMetalBig,
+		FillFromTapSound = GetWaterFromTapMetalBig,
+		Type	=	Drainable,
+		UseWhileEquipped	=	FALSE,
+		UseDelta	=	0.04,
+		ReplaceOnDeplete	=	BucketEmpty,
+		ReplaceOnUseOn	=	WaterSource-BucketWaterFull,
+		Icon	=	BucketMoonshineMash,
+		RainFactor = 1,
+		Tooltip = Tooltip_item_RainFromGround,
+		StaticModel = Bucket,
+		EatType = Bucket,
+		WorldStaticModel = BucketMoonshineMash,
+		IsCookable = TRUE,
+		Tags = HasMetal,
+	}
+
+	item BucketMoonshineUnfermented
+	{
+		DisplayName	=	Bucket of Unfermented Moonshine,
+	    DisplayCategory = Water,
+		IsWaterSource	=	TRUE,
+		Weight	=	4,
+		CanStoreWater	=	TRUE,
+		FillFromDispenserSound = GetWaterFromDispenserMetalBig,
+		FillFromTapSound = GetWaterFromTapMetalBig,
+		Type	=	Drainable,
+		UseWhileEquipped	=	FALSE,
+		UseDelta	=	0.04,
+		ReplaceOnDeplete	=	BucketEmpty,
+		ReplaceOnUseOn	=	WaterSource-BucketWaterFull,
+		Icon	=	BucketMoonshineUnfermented,
+		RainFactor = 1,
+		Tooltip = Tooltip_item_RainFromGround,
+		StaticModel = Bucket,
+		EatType = Bucket,
+		WorldStaticModel = BucketMoonshineUnfermented,
+		IsCookable = TRUE,
+		Tags = HasMetal,
+	}
+
+	/* -----------------------    misc*        --------------------------- */
+
+	item Malt
+	{
+		DisplayName	=	Malt,
+	    DisplayCategory = Food,
+		Weight	=	1,
+		Type	=	Drainable,
+		UseWhileEquipped	=	FALSE,
+		UseDelta	=	0.25,
+		Icon	=	Malt,
+	}
+
+	item Strainer
+    {
+        DisplayCategory = Cooking,
+        Weight	=	0.1,
+        Type	=	Normal,
+        DisplayName	=   Strainer,
+        Icon	=	Strainer,
+    }
+
+
+
+}
+
+

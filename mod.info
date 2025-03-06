@@ -1,0 +1,7 @@
+name=MoonshineDistillery
+id=MoonshineDistillery
+description=MoonshineDistillery
+poster=poster.png
+
+tiledef=MoonshineDistillery 421
+pack=MoonshineDistillery

@@ -1,0 +1,158 @@
+
+module Base
+{
+	/* -----------------------       moonshine*     --------------------------- */
+
+
+	recipe Craft Clear Moonshine
+	{
+		MetalDrum/Barrel,
+		SugarBrown/Sugar,
+		Yeast,
+		Water=5,
+		Cornmeal,
+		Malt=4,
+		EmptyCeramicJug=4,
+
+		Result:MoonshineDistiller,
+		Time:50.0,
+		Category:Cooking,
+
+        Sound:MoonshineDistiller,
+	}
+
+	recipe Craft Apple Moonshine
+	{
+		Apple,
+		MetalDrum/Barrel,
+		SugarBrown/Sugar,
+		Yeast,
+		Water=5,
+		Cornmeal,
+		Malt=4,
+		EmptyCeramicJug=4,
+
+		Result:MoonshineDistiller,
+		Time:50.0,
+		Category:Cooking,
+
+        Sound:MoonshineDistiller,
+	}
+
+	recipe Craft Peach Moonshine
+	{
+		CannedPeachesOpen,
+		MetalDrum/Barrel,
+		SugarBrown/Sugar,
+		Yeast,
+		Water=5,
+		Cornmeal,
+		Malt=4,
+		EmptyCeramicJug=4,
+
+		Result:MoonshineDistiller,
+		Time:550.0,
+		Category:Cooking,
+
+        Sound:MoonshineDistiller,
+	}
+
+
+
+	/* -----------------------       pack*     --------------------------- */
+    recipe Pack Clear Moonshine
+    {
+		MoonshineClear=4,
+        Result:MoonshineCaseClear,
+
+        AnimNode:disassemble,
+        RemoveResultItem:true,
+        Time:15.0,
+		Category:Cooking,
+
+        Sound:MoonshinePack,
+    }
+    recipe Pack Apple Moonshine
+    {
+		MoonshineApple=4,
+        Result:MoonshineCaseApple,
+
+        AnimNode:disassemble,
+        RemoveResultItem:true,
+        Time:15.0,
+		Category:Cooking,
+
+        Sound:MoonshinePack,
+    }
+	recipe Pack Peach Moonshine
+    {
+		MoonshinePeach=4,
+        Result:MoonshineCaseAPeach,
+
+        AnimNode:disassemble,
+        RemoveResultItem:true,
+        Time:15.0,
+		Category:Cooking,
+
+        Sound:MoonshinePack,
+    }
+
+	/* -----------------------      unpack*     --------------------------- */
+
+	recipe Unpack Clear Moonshine
+    {
+        MoonshineCaseClear,
+        Result:MoonshineClear=4,
+		Category:Cooking,
+        Time:15.0,
+
+        Sound:MoonshineUnpack,
+    }
+
+	recipe Unpack Apple Moonshine
+    {
+        MoonshineCaseApple,
+        Result:MoonshineApple=4,
+		Category:Cooking,
+        Time:15.0,
+
+        Sound:MoonshineUnpack,
+    }
+	recipe Unpack Peach Moonshine
+    {
+        MoonshineCasePeach,
+        Result:MoonshinePeach=4,
+		Category:Cooking,
+        Time:15.0,
+
+        Sound:MoonshineUnpack,
+    }
+
+	/* -----------------------     bucket*    --------------------------- */
+
+	recipe Gather Moonshine Mash into a Bucket
+	{
+		destroy BucketEmpty,
+		MoonshineMash=5,
+
+		Result:BucketMoonshineMash,
+		Time:150.0,
+		Category:Cooking,
+
+		Sound:MoonshineSlosh,
+	}
+
+	recipe Separate the Mash from Unfermented Moonshine
+	{
+		BucketMoonshineMash,
+
+		Result:BucketMoonshineUnfermented,
+		Time:150.0,
+		Category:Cooking,
+		Sound:MoonshineSlosh,
+	}
+
+
+}
+
+

@@ -1,0 +1,124 @@
+
+module Base
+{
+
+
+	model MoonshineGround
+    {
+        mesh = WorldItems/Moonshine,
+        texture = WorldItems/Moonshine,
+    }
+
+
+	model Moonshine
+    {
+        mesh = Moonshine,
+        texture = WorldItems/Moonshine,
+    }
+
+
+	model MoonshineCase
+    {
+        mesh = MoonshineCase,
+        texture = WorldItems/Moonshine,
+        /* scale = 1.4, */
+    }
+
+    /*  -----------------------      flavors*      --------------------------- */
+
+
+    /*  -----------------------      clear*      --------------------------- */
+
+	model MoonshineGroundClear
+    {
+        mesh = WorldItems/Moonshine,
+        texture = WorldItems/MoonshineClear,
+    }
+
+	model MoonshineClear
+    {
+        mesh = Moonshine,
+        texture = WorldItems/MoonshineClear,
+    }
+
+
+	model MoonshineCaseClear
+    {
+        mesh = MoonshineCase,
+        texture = WorldItems/MoonshineClear,
+    }
+
+    /*  -----------------------     apple*      --------------------------- */
+
+	model MoonshineGroundApple
+    {
+        mesh = WorldItems/Moonshine,
+        texture = WorldItems/MoonshineApple,
+    }
+
+	model MoonshineApple
+    {
+        mesh = Moonshine,
+        texture = WorldItems/MoonshineApple,
+    }
+
+
+	model MoonshineCaseApple
+    {
+        mesh = MoonshineCase,
+        texture = WorldItems/MoonshineApple,
+
+    }
+    /*  -----------------------     peach*      --------------------------- */
+
+	model MoonshineGroundPeach
+    {
+        mesh = WorldItems/Moonshine,
+        texture = WorldItems/MoonshinePeach,
+    }
+
+	model MoonshinePeach
+    {
+        mesh = Moonshine,
+        texture = WorldItems/MoonshinePeach,
+    }
+
+
+	model MoonshineCasePeach
+    {
+        mesh = MoonshineCase,
+        texture = WorldItems/MoonshinePeach,
+    }
+
+    /*  -----------------------            --------------------------- */
+	model MoonshineMag
+    {
+        mesh = WorldItems/Magazine,
+        texture = WorldItems/MoonshineMag,
+        scale = 0.4,
+    }
+
+	model Malt
+	{
+		mesh = WorldItems/Seeds,
+		texture = WorldItems/Malt,
+		scale = 0.4,
+	}
+
+	model BucketMoonshineMash
+    {
+        mesh = WorldItems/Bucket,
+        texture = WorldItems/BucketMoonshineMash,
+        scale = 0.4,
+    }
+
+	model BucketMoonshineUnfermented
+    {
+        /* mesh = WorldItems/BucketMoonshine, */
+        mesh = WorldItems/Bucket,
+        texture = WorldItems/BucketMoonshineUnfermented,
+        scale = 0.4,
+    }
+}
+
+

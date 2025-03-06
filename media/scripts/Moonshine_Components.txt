@@ -1,0 +1,150 @@
+module MoonDist {
+	imports { Base }
+
+
+    item Boiler
+    {
+        DisplayName = Boiler,
+        DisplayCategory = Material,
+        Weight = 5,
+        Type = Normal,
+        Icon = Boiler,
+    }
+
+    item Thumper
+    {
+        DisplayName = Thumper,
+        DisplayCategory = Material,
+        Weight = 3,
+        Type = Normal,
+        Icon = Thumper,
+    }
+
+    item Thermometer
+    {
+        DisplayName = Thermometer,
+        DisplayCategory = Tool,
+        Weight = 0.5,
+        Type = Normal,
+        Icon = Thermometer,
+    }
+
+    item StillCap
+    {
+        DisplayName = Still Cap,
+        DisplayCategory = Material,
+        Weight = 2,
+        Type = Normal,
+        Icon = StillCap,
+    }
+
+    item DrainPort
+    {
+        DisplayName = Drain Port,
+        DisplayCategory = Material,
+        Weight = 1.5,
+        Type = Normal,
+        Icon = DrainPort,
+    }
+
+
+
+   /*  Boiler, Thumper, Thermometer, Still Cap, Drain Port */
+
+
+    recipe Build Boiler
+    {
+        SheetMetal=10,
+        Screws=10,
+        Plank=4,
+        Nails=6,
+        MetalDrum/Barrel,
+        keep Wrench,
+
+        Result:MoonDist.Boiler,
+        Time:250.0,
+        Category:Welding,
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+    }
+
+    recipe Build Thumper
+    {
+        keep [Recipe.GetItemTypes.WeldingMask],
+        BlowTorch=2,
+        SheetMetal=5,
+        Screws=10,
+        Wire=2,
+
+        Result:MoonDist.Thumper,
+        Time:250.0,
+        Category:Welding,
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        Prop1:Source=1,
+
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+    }
+
+    recipe Build Thermometer
+    {
+        keep [Recipe.GetItemTypes.Screwdriver],
+        ElectricWire=2,
+        Aluminum=5,
+        ElectronicsScrap=5,
+
+        Result:MoonDist.Thermometer,
+        Time:250.0,
+        Category:Electrical,
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP2,
+        AnimNode:Disassemble,
+
+        Prop1:Source=1,
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+        Sound:MoonshineBuild,
+
+    }
+
+    recipe Build Still Cap
+    {
+        keep [Recipe.GetItemTypes.WeldingMask],
+        SmallSheetMetal=4,
+        Aluminum=2,
+        Screws=10,
+        BlowTorch=2,
+
+        Result:MoonDist.StillCap,
+        Time:250.0,
+        Category:Welding,
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+        Sound:MoonshineBuild,
+
+    }
+
+    recipe Build Drain Port
+    {
+        keep PipeWrench,
+        SmallSheetMetal=2,
+        Screws=5,
+        MetalPipe=1,
+
+        Result:MoonDist.DrainPort,
+        Time:200.0,
+        Category:Welding,
+        Prop1:Source=1,
+
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+        Sound:MoonshineBuild,
+
+    }
+
+	/* 	MetalDrum,        DrainPort,        StillCap,        Thermometer,        Thumper,        Boiler, */
+
+
+}

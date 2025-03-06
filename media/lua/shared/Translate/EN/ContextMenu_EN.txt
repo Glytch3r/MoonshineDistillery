@@ -1,0 +1,4 @@
+ContextMenu_EN = {
+	ContextMenu_Moonshine = "Craft Moonshine",
+	ContextMenu_BuildMoonshine = "Build Moonshine Distiller",
+}
