@@ -18,8 +18,12 @@
 
 ContainerButtonIcons = ContainerButtonIcons or {}
 local tab = {}
+
 tab.Distiller = getTexture("media/ui/MoonshineDistiller.png")
 ContainerButtonIcons.Distiller = tab.Distiller
+
+tab.CookingVat = getTexture("media/ui/CookingVat.png")
+ContainerButtonIcons.CookingVat = tab.CookingVat
 
 --[[_____________________________________________________________________________________________________________________________
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░

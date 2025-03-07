@@ -298,16 +298,34 @@ end
 -----------------------            ---------------------------
 
 function MoonshineDistillery.checkDist(pl, sq)
+   pl = pl or getPlayer()
 	local x, y = sq:getX(), sq:getY()
 	local dist = pl:DistTo(x, y)
    return math.floor(dist) <= 3
+end
+
+
+function MoonshineDistillery.spawnPart(sprToSpawn, sq)
+   local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
+   props.rawWeight = 10
+   local obj = props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
+   getPlayerInventory(0):refreshBackpacks()
+   getPlayerLoot(0):refreshBackpacks()
+   ISInventoryPage.renderDirty = true
+   print(obj)
+   return obj
+end
+function MoonshineDistillery.isLearned(pl)
+    local recipe = "Build Moonshine Distiller"
+    pl = pl or getPlayer()
+    return pl:getKnownRecipes():contains(recipe) or pl:isRecipeKnown(recipe)
 end
 
 function MoonshineDistillery.context(player, context, worldobjects, test)
    local pl = getSpecificPlayer(player)
    local inv = pl:getInventory()
    local sq = clickedSquare
-
+   if not MoonshineDistillery.isLearned(pl) then return end
    if sq then
       if MoonshineDistillery.CanPlace(pl) then
          local Main = context:addOptionOnTop("Build Moonshine Distiller: ")
@@ -347,34 +365,27 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
 
 
                if MoonshineDistillery.isCampfire(sprName) then
-                  if MoonshineDistillery.hasMetalDrum(pl) then
+                  --if MoonshineDistillery.hasMetalDrum(pl) then
                      if MoonshineDistillery.checkDist(pl, sq) then
                         if not MoonshineDistillery.hasCookingVat(sq) then
                            context:addOptionOnTop('Build Cooking Vat', worldobjects, function()
                               local item = MoonshineDistillery.getMetalDrum(pl)
-                              if item then
-                                 inv:Remove(item)
-                                 --obj:setOverlaySprite(tostring("MoonshineDistillery_1"), 1,1,1,1)
-                                -- local sq = getPlayer():getSquare();
-                                 local sprToSpawn = "MoonshineDistillery_1"
-                               --[[   local objToSpawn = IsoThumpable.new(getCell(), sq, sprToSpawn, false, nil);
-                                 sq:AddTileObject(objToSpawn);
-                    ]]
+                              --if item then
+                                -- inv:Remove(item)
 
-                                 local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
-                                 props.rawWeight = 10
-                                 props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
 
+                                 local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil);
+                                 sq:AddTileObject(toSpawn);
+                                 toSpawn:setIsContainer(true);
+                                 toSpawn:getContainer():setType('CookingVat')
                                  getPlayerInventory(0):refreshBackpacks()
                                  getPlayerLoot(0):refreshBackpacks()
-                                 ISInventoryPage.renderDirty = true
-
-
-                              end
+                                 toSpawn:getContainer():setDrawDirty(true);
+                              --end
                            end)
                         end
                      end
-                  end
+                  --end
                end
 
 
@@ -394,20 +405,23 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                      if not MoonshineDistillery.hasStillCapOverlay(obj) then
                         context:addOptionOnTop('Add Stiil Cap', worldobjects, function()
                            local part = "StillCap"
+                           local sprToSpawn = MoonshineDistillery.getOverlayToAdd(sprName, part)
                            local item = MoonshineDistillery.getStillCap(pl)
                            if item then
-                              MoonshineDistillery.addOverlay(obj, sprName, part, item)
+                              --MoonshineDistillery.addOverlay(obj, sprName, part, item)
+                              MoonshineDistillery.spawnPart(sprToSpawn, sq)
                               obj:setIsThumpable(true)
                               obj:setIsContainer(true)
                               obj:setIsDismantable(false)
                               obj:getContainer():setType('Distiller')
+
+                              obj:getContainer():setDrawDirty(true);
                               if isClient() then
                                  obj:transmitCompleteItemToServer()
                                  obj:transmitUpdatedSpriteToClients()
                               end
                               getPlayerInventory(0):refreshBackpacks()
                               getPlayerLoot(0):refreshBackpacks()
-                              obj:getContainer():setDrawDirty(true);
                            end
                         end)
                      end

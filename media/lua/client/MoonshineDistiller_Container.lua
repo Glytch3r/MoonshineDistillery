@@ -91,12 +91,33 @@ function MoonshineDistillery.delItem(cont, fType, qty)
 end
 
 -----------------------            ---------------------------
-function MoonshineDistillery.isLearned(pl)
-    local recipe = "Build Moonshine Distiller"
-    pl = pl or getPlayer()
-    return pl:getKnownRecipes():contains(recipe) or pl:isRecipeKnown(recipe)
-end
 
+
+function MoonshineDistillery.getStageSpr(var)
+    local tab = {
+        1 = "MoonshineDistillery_0",
+        2 = "MoonshineDistillery_1",
+        3 = "MoonshineDistillery_2",
+        4 = "MoonshineDistillery_3",
+        5 = "MoonshineDistillery_4",
+    }
+    if type(var) == "string" then
+        tab = {
+            ["empty"] = "MoonshineDistillery_0",
+            ["water"] = "MoonshineDistillery_1",
+            ["mash"] = "MoonshineDistillery_2",
+            ["unfermented"] = "MoonshineDistillery_3",
+            ["cooking"] = "MoonshineDistillery_4",
+        }
+    end
+    return tab[var]
+end
+function MoonshineDistillery.setStage(obj, var)
+    local sprName = MoonshineDistillery.getStageSpr(var)
+    obj:setSprite(sprName)
+    obj:getSprite():setName(sprName)
+    obj:getContainer():setDrawDirty(true)
+end
 
 function MoonshineDistillery.setSprite(obj, sprName)
     obj:setSprite(sprName)
@@ -105,14 +126,30 @@ function MoonshineDistillery.setSprite(obj, sprName)
 end
 
 
-
 function MoonshineDistillery.getState(sprName)
     local tab = {
-        ["MoonshineDistillery_1"] = "empty",
-        ["MoonshineDistillery_2"] = "water",
-        ["MoonshineDistillery_3"] = "mash",
-        ["MoonshineDistillery_4"] = "unfermented",
-        ["MoonshineDistillery_5"] = "cooking",
+        ["MoonshineDistillery_0"] = "empty",
+        ["MoonshineDistillery_1"] = "water",
+        ["MoonshineDistillery_2"] = "mash",
+        ["MoonshineDistillery_3"] = "unfermented",
+        ["MoonshineDistillery_4"] = "cooking",
     }
     return tab[sprName]
+end
+
+function getTimeStamp()
+    return getGameTime():getWorldAgeHours()
+end
+
+local curTime = getTimeStamp()
+local cooldown = 48
+if not modData.LoggedTimeStamp or (curTime - modData.LoggedTimeStamp >= cooldown) then
+end
+
+function DeathSwap.getTimeStamp()
+    local dateTable = os.date("*t")
+    local timestamp = string.format("02d02d02d",
+        dateTable.year, dateTable.month, dateTable.day,
+        dateTable.hour, dateTable.min, dateTable.sec)
+    return timestamp
 end
