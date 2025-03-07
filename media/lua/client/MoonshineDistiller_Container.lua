@@ -96,3 +96,23 @@ function MoonshineDistillery.isLearned(pl)
     pl = pl or getPlayer()
     return pl:getKnownRecipes():contains(recipe) or pl:isRecipeKnown(recipe)
 end
+
+
+function MoonshineDistillery.setSprite(obj, sprName)
+    obj:setSprite(sprName)
+    obj:getSprite():setName(sprName)
+    obj:getContainer():setDrawDirty(true)
+end
+
+
+
+function MoonshineDistillery.getState(sprName)
+    local tab = {
+        ["MoonshineDistillery_1"] = "empty",
+        ["MoonshineDistillery_2"] = "water",
+        ["MoonshineDistillery_3"] = "mash",
+        ["MoonshineDistillery_4"] = "unfermented",
+        ["MoonshineDistillery_5"] = "cooking",
+    }
+    return tab[sprName]
+end

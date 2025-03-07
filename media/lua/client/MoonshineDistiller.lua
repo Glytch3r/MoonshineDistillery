@@ -163,7 +163,7 @@ end
 -----------------------
 function MoonshineDistillery.getMetalDrum(pl)
    local inv = pl:getInventory()
-   return inv:FindAndReturn("MoonDist.MetalDrum") or inv:FindAndReturn("Moveables.industry_01_22") or inv:FindAndReturn("Moveables.industry_01_23")
+   return inv:FindAndReturn("MetalDrum") or inv:FindAndReturn("Moveables.industry_01_22") or inv:FindAndReturn("Moveables.industry_01_23")
 end
 -----------------------            ---------------------------
 MoonshineDistillery.addParts = {
@@ -187,6 +187,45 @@ function MoonshineDistillery.addOverlay(obj, sprName, part, item)
       obj:setOverlaySprite(tostring(overlay), 1,1,1,1)
    end
 end
+---------------------------
+
+function MoonshineDistillery.isCookingVat(sprName)
+   local tab = {
+      ["MoonshineDistillery_1"]=true,
+      ["MoonshineDistillery_2"]=true,
+      ["MoonshineDistillery_3"]=true,
+      ["MoonshineDistillery_4"]=true,
+      ["MoonshineDistillery_5"]=true,
+   }
+   return tab[sprName]
+end
+
+function MoonshineDistillery.hasCookingVat(sq)
+   for i = 0, sq:getObjects():size() - 1 do
+      local obj = sq:getObjects():get(i)
+      if obj and obj:getSprite() then
+         local sprName = obj:getSprite():getName()
+         if sprName and MoonshineDistillery.isCookingVat(sprName) then
+            return true
+         end
+      end
+   end
+   return false
+end
+
+function MoonshineDistillery.hasCookingVat(sq)
+   for i = 0, sq:getObjects():size() - 1 do
+      local obj = sq:getObjects():get(i)
+      if obj and obj:getSprite() then
+         local sprName = obj:getSprite():getName()
+         if sprName and MoonshineDistillery.isCookingVat(sprName) then
+            return obj
+         end
+      end
+   end
+   return nil
+end
+
 ---------------------------
 function MoonshineDistillery.isCampfire(sprName)
    local tab = {
@@ -309,13 +348,32 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
 
                if MoonshineDistillery.isCampfire(sprName) then
                   if MoonshineDistillery.hasMetalDrum(pl) then
-                     opt:addOption('Build Cooking Vat', worldobjects, function()
-                        local item = MoonshineDistillery.getMetalDrum(pl)
-                        if item then
-                           inv:Remove(item)
-                           obj:setOverlaySprite(tostring("MoonshineDistillery_1"), 1,1,1,1)
+                     if MoonshineDistillery.checkDist(pl, sq) then
+                        if not MoonshineDistillery.hasCookingVat(sq) then
+                           context:addOptionOnTop('Build Cooking Vat', worldobjects, function()
+                              local item = MoonshineDistillery.getMetalDrum(pl)
+                              if item then
+                                 inv:Remove(item)
+                                 --obj:setOverlaySprite(tostring("MoonshineDistillery_1"), 1,1,1,1)
+                                -- local sq = getPlayer():getSquare();
+                                 local sprToSpawn = "MoonshineDistillery_1"
+                               --[[   local objToSpawn = IsoThumpable.new(getCell(), sq, sprToSpawn, false, nil);
+                                 sq:AddTileObject(objToSpawn);
+                    ]]
+
+                                 local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
+                                 props.rawWeight = 10
+                                 props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
+
+                                 getPlayerInventory(0):refreshBackpacks()
+                                 getPlayerLoot(0):refreshBackpacks()
+                                 ISInventoryPage.renderDirty = true
+
+
+                              end
+                           end)
                         end
-                     end)
+                     end
                   end
                end
 
