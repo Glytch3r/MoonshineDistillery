@@ -63,6 +63,7 @@ function MoonshineDistillery.loadCursor()
       end
 
 
+
       for _, pos in ipairs(positions) do
          local square = getCell():getGridSquare(pos[1], pos[2], pos[3])
          if square then
@@ -73,7 +74,6 @@ function MoonshineDistillery.loadCursor()
             getSoundManager():PlayWorldSound('MoonshineBuild', square, 0, 5, 5, false)
          end
       end
-
 
 
    end
@@ -137,6 +137,29 @@ function MoonshineDistillery.getStillCap(pl)
    local inv = pl:getInventory()
    return inv:FindAndReturn("MoonDist.StillCap")
 end
+
+
+function MoonshineDistillery.delBuildItems(pl)
+   local inv = pl:getInventory()
+   local delCount = 0
+   local item1 = inv:FindAndReturn("MoonDist.Thumper")
+   if item1 then
+      inv:Remove(item1)
+      delCount = delCount + 1
+   end
+   local item2 = inv:FindAndReturn("MoonDist.Boiler")
+   if item2 then
+      inv:Remove(item2)
+      delCount = delCount + 1
+   end
+   getPlayerInventory(0):refreshBackpacks()
+   getPlayerLoot(0):refreshBackpacks()
+   if delCount == 2 then
+      return true
+   end
+   return false
+end
+
 -----------------------
 function MoonshineDistillery.getMetalDrum(pl)
    local inv = pl:getInventory()
@@ -151,13 +174,16 @@ MoonshineDistillery.addParts = {
 }
 
 function MoonshineDistillery.getOverlayToAdd(sprName, part)
-   return MoonshineDistillery.addParts[sprName].part
+   return MoonshineDistillery.addParts[sprName][part]
 end
 function MoonshineDistillery.addOverlay(obj, sprName, part, item)
    if not (obj or sprName) then return end
    local overlay = MoonshineDistillery.getOverlayToAdd(sprName, part)
    if overlay then
-      getPlayer():getInventory():remove(item)
+   if getCore():getDebug() then
+      print(tostring(overlay))
+   end
+      getPlayer():getInventory():Remove(item)
       obj:setOverlaySprite(tostring(overlay), 1,1,1,1)
    end
 end
@@ -235,7 +261,7 @@ end
 function MoonshineDistillery.checkDist(pl, sq)
 	local x, y = sq:getX(), sq:getY()
 	local dist = pl:DistTo(x, y)
-   return math.floor(dist) <= 2
+   return math.floor(dist) <= 3
 end
 
 function MoonshineDistillery.context(player, context, worldobjects, test)
@@ -250,14 +276,26 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
          local opt = ISContextMenu:getNew(context)
          context:addSubMenu(Main, opt)
 
+
+
          opt:addOption('South', worldobjects, function()
+            if not MoonshineDistillery.delBuildItems(pl) then
+               pl:setHaloNote(tostring("Failed to build Moonshine Disiller"),250,250,250,900)
+               return
+            end
             local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_16",  pl, sq)
             getCell():setDrag(cursor, 0)
+            ISMoveableCursor.clearCacheForAllPlayers();
          end)
 
          opt:addOption('East', worldobjects, function()
+            if not MoonshineDistillery.delBuildItems(pl) then
+               pl:setHaloNote(tostring("Failed to build Moonshine Disiller"),250,250,250,900)
+               return
+            end
             local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_27",  pl, sq)
             getCell():setDrag(cursor, 0)
+            ISMoveableCursor.clearCacheForAllPlayers();
          end)
       end
 
@@ -274,7 +312,7 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                      opt:addOption('Build Cooking Vat', worldobjects, function()
                         local item = MoonshineDistillery.getMetalDrum(pl)
                         if item then
-                           inv:remove(item)
+                           inv:Remove(item)
                            obj:setOverlaySprite(tostring("MoonshineDistillery_1"), 1,1,1,1)
                         end
                      end)
@@ -301,6 +339,17 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            local item = MoonshineDistillery.getStillCap(pl)
                            if item then
                               MoonshineDistillery.addOverlay(obj, sprName, part, item)
+                              obj:setIsThumpable(true)
+                              obj:setIsContainer(true)
+                              obj:setIsDismantable(false)
+                              obj:getContainer():setType('Distiller')
+                              if isClient() then
+                                 obj:transmitCompleteItemToServer()
+                                 obj:transmitUpdatedSpriteToClients()
+                              end
+                              getPlayerInventory(0):refreshBackpacks()
+                              getPlayerLoot(0):refreshBackpacks()
+                              obj:getContainer():setDrawDirty(true);
                            end
                         end)
                      end

@@ -18,8 +18,8 @@
 
 ContainerButtonIcons = ContainerButtonIcons or {}
 local tab = {}
-tab.MoonshineDistiller = getTexture("media/ui/MoonshineDistiller.png")
-ContainerButtonIcons.MoonshineDistiller = tab.MoonshineDistiller
+tab.Distiller = getTexture("media/ui/MoonshineDistiller.png")
+ContainerButtonIcons.Distiller = tab.Distiller
 
 --[[_____________________________________________________________________________________________________________________________
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░
