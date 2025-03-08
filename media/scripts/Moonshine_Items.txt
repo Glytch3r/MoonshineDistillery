@@ -135,6 +135,7 @@ module MoonDist {
         SurvivalGear = TRUE,
         WorldStaticModel = MoonshineCasePeach,
     }
+
 	/* -----------------------      mag*      --------------------------- */
     item MoonshineMag
     {
@@ -217,6 +218,43 @@ module MoonDist {
 		UseWhileEquipped = FALSE,
 		CustomEatSound = DrinkingFromBottleGlass,
 	}
+    /* -----------------------      mash* base      --------------------------- */
+	item MoonshineMashBaseClear
+    {
+        DisplayName = Clear Moonshine Mash Base,
+		DisplayCategory = Food,
+		Weight = 1,
+		Type = Food,
+        Icon = MoonshineMashBase,
+		CantEat = TRUE,
+		WorldStaticModel = MoonshineMashBase,
+    }
+
+	item MoonshineMashBaseApple
+    {
+        DisplayName = Apple Moonshine Mash Base,
+		DisplayCategory = Food,
+		Weight = 1,
+		Type = Food,
+        Icon = MoonshineMashBase,
+		CantEat = TRUE,
+		WorldStaticModel = MoonshineMashBase,
+
+    }
+
+	item MoonshineMashBasePeach
+    {
+        DisplayName = Peach Moonshine Mash Base,
+		DisplayCategory = Food,
+		Weight = 1,
+		Type = Food,
+        Icon = MoonshineMashBase,
+		CantEat = TRUE,
+		WorldStaticModel = MoonshineMashBase,
+
+    }
+
+
 	/* -----------------------    bucket*        --------------------------- */
 
 	item BucketMoonshineMash

@@ -24,6 +24,13 @@ module Base
         /* scale = 1.4, */
     }
 
+    model MoonshineMashBase
+    {
+        mesh = WorldItems/BaconBits,
+        texture = WorldItems/MoonshineMashBase,
+    }
+
+
     /*  -----------------------      flavors*      --------------------------- */
 
 

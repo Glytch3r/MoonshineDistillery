@@ -6,9 +6,9 @@ module MoonDist {
     {
         DisplayName = Boiler,
         DisplayCategory = Material,
-        Weight = 5,
+        Weight = 4,
         Type = Normal,
-        Icon = Boiler,
+        Icon = MoonshineBoiler,
     }
 
     item Thumper
@@ -17,7 +17,7 @@ module MoonDist {
         DisplayCategory = Material,
         Weight = 3,
         Type = Normal,
-        Icon = Thumper,
+        Icon = MoonshineThumper,
     }
 
     item Thermometer
@@ -26,7 +26,7 @@ module MoonDist {
         DisplayCategory = Tool,
         Weight = 0.5,
         Type = Normal,
-        Icon = Thermometer,
+        Icon = MoonshineThermometer,
     }
 
     item StillCap
@@ -35,7 +35,7 @@ module MoonDist {
         DisplayCategory = Material,
         Weight = 2,
         Type = Normal,
-        Icon = StillCap,
+        Icon = MoonshineStillCap,
     }
 
     item DrainPort
@@ -44,7 +44,7 @@ module MoonDist {
         DisplayCategory = Material,
         Weight = 1.5,
         Type = Normal,
-        Icon = DrainPort,
+        Icon = MoonshineDrainPort,
     }
 
 

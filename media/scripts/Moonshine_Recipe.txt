@@ -4,56 +4,56 @@ module Base
 	/* -----------------------       moonshine*     --------------------------- */
 
 
-	recipe Craft Clear Moonshine
+	recipe Craft Clear Moonshine Mash Base
 	{
-		MetalDrum/Barrel,
+		MetalDrum/Barrel/Moveables.industry_01_22/Moveables.industry_01_23,
 		SugarBrown/Sugar,
 		Yeast,
 		Water=5,
 		Cornmeal,
-		Malt=4,
-		EmptyCeramicJug=4,
+		MoonDist.Malt=4,
+		MoonDist.EmptyCeramicJug=8,
 
-		Result:MoonshineDistiller,
+		Result:MoonDist.MoonshineMashBaseClear,
 		Time:50.0,
 		Category:Cooking,
-
+		NeedToBeLearn:true,
         Sound:MoonshineDistiller,
 	}
 
-	recipe Craft Apple Moonshine
+	recipe Craft Apple Moonshine Mash Base
 	{
 		Apple,
-		MetalDrum/Barrel,
+		MetalDrum/Barrel/Moveables.industry_01_22/Moveables.industry_01_23,
 		SugarBrown/Sugar,
 		Yeast,
 		Water=5,
 		Cornmeal,
-		Malt=4,
-		EmptyCeramicJug=4,
+		MoonDist.Malt=4,
+		MoonDist.EmptyCeramicJug=8,
 
-		Result:MoonshineDistiller,
+		Result:MoonDist.MoonshineMashBaseApple,
 		Time:50.0,
 		Category:Cooking,
-
+		NeedToBeLearn:true,
         Sound:MoonshineDistiller,
 	}
 
-	recipe Craft Peach Moonshine
+	recipe Craft Peach Moonshine Mash Base
 	{
 		CannedPeachesOpen,
-		MetalDrum/Barrel,
+		MetalDrum/Barrel/Moveables.industry_01_22/Moveables.industry_01_23,
 		SugarBrown/Sugar,
 		Yeast,
 		Water=5,
 		Cornmeal,
-		Malt=4,
-		EmptyCeramicJug=4,
+		MoonDist.Malt=4,
+		MoonDist.EmptyCeramicJug=8,
 
-		Result:MoonshineDistiller,
+		Result:MoonDist.MoonshineMashBasePeach,
 		Time:550.0,
 		Category:Cooking,
-
+		NeedToBeLearn:true,
         Sound:MoonshineDistiller,
 	}
 
@@ -62,8 +62,8 @@ module Base
 	/* -----------------------       pack*     --------------------------- */
     recipe Pack Clear Moonshine
     {
-		MoonshineClear=4,
-        Result:MoonshineCaseClear,
+		MoonDist.MoonshineClear=4,
+        Result:MoonDist.MoonshineCaseClear,
 
         AnimNode:disassemble,
         RemoveResultItem:true,
@@ -74,8 +74,8 @@ module Base
     }
     recipe Pack Apple Moonshine
     {
-		MoonshineApple=4,
-        Result:MoonshineCaseApple,
+		MoonDist.MoonshineApple=4,
+        Result:MoonDist.MoonshineCaseApple,
 
         AnimNode:disassemble,
         RemoveResultItem:true,
@@ -86,8 +86,8 @@ module Base
     }
 	recipe Pack Peach Moonshine
     {
-		MoonshinePeach=4,
-        Result:MoonshineCaseAPeach,
+		MoonDist.MoonshinePeach=4,
+        Result:MoonDist.MoonshineCasePeach,
 
         AnimNode:disassemble,
         RemoveResultItem:true,
@@ -101,8 +101,8 @@ module Base
 
 	recipe Unpack Clear Moonshine
     {
-        MoonshineCaseClear,
-        Result:MoonshineClear=4,
+        MoonDist.MoonshineCaseClear,
+        Result:MoonDist.MoonshineClear=4,
 		Category:Cooking,
         Time:15.0,
 
@@ -111,8 +111,8 @@ module Base
 
 	recipe Unpack Apple Moonshine
     {
-        MoonshineCaseApple,
-        Result:MoonshineApple=4,
+        MoonDist.MoonshineCaseApple,
+        Result:MoonDist.MoonshineApple=4,
 		Category:Cooking,
         Time:15.0,
 
@@ -120,8 +120,8 @@ module Base
     }
 	recipe Unpack Peach Moonshine
     {
-        MoonshineCasePeach,
-        Result:MoonshinePeach=4,
+        MoonDist.MoonshineCasePeach,
+        Result:MoonDist.MoonshinePeach=4,
 		Category:Cooking,
         Time:15.0,
 
@@ -133,22 +133,23 @@ module Base
 	recipe Gather Moonshine Mash into a Bucket
 	{
 		destroy BucketEmpty,
-		MoonshineMash=5,
+		MoonDist.MoonshineMash=5,
 
-		Result:BucketMoonshineMash,
+		Result:MoonDist.BucketMoonshineMash,
 		Time:150.0,
 		Category:Cooking,
-
+		NeedToBeLearn:true,
 		Sound:MoonshineSlosh,
 	}
 
 	recipe Separate the Mash from Unfermented Moonshine
 	{
-		BucketMoonshineMash,
+		MoonDist.BucketMoonshineMash,
 
-		Result:BucketMoonshineUnfermented,
+		Result:MoonDist.BucketMoonshineUnfermented,
 		Time:150.0,
 		Category:Cooking,
+		NeedToBeLearn:true,
 		Sound:MoonshineSlosh,
 	}
 
