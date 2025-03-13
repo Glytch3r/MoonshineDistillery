@@ -1,0 +1,14 @@
+VERSION = 1,
+
+option MoonshineDistillery.HeatingMinutes
+{
+	type = integer, min = 0, max = 40320, default = 1440,
+	page = MoonshineDistillery, translation = MoonshineDistillery_HeatingMinutes,
+}
+
+option MoonshineDistillery.FermentationMinutes
+{
+	type = integer, min = 0, max = 40320, default = 7200,
+	page = MoonshineDistillery, translation = MoonshineDistillery_FermentationMinutes,
+}
+

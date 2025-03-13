@@ -7,13 +7,13 @@
   ░▒▓█▓▒░░▒▓█▓▒░   ░▒▓█▓▒░           ░▒▓█▓▒░         ░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░ ░▒▓█▓▒░  ▒▓░    ░▒▓█▓▒░   ░▒▓█▓▒░  ░▒█▒░
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░
 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
-|                        				 Custom  PZ  Mod  Developer  for  Hire													  |
+|                        				 Custom  PZ  Mod  Developer  for  Hire													                   |
 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
-|                       	Portfolio:  https://steamcommunity.com/id/glytch3r/myworkshopfiles/							          |
-|                       		                                    														 	  |
-|                       	Discord:    Glytch3r#1337 / glytch3r															      |
-|                       		                                    														 	  |
-|                       	Support:    https://ko-fi.com/glytch3r														    	  |
+|                       	Portfolio:  https://steamcommunity.com/id/glytch3r/myworkshopfiles/							                |
+|                       		                                    														 	                   |
+|                       	Discord:    Glytch3r#1337 / glytch3r															                      |
+|                       		                                    													                  	 	 |
+|                       	Support:    https://ko-fi.com/glytch3r														                      	 |
 |_______________________________________________________________________________________________________________________________-]]
 --[[_____________________________________________________________________________________________________________________________
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░
@@ -27,100 +27,28 @@
 
 
 MoonshineDistillery = MoonshineDistillery or {}
------------------------            ---------------------------
-function MoonshineDistillery.loadCursor()
-   ISMoonshineTileCursor = ISBuildingObject:derive("ISMoonshineTileCursor")
-
-   function ISMoonshineTileCursor:create(x, y, z, sprite)
-      local pl = getPlayer()
-      local positions = {}
-      if sprite == "MoonshineDistillery_16" then
-         positions = {
-               {x, y, z, "MoonshineDistillery_16"},
-               {x + 1, y, z, "MoonshineDistillery_17"},
-               {x + 1, y - 1, z, "MoonshineDistillery_18"},
-               {x + 2, y - 1, z, "MoonshineDistillery_19"}
-         }
-      else
-         positions = {
-               {x, y, z, "MoonshineDistillery_27"},
-               {x, y + 1, z, "MoonshineDistillery_26"},
-               {x - 1, y + 1, z, "MoonshineDistillery_25"},
-               {x - 1, y + 1, z, "MoonshineDistillery_24"}
-         }
-      end
-      local firstSq = getCell():getOrCreateGridSquare(x, y, z);
-      if not MoonshineDistillery.checkDist(pl, firstSq) then
-         pl:setHaloNote(tostring("Need to get closer"),150,250,150,900)
-         return
-      end
-      for _, pos in ipairs(positions) do
-         local square = getCell():getGridSquare(pos[1], pos[2], pos[3])
-         if not square or not square:isFree(false) then
-            pl:setHaloNote(tostring("Cannot place there"),150,250,150,900)
-            return
-         end
-      end
 
 
-
-      for _, pos in ipairs(positions) do
-         local square = getCell():getGridSquare(pos[1], pos[2], pos[3])
-         if square then
-            local props = ISMoveableSpriteProps.new(IsoObject.new(square, pos[4]):getSprite())
-            props.rawWeight = 10
-            props:placeMoveableInternal(square, InventoryItemFactory.CreateItem("Base.Plank"), pos[4])
-            addSound(pl, square:getX(), square:getY(), square:getZ(), 5, 1)
-            getSoundManager():PlayWorldSound('MoonshineBuild', square, 0, 5, 5, false)
-         end
-      end
-
-
-   end
-
-   function ISMoonshineTileCursor:render(x, y, z, square)
-      ISBuildingObject.render(self, x, y, z, square)
-   end
-
-   function ISMoonshineTileCursor:new(sprite, character, firstSq)
-      local o = {}
-      setmetatable(o, self)
-      self.__index = self
-      o:init()
-      o:setSprite(sprite)
-      o.character = character
-      o.player = character:getPlayerNum()
-      o.isTileCursor = true
-      o.spriteName = sprite
-      o.noNeedHammer = true
-      o.skipBuildAction = false
-      o.skipWalk2 = false
-      o.canBeAlwaysPlaced = true
-      return o
-   end
-end
-Events.OnCreatePlayer.Add(MoonshineDistillery.loadCursor)
---   MoonshineDistillery.loadCursor()
 -----------------------            ---------------------------
 function MoonshineDistillery.CanPlace(pl)
    local inv = pl:getInventory()
    return inv:contains("MoonDist.Boiler") and inv:contains("MoonDist.Thumper")-- and inv:contains("MetalDrum")
 end
 -----------------------
-function MoonshineDistillery.hasThermometer(pl)
+function MoonshineDistillery.hasThermometerItem(pl)
    local inv = pl:getInventory()
    return inv:contains("MoonDist.Thermometer")
 end
-function MoonshineDistillery.hasDrainPort(pl)
+function MoonshineDistillery.hasDrainPortItem(pl)
    local inv = pl:getInventory()
    return inv:contains("MoonDist.DrainPort")
 end
-function MoonshineDistillery.hasStillCap(pl)
+function MoonshineDistillery.hasStillCapItem(pl)
    local inv = pl:getInventory()
    return inv:contains("MoonDist.StillCap")
 end
 -----------------------
-function MoonshineDistillery.hasMetalDrum(pl)
+function MoonshineDistillery.hasMetalDrumItem(pl)
    local inv = pl:getInventory()
    return inv:contains("Base.MetalDrum") or inv:contains("Moveables.industry_01_22") or inv:contains("Moveables.industry_01_23")
 end
@@ -189,53 +117,7 @@ function MoonshineDistillery.addOverlay(obj, sprName, part, item)
 end
 ---------------------------
 
-function MoonshineDistillery.isCookingVat(sprName)
-   local tab = {
-      ["MoonshineDistillery_1"]=true,
-      ["MoonshineDistillery_2"]=true,
-      ["MoonshineDistillery_3"]=true,
-      ["MoonshineDistillery_4"]=true,
-      ["MoonshineDistillery_5"]=true,
-   }
-   return tab[sprName]
-end
-
-function MoonshineDistillery.hasCookingVat(sq)
-   for i = 0, sq:getObjects():size() - 1 do
-      local obj = sq:getObjects():get(i)
-      if obj and obj:getSprite() then
-         local sprName = obj:getSprite():getName()
-         if sprName and MoonshineDistillery.isCookingVat(sprName) then
-            return true
-         end
-      end
-   end
-   return false
-end
-
-function MoonshineDistillery.hasCookingVat(sq)
-   for i = 0, sq:getObjects():size() - 1 do
-      local obj = sq:getObjects():get(i)
-      if obj and obj:getSprite() then
-         local sprName = obj:getSprite():getName()
-         if sprName and MoonshineDistillery.isCookingVat(sprName) then
-            return obj
-         end
-      end
-   end
-   return nil
-end
-
 ---------------------------
-function MoonshineDistillery.isCampfire(sprName)
-   local tab = {
-      ["camping_01_6"]=true,
-      ["camping_01_5"]=true,
-      ["camping_01_4"]=true,
-   }
-   return tab[sprName]
-end
------------------------
 function MoonshineDistillery.isBoilerTile(sprName)
    local tab = {
       ["MoonshineDistillery_16"] = true,
@@ -244,7 +126,20 @@ function MoonshineDistillery.isBoilerTile(sprName)
    return tab[sprName]
 end
 
-
+function MoonshineDistillery.isStillCap(sprName)
+   local tab = {
+      ["MoonshineDistillery_20"] = true,
+      ["MoonshineDistillery_28"] = true
+   }
+   return tab[sprName]
+end
+function MoonshineDistillery.isThermometer(sprName)
+   local tab = {
+      ["MoonshineDistillery_21"] = true,
+      ["MoonshineDistillery_29"] = true
+   }
+   return tab[sprName]
+end
 function MoonshineDistillery.isCondenserCanTile(sprName)
    local tab = {
       ["MoonshineDistillery_19"] = true,
@@ -252,7 +147,14 @@ function MoonshineDistillery.isCondenserCanTile(sprName)
    }
    return tab[sprName]
 end
-
+function MoonshineDistillery.isDrainPort(sprName)
+   local tab = {
+      ["MoonshineDistillery_22"] = true,
+      ["MoonshineDistillery_30"] = true
+   }
+   return tab[sprName]
+end
+-----------------------            ---------------------------
 function MoonshineDistillery.hasThermometerOverlay(obj)
    if obj:getOverlaySprite() ~= nil then
       local sprName = obj:getOverlaySprite():getName()
@@ -262,6 +164,14 @@ function MoonshineDistillery.hasThermometerOverlay(obj)
             ["MoonshineDistillery_29"] = true
          }
          return tab[sprName]
+      end
+   else
+      local sq = obj:getSquare()
+      for i = 0, sq:getObjects():size() - 1 do
+         local obj2 = sq:getObjects():get(i)
+         if obj2:getSprite() and  MoonshineDistillery.isThermometer(obj2:getSprite():getName()) then
+               return true
+         end
       end
    end
    return false
@@ -277,23 +187,91 @@ function MoonshineDistillery.hasStillCapOverlay(obj)
          }
          return tab[sprName]
       end
-   end
-   return false
-end
-
-function MoonshineDistillery.hasDrainPortOverlay(obj)
-   if obj:getOverlaySprite() ~= nil then
-      local sprName = obj:getOverlaySprite():getName()
-      if sprName then
-         local tab = {
-            ["MoonshineDistillery_22"] = true,
-            ["MoonshineDistillery_30"] = true
-         }
-         return tab[sprName]
+   else
+      local sq = obj:getSquare()
+      for i = 0, sq:getObjects():size() - 1 do
+         local obj2 = sq:getObjects():get(i)
+         if obj2:getSprite() and  MoonshineDistillery.isStillCap(obj2:getSprite():getName()) then
+               return true
+         end
       end
    end
    return false
 end
+
+function MoonshineDistillery.hasDrainPortOverlay(sq2)
+
+    if not sq2 then return false end
+
+    for i = 0, sq2:getObjects():size() - 1 do
+        local obj = sq2:getObjects():get(i)
+        if obj:getSprite() and MoonshineDistillery.isDrainPort(obj:getSprite():getName()) then
+            return true
+        end
+    end
+    return false
+end
+
+
+MoonshineDistillery.FacePart = {
+    ["MoonshineDistillery_16"] = "MoonshineDistillery_22",
+    ["MoonshineDistillery_27"] = "MoonshineDistillery_30",
+    ["MoonshineDistillery_22"] = "MoonshineDistillery_16",
+    ["MoonshineDistillery_30"] = "MoonshineDistillery_27",
+}
+function MoonshineDistillery.getDrainPortSquare(x, y, z, sprName)
+    if sprName == "MoonshineDistillery_16" then
+        x = x + 1
+        y = y - 1
+    elseif sprName == "MoonshineDistillery_27" then
+        x = x - 1
+        y = y + 1
+    else
+        return nil
+    end
+    return getCell():getGridSquare(x, y, z)
+end
+
+
+function MoonshineDistillery.hasDrainPort(x, y, z, sprName)
+    local sq = MoonshineDistillery.getDrainPortSquare(x, y, z, sprName)
+    if not sq then return false end
+
+    local drainportSprite = MoonshineDistillery.FacePart[sprName]
+    for i = 0, sq:getObjects():size() - 1 do
+        local obj = sq:getObjects():get(i)
+        if obj:getSprite() and obj:getSprite():getName() == drainportSprite then
+            return true
+        end
+    end
+    return false
+end
+function MoonshineDistillery.setDrainPort(sq2, sprName)
+   if not sq2 then return end
+
+   local sprToSpawn = MoonshineDistillery.FacePart[sprName]
+   if not sprToSpawn then return end
+   print(sprToSpawn)
+   local toSpawn = IsoThumpable.new(getCell(), sq2, sprToSpawn, false, nil);
+   sq2:AddTileObject(toSpawn);
+   toSpawn:setIsThumpable(true)
+   toSpawn:setIsContainer(true)
+   toSpawn:setIsDismantable(false)
+
+   local cont = toSpawn:getContainer()
+   cont:setType('DrainPort')
+   cont:setDrawDirty(true);
+   ISInventoryPage.renderDirty = true
+   if isClient() then
+      toSpawn:transmitCompleteItemToServer()
+      toSpawn:transmitUpdatedSpriteToClients()
+   end
+   getPlayerInventory(0):refreshBackpacks()
+   getPlayerLoot(0):refreshBackpacks()
+
+end
+
+
 
 -----------------------            ---------------------------
 
@@ -303,16 +281,23 @@ function MoonshineDistillery.checkDist(pl, sq)
 	local dist = pl:DistTo(x, y)
    return math.floor(dist) <= 3
 end
-
-
-function MoonshineDistillery.spawnPart(sprToSpawn, sq)
-   local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
-   props.rawWeight = 10
-   local obj = props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
+function MoonshineDistillery.delPart(item, inv)
+   if item and inv then
+      if getCore():getDebug() then
+         print("Debug mode bypassed Item Removal")
+      else
+         inv:Remove(item)
+      end
+   end
    getPlayerInventory(0):refreshBackpacks()
    getPlayerLoot(0):refreshBackpacks()
    ISInventoryPage.renderDirty = true
-   print(obj)
+end
+function MoonshineDistillery.spawnPart(sprToSpawn, sq, item, inv)
+   local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
+   props.rawWeight = 10
+   local obj = props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
+   MoonshineDistillery.delPart(item, inv)
    return obj
 end
 function MoonshineDistillery.isLearned(pl)
@@ -320,132 +305,3 @@ function MoonshineDistillery.isLearned(pl)
     pl = pl or getPlayer()
     return pl:getKnownRecipes():contains(recipe) or pl:isRecipeKnown(recipe)
 end
-
-function MoonshineDistillery.context(player, context, worldobjects, test)
-   local pl = getSpecificPlayer(player)
-   local inv = pl:getInventory()
-   local sq = clickedSquare
-   if not MoonshineDistillery.isLearned(pl) then return end
-   if sq then
-      if MoonshineDistillery.CanPlace(pl) then
-         local Main = context:addOptionOnTop("Build Moonshine Distiller: ")
-         Main.iconTexture = getTexture("media/ui/chop_tree.png")
-         local opt = ISContextMenu:getNew(context)
-         context:addSubMenu(Main, opt)
-
-
-
-         opt:addOption('South', worldobjects, function()
-            if not MoonshineDistillery.delBuildItems(pl) then
-               pl:setHaloNote(tostring("Failed to build Moonshine Disiller"),250,250,250,900)
-               return
-            end
-            local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_16",  pl, sq)
-            getCell():setDrag(cursor, 0)
-            ISMoveableCursor.clearCacheForAllPlayers();
-         end)
-
-         opt:addOption('East', worldobjects, function()
-            if not MoonshineDistillery.delBuildItems(pl) then
-               pl:setHaloNote(tostring("Failed to build Moonshine Disiller"),250,250,250,900)
-               return
-            end
-            local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_27",  pl, sq)
-            getCell():setDrag(cursor, 0)
-            ISMoveableCursor.clearCacheForAllPlayers();
-         end)
-      end
-
-      for i=0, sq:getObjects():size()-1 do
-         local obj = sq:getObjects():get(i)
-         local spr = obj:getSprite()
-         if spr then
-            local sprName = spr:getName()
-            if sprName then
-
-
-               if MoonshineDistillery.isCampfire(sprName) then
-                  --if MoonshineDistillery.hasMetalDrum(pl) then
-                     if MoonshineDistillery.checkDist(pl, sq) then
-                        if not MoonshineDistillery.hasCookingVat(sq) then
-                           context:addOptionOnTop('Build Cooking Vat', worldobjects, function()
-                              local item = MoonshineDistillery.getMetalDrum(pl)
-                              --if item then
-                                -- inv:Remove(item)
-
-
-                                 local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil);
-                                 sq:AddTileObject(toSpawn);
-                                 toSpawn:setIsContainer(true);
-                                 toSpawn:getContainer():setType('CookingVat')
-                                 getPlayerInventory(0):refreshBackpacks()
-                                 getPlayerLoot(0):refreshBackpacks()
-                                 toSpawn:getContainer():setDrawDirty(true);
-                              --end
-                           end)
-                        end
-                     end
-                  --end
-               end
-
-
-               if MoonshineDistillery.isBoilerTile(sprName) then
-                  if MoonshineDistillery.hasThermometer(pl) then
-                     if not MoonshineDistillery.hasThermometerOverlay(obj) then
-                        context:addOptionOnTop('Add Thermometer', worldobjects, function()
-                           local part = "Thermometer"
-                           local item = MoonshineDistillery.getThermometer(pl)
-                           if item then
-                              MoonshineDistillery.addOverlay(obj, sprName, part, item)
-                           end
-                        end)
-                     end
-                  end
-                  if MoonshineDistillery.hasStillCap(pl) then
-                     if not MoonshineDistillery.hasStillCapOverlay(obj) then
-                        context:addOptionOnTop('Add Stiil Cap', worldobjects, function()
-                           local part = "StillCap"
-                           local sprToSpawn = MoonshineDistillery.getOverlayToAdd(sprName, part)
-                           local item = MoonshineDistillery.getStillCap(pl)
-                           if item then
-                              --MoonshineDistillery.addOverlay(obj, sprName, part, item)
-                              MoonshineDistillery.spawnPart(sprToSpawn, sq)
-                              obj:setIsThumpable(true)
-                              obj:setIsContainer(true)
-                              obj:setIsDismantable(false)
-                              obj:getContainer():setType('Distiller')
-
-                              obj:getContainer():setDrawDirty(true);
-                              if isClient() then
-                                 obj:transmitCompleteItemToServer()
-                                 obj:transmitUpdatedSpriteToClients()
-                              end
-                              getPlayerInventory(0):refreshBackpacks()
-                              getPlayerLoot(0):refreshBackpacks()
-                           end
-                        end)
-                     end
-                  end
-               elseif MoonshineDistillery.isCondenserCanTile(sprName) then
-                  if MoonshineDistillery.hasDrainPort(pl) then
-                     if not MoonshineDistillery.hasDrainPortOverlay(obj) then
-                        context:addOptionOnTop('Add Drain Port', worldobjects, function()
-                           local part = "DrainPort"
-                           local item = MoonshineDistillery.getDrainPort(pl)
-                           if item then
-                              MoonshineDistillery.addOverlay(obj, sprName, part, item)
-                           end
-                        end)
-                     end
-                  end
-               end
-            end
-         end
-      end
-   end
-end
-
-Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.context)
-Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.context)
-
------------------------            ---------------------------

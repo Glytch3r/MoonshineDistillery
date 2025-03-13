@@ -108,24 +108,32 @@ module Base
 	model Malt
 	{
 		mesh = WorldItems/Seeds,
-		texture = WorldItems/Malt,
+		texture = WorldItems/MoonshineMalt,
 		scale = 0.4,
 	}
 
 	model BucketMoonshineMash
     {
-        mesh = WorldItems/Bucket,
+        /* mesh = WorldItems/Bucket, */
+        mesh = WorldItems/BucketMoonshine,
         texture = WorldItems/BucketMoonshineMash,
         scale = 0.4,
     }
 
 	model BucketMoonshineUnfermented
     {
-        /* mesh = WorldItems/BucketMoonshine, */
-        mesh = WorldItems/Bucket,
+        /* mesh = WorldItems/Bucket, */
+        mesh = WorldItems/BucketMoonshine,
         texture = WorldItems/BucketMoonshineUnfermented,
         scale = 0.4,
     }
+    /* -----------------------            --------------------------- */
+    model MoonshineStrainer
+	{
+		mesh = WorldItems/KeyPadlock,
+		texture = WorldItems/MoonshineStrainer,
+		scale = 3,
+	}
 }
 
 

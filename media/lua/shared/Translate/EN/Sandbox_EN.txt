@@ -1,4 +1,11 @@
 Sandbox_EN = {
-    Sandbox_Moonshine = "Moonshine Crafting",
+    Sandbox_MoonshineDistillery = "Moonshine Distillery",
+
+    Sandbox_MoonshineDistillery_HeatingMinutes = "Heating Minutes",
+    Sandbox_MoonshineDistillery_HeatingMinutes_tooltip = "Number of Minutes ingame Minutes required to heat up Moonshine Mash. When set to 0 Cooking Vat will instantly spawn Mash",
+
+    Sandbox_MoonshineDistillery_FermentationMinutes = "Fermentation Minutes",
+    Sandbox_MoonshineDistillery_FermentationMinutes_tooltip = "Number of Minutes ingame it takes for Moonshine Distillation. When set to 0 Fermentation becomes instant",
+
 
 }
