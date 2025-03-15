@@ -47,6 +47,7 @@ function MoonshineDistillery.hasStillCapItem(pl)
    local inv = pl:getInventory()
    return inv:contains("MoonDist.StillCap")
 end
+
 -----------------------
 function MoonshineDistillery.hasMetalDrumItem(pl)
    local inv = pl:getInventory()
