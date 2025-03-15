@@ -157,6 +157,7 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
          cookingvatCont = obj:getContainer()
       end
       if cookingvatCont ~= nil then
+         local sprName = obj:getSprite():getName()
          if MoonshineDistillery.checkDist(pl, sq) then
             local stage = MoonshineDistillery.getStage(sprName)
 
@@ -292,7 +293,7 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
       context:addSubMenu(installMenu, opt)
 
       if checkDist then
-
+         local sprName = obj:getSprite():getName()
 
          local optTip = opt:addOptionOnTop('Thermometer', worldobjects, function()
             local part = "Thermometer"
