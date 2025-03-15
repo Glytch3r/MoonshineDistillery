@@ -135,10 +135,32 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
          local sprName
          if spr then
             sprName = spr:getName()
+
             if sprName then
                -----------------------    boiler*        ---------------------------
                if MoonshineDistillery.isBoilerTile(sprName) then
+                  if  MoonshineDistillery.isCompleteParts(obj) then
+                     isntopt:setOptionChecked(installMenu, true)
+                  end
                   isBoilerTile = true
+                  local fake = isntopt:addOptionOnTop('Boiler', worldobjects, nil)
+                  fake.notAvailable = true
+                  local tip01 = ISWorldObjectContextMenu.addToolTip()
+
+                  isntopt:setOptionChecked(fake, true)
+                  fake.iconTexture = getTexture("media/textures/Item_MoonshineBoiler.png")
+                  tip01.description = "Already Installed"
+                  fake.toolTip = tip01
+                  -----------------------            ---------------------------
+                  local fake2 = isntopt:addOptionOnTop('Thumper', worldobjects, nil)
+                  fake2.notAvailable = true
+                  local tip02 = ISWorldObjectContextMenu.addToolTip()
+
+                  isntopt:setOptionChecked(fake2, true)
+                  tip02.description = "Already Installed"
+                  fake2.iconTexture = getTexture("media/textures/Item_MoonshineThumper.png")
+                  fake2.toolTip = tip02
+
                   -----------------------            ---------------------------
                   local sprName = obj:getSprite():getName()
                   local optTipThermo = isntopt:addOptionOnTop('Thermometer', worldobjects, function()
@@ -150,7 +172,8 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                      end
                   end)
                   local done1 =  MoonshineDistillery.hasThermometerOverlay(obj)
-                  if not MoonshineDistillery.hasStillCapItem(pl) or done1 then
+                  local hasPart1 = MoonshineDistillery.hasStillCapItem(pl)
+                  if not hasPart1 or done1 then
                      optTipThermo.notAvailable = true
                   end
                   local tip1 = ISWorldObjectContextMenu.addToolTip()
@@ -158,6 +181,10 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                   if done1 then
                      isntopt:setOptionChecked(optTipThermo, done1)
                      tip1.description = "Already Installed"
+                  else
+                     if not hasPart1 then
+                        tip1.description = "Install Thermometer"
+                     end
                   end
                   optTipThermo.toolTip = tip1
                   -----------------------    StillCap*        ---------------------------
@@ -184,7 +211,8 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                      end
                   end)
                   local done2 = MoonshineDistillery.hasStillCapOverlay(obj)
-                  if not MoonshineDistillery.hasStillCapItem(pl) or done2 then
+                  local hasPart2 = MoonshineDistillery.hasStillCapItem(pl)
+                  if not hasPart2 or done2 then
                      optTipSCap.notAvailable = true
                   end
                   local tip2 = ISWorldObjectContextMenu.addToolTip()
@@ -192,6 +220,10 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                   if done2 then
                      isntopt:setOptionChecked(optTipSCap, true)
                      tip2.description = "Already Installed"
+                  else
+                     if not hasPart2 then
+                        tip2.description = "Install Still Cap"
+                     end
                   end
                   optTipSCap.toolTip = tip
 
@@ -207,7 +239,8 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                      end
                   end)
                   local done3 = MoonshineDistillery.hasDrainPortOverlay(sq2)
-                  if not MoonshineDistillery.hasDrainPortItem(pl) or done3 or not sq2 then
+                  local hasPart3 MoonshineDistillery.hasDrainPortItem(pl)
+                  if not hasPart3 or done3 or not sq2 then
                      optTipDrain.notAvailable = true
                   end
                   local tip3 = ISWorldObjectContextMenu.addToolTip()
@@ -215,6 +248,10 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
                   if done3 then
                      isntopt:setOptionChecked(optTipDrain, true)
                      tip3.description = "Already Installed"
+                  else
+                     if not hasPart3 then
+                        tip3.description = "Install Drain Port"
+                     end
                   end
                   optTipDrain.toolTip = tip
 

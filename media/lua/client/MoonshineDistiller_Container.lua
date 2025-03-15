@@ -62,12 +62,15 @@ function MoonshineDistillery.getDrainPortObj(obj)
    return nil
 end
 
+
 function MoonshineDistillery.isCompleteParts(obj)
    if not obj then return false end
-   local obj = dbgIso
    local spr = obj:getSprite()
-   local sprName = spr and spr:getName() or nil
-
+   local sprName
+   if spr then
+      sprName =  spr:getName()
+   end
+   if not sprName then return false end
    if not MoonshineDistillery.isBoilerTile(sprName) then return false end
 
    local offsets = {
@@ -75,11 +78,19 @@ function MoonshineDistillery.isCompleteParts(obj)
          {0, 0, "MoonshineDistillery_20"}, -- StillCap
          {0, 0, "MoonshineDistillery_21"}, -- Thermometer
          {1, -1, "MoonshineDistillery_22"} -- DrainPort
+
+         {1, 0, "MoonshineDistillery_17"}, -- thumper tall
+         {1, -1, "MoonshineDistillery_18"}, -- thumper short
+         {1, -1, "MoonshineDistillery_19"}, -- can
       },
       ["MoonshineDistillery_27"] = {
          {0, 0, "MoonshineDistillery_28"}, -- StillCap
          {0, 0, "MoonshineDistillery_29"}, -- Thermometer
          {-1, 1, "MoonshineDistillery_30"} -- DrainPort
+
+         {0, 1, "MoonshineDistillery_26"}, -- thumper tall
+         {-1, 1, "MoonshineDistillery_25"}, -- thumper short
+         {-1, 1, "MoonshineDistillery_24"}, -- can
       }
    }
 
