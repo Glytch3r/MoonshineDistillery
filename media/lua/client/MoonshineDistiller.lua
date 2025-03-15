@@ -89,7 +89,7 @@ function MoonshineDistillery.delBuildItems(pl)
 end
 
 -----------------------
-function MoonshineDistillery.getMetalDrum(pl)
+function MoonshineDistillery.getMetalDrumItem(pl)
    local inv = pl:getInventory()
    return inv:FindAndReturn("MetalDrum") or inv:FindAndReturn("Moveables.industry_01_22") or inv:FindAndReturn("Moveables.industry_01_23")
 end

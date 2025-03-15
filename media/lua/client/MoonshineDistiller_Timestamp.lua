@@ -28,23 +28,26 @@
 MoonshineDistillery = MoonshineDistillery or {}
 
 
-function MoonshineDistillery.isCampfire(sprName)
+function MoonshineDistillery.isCampfire(obj)
+   if obj:getName() == "Campfire" then return true end
+   local spr = obj:getSprite()
+   local sprName = spr and spr:getName()
+   if not sprName then return false  end
    local tab = {
       ["camping_01_6"]=true,
       ["camping_01_5"]=true,
       ["camping_01_4"]=true,
    }
-   return tab[sprName]
+   return tab[sprName] or false
 end
+
+
 
 function MoonshineDistillery.getCampfire(sq)
    for i = 0, sq:getObjects():size() - 1 do
       local obj = sq:getObjects():get(i)
-      if obj and obj:getSprite() then
-         local sprName = obj:getSprite():getName()
-         if sprName and MoonshineDistillery.isCampfire(sprName) or instanceof(obj, "IsoFireplace") then
-            return obj
-         end
+      if MoonshineDistillery.isCampfire(obj) then
+         return obj
       end
    end
    return nil
@@ -55,10 +58,11 @@ function MoonshineDistillery.hasCampfire(sq)
 end
 function MoonshineDistillery.hasLitCampfire(sq)
    local campfire = MoonshineDistillery.getCampfire(sq)
-   if campfire then
 
-   end
-   return false
+   local isLit = campfire and campfire:getModData().isLit
+   local fuelAmt = campfire and campfire:getModData().fuelAmt
+
+   return isLit and fuelAmt > 0
 end
 -----------------------
 

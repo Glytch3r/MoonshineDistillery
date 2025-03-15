@@ -33,32 +33,38 @@ MoonshineDistillery = MoonshineDistillery or {}
 
 
 -----------------------            ---------------------------
-function MoonshineDistillery.getDrainPortContainer(sq)
-   if not sq then return nil end
-   local spr = sq:getSpriteName()
+function MoonshineDistillery.getDrainPortObj(obj)
+
+   local spr = obj:getSprite()
+   local sprName = spr and spr:getName() or nil
+   local sq = obj:getSquare();
 
    local offset = {
       ["MoonshineDistillery_16"] = {1, -1}, -- DrainPort at (x+1, y-1)
       ["MoonshineDistillery_27"] = {-1, 1}  -- DrainPort at (x-1, y+1)
    }
 
-   local dx, dy = offset[spr] and table.unpack(offset[spr]) or nil
+   local dx, dy = offset[sprName] and table.unpack(offset[sprName]) or nil
    if not dx then return nil end
 
-   local drainPortSquare = getCell():getGridSquare(sq:getX() + dx, sq:getY() + dy, sq:getZ())
-   if not drainPortSquare then return nil end
+   local sq2 = getCell():getGridSquare(sq:getX() + dx, sq:getY() + dy, sq:getZ())
+   if not sq2 then return nil end
 
-   for i = 0, drainPortSquare:getObjects():size() - 1 do
-      local obj = drainPortSquare:getObjects():get(i)
-      if obj:getSpriteName() == "MoonshineDistillery_22" or obj:getSpriteName() == "MoonshineDistillery_30" then
-         return obj:getContainer()
+   for i = 0, sq2:getObjects():size() - 1 do
+      local obj2 = sq2:getObjects():get(i)
+      local spr2 = obj2:getSprite()
+      local sprName2 = spr2 and spr2:getName() or nil
+      if sprName2 == "MoonshineDistillery_22" or sprName2 == "MoonshineDistillery_30" then
+         return obj2
       end
    end
 
    return nil
 end
+
 function MoonshineDistillery.isCompleteParts(obj)
    if not obj then return false end
+   local obj = dbgIso
    local spr = obj:getSprite()
    local sprName = spr and spr:getName() or nil
 
@@ -84,23 +90,47 @@ function MoonshineDistillery.isCompleteParts(obj)
    if not sq then return false end
 
    for i = 1, #parts do
-      local px, py, expectedSpr = unpack(parts[i])
-      local partSquare = getCell():getGridSquare(sq:getX() + px, sq:getY() + py, sq:getZ())
-      if not partSquare then return false end
+      local px, py, targSpr = unpack(parts[i])
+      local sq2 = getCell():getGridSquare(sq:getX() + px, sq:getY() + py, sq:getZ())
+      if not sq2 then return false end
 
-      local found = false
-      for j = 0, partSquare:getObjects():size() - 1 do
-         if partSquare:getObjects():get(j):getSpriteName() == expectedSpr then
-            found = true
+      local check = false
+      for j = 0, sq2:getObjects():size() - 1 do
+         if sq2:getObjects():get(j):getSprite():getName() == targSpr then
+            check = true
             break
          end
       end
 
-      if not found then return false end
+      if not check then return false end
    end
 
    return true
 end
+
+--[[
+
+
+
+local count = 0
+local rad = 4
+local pl = getPlayer()
+local cell = pl:getCell()
+local x, y, z = pl:getX(), pl:getY(), pl:getZ()
+for xDelta = -rad, rad do
+	for yDelta = -rad, rad do
+		local sq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
+		for i=0, sq:getObjects():size()-1 do
+			local obj = sq:getObjects():get(i)
+			local water = obj:getModData()['waterAmount'] or obj:getWaterAmount()
+			local tainted = obj:getModData()['taintedWater']
+			tainted water
+		end
+	end
+end
+ ]]
+--(2 * rad + 1) ^ 2
+
 
 
 --[[
