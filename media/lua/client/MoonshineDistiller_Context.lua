@@ -128,18 +128,21 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
             if MoonshineDistillery.isBoilerTile(sprName) then
                isBoilerTile = true
                boiler = obj
+               break
             end
             --print(MoonshineDistillery.isCampfire(sprName))
             -----------------------    campfire*        ---------------------------
             if MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
                isCampfire = true
                campfire = obj
+               break
             end
             -----------------------   cookingVat*        ---------------------------
 
             if MoonshineDistillery.isCookingVat(sprName) then
                isCookingVat = true
                cookingVat = obj
+               break
             end
             -----------------------            ---------------------------
          end
