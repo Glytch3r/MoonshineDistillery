@@ -261,11 +261,11 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            addClear.notAvailable = true
                            addApple.notAvailable = true
                            addPeach.notAvailable = true
+                        else
+                           if not cont:FindAndReturn("MoonDist.MoonshineMashBaseClear") then addClear.notAvailable = true end
+                           if not cont:FindAndReturn("MoonDist.MoonshineMashBaseApple") then addApple.notAvailable = true end
+                           if not cont:FindAndReturn("MoonDist.MoonshineMashBasePeach") then addPeach.notAvailable = true end
                         end
-
-                        if not cont:FindAndReturn("MoonDist.MoonshineMashBaseClear") then addClear.notAvailable = true end
-                        if not cont:FindAndReturn("MoonDist.MoonshineMashBaseApple") then addApple.notAvailable = true end
-                        if not cont:FindAndReturn("MoonDist.MoonshineMashBasePeach") then addPeach.notAvailable = true end
                      end
 
                     if stage == "mash" then
