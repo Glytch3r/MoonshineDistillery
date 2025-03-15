@@ -120,31 +120,6 @@ module Base
         Sound:MoonshineUnpack,
     }
 
-	/* -----------------------     bucket*    --------------------------- */
-
-	recipe Gather Moonshine Mash into a Bucket
-	{
-		destroy BucketEmpty,
-		MoonDist.MoonshineMash=5,
-
-		Result:MoonDist.BucketMoonshineMash,
-		Time:150.0,
-		Category:Cooking,
-		NeedToBeLearn:true,
-		Sound:MoonshineSlosh,
-	}
-
-	recipe Separate the Mash from Unfermented Moonshine
-	{
-		MoonDist.BucketMoonshineMash,
-
-		Result:MoonDist.BucketMoonshineUnfermented,
-		Time:150.0,
-		Category:Cooking,
-		NeedToBeLearn:true,
-		Sound:MoonshineSlosh,
-	}
-
 
 }
 

@@ -60,7 +60,7 @@ function MoonshineDistillery.delItem(cont, fType, qty)
     --local count = item:getContainer():getNumberOfItem(fType)
     if count >= qty then
         for i=1, qty do
-            local item = contInv:FindAndReturn(fType)
+            local item = cont:FindAndReturn(fType)
             if item then
                 if isClient() then
                     cont:removeItemOnServer(item)
@@ -223,7 +223,7 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                   cookvatmenu.iconTexture = getTexture("media/ui/MoonshineMashBase.png")
                   local opt = ISContextMenu:getNew(context)
                   context:addSubMenu(cookvatmenu, opt)
-
+                  local cont = obj:getContainer()
                   if MoonshineDistillery.checkDist(pl, sq) then
                      local stage = MoonshineDistillery.getStage(sprName)
 
@@ -236,25 +236,30 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                      waterMenu.iconTexture = getTexture("media/ui/MoonshineMashBase.png")
                      local optMash = ISContextMenu:getNew(context)
                      context:addSubMenu(waterMenu, optMash)
-                     local cont = obj:getContainer()
+
 
                      if cont and MoonshineDistillery.hasMashBasePlaced(cont) then
                         local addClear = optMash:addOptionOnTop('Clear Base', worldobjects, function()
                            MoonshineDistillery.delInvItem(clearbase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
+                           obj:getModData()['MashCount'] = 4
+                           obj:getModData()['Flavor'] = "Clear"
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
                         local addApple = optMash:addOptionOnTop('Apple Base', worldobjects, function()
                            MoonshineDistillery.delInvItem(applebase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
+                           obj:getModData()['MashCount'] = 4
+                           obj:getModData()['Flavor'] = "Apple"
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
                         local addPeach = optMash:addOptionOnTop('Peach Base', worldobjects, function()
                            MoonshineDistillery.delInvItem(peachbase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
-                           modData.MashCount
+                           obj:getModData()['MashCount'] = 4
+                           obj:getModData()['Flavor'] = "Peach"
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
@@ -267,32 +272,32 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            if not cont:FindAndReturn("MoonDist.MoonshineMashBaseApple") then addApple.notAvailable = true end
                            if not cont:FindAndReturn("MoonDist.MoonshineMashBasePeach") then addPeach.notAvailable = true end
                         end
+
                      end
                      local emptyBucket = inv:FindAndReturn("Base.BucketEmpty")
                      if stage == "mash" then
                         local optTip = context:addOptionOnTop('Filter using Strainer', worldobjects, function()
-                           if not obj or not obj:getModData() then return end
+                           if obj:getModData() then
+                              local md = obj:getModData()
+                              if md.MashCount and md.MashCount > 0 then
+                                 local cont = obj:getContainer()
 
-                           local modData = obj:getModData()
-                           if modData.MashCount and modData.MashCount > 0 then
-                              local inv = player:getInventory()
-                              local cont = obj:getContainer()
+                                 if not emptyBucket then return end
 
+                                 MoonshineDistillery.delInvItem("emptyBucket", inv)
+                                 local flav = md.Flavor or "Clear"
+                                 local itemType = "BucketMoonshineMash" .. tostring(flav)
 
-                              if not emptyBucket then return end
+                                 if cont and MoonshineDistillery.delContItem("BucketEmpty", cont) then
 
-                              MoonshineDistillery.delInvItem("emptyBucket", inv)
-                              local flav = modData.Flavor or "Clear"
-                              local itemType = "BucketMoonshineMash" .. tostring(flav)
-
-                              if cont and MoonshineDistillery.delContItem("BucketEmpty", cont) then
-                                 cont:AddItem(itemType)
-                                 modData.MashCount = modData.MashCount - 1
-                                 obj:transmitModData()
+                                    md.MashCount = md.MashCount - 1
+                                    obj:transmitModData()
+                                 end
                               end
-                           end
-                           if modData.MashCount <= 0 then
-                              MoonshineDistillery.setStage(obj, "unfermented")
+                              if md.MashCount <= 0 then
+                                 cont:AddItems("MoonDist.BucketMoonshineUnfermented"..tostring(flav), 4)
+                                 MoonshineDistillery.setStage(obj, "unfermented")
+                              end
                            end
                         end)
                         if (not pl:getPrimaryHandItem() or pl:getPrimaryHandItem():getFullType() ~= "MoonDist.Strainer") or not emptyBucket then
@@ -302,20 +307,15 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            optTip.notAvailable = true
                         end
                      end
-                     elseif stage == "cooking" then
+
+                     if stage == "cooking" then
                         local eta = MoonshineDistillery.getRemainingHours(obj)
-                        local cookOpt = context:addOptionOnTop('Process Moonshine', worldobjects, function()
+                        local optTip = context:addOptionOnTop('Process Moonshine', worldobjects, function()
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
-                        cookOpt.toolTip = ISToolTip:new()
-                        cookOpt.toolTip:initialise()
-                        cookOpt.toolTip:setVisible(true)
-                        cookOpt.toolTip.description = "Remaining time: " .. (eta and math.floor(eta) or "Unknown") .. " hours"
-                     elseif stage == "unfermented" then
-                        context:addOptionOnTop('Filter Moonshine Mash', worldobjects, function()
-                           MoonshineDistillery.setStage(obj, "empty")  -- Reset after filtering
-                           getSoundManager():playUISound("UIActivateMainMenuItem")
-                        end)
+                        local tip = ISWorldObjectContextMenu.addToolTip()
+                        tip.description = "Remaining time: " .. (eta and math.floor(eta) or "Unknown") .. " hours"
+                        optTip.toolTip = tip
                      end
                   end
                end
@@ -330,6 +330,9 @@ end
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.context)
 Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.context)
 
+function MoonshineDistillery.hasMashBasePlaced(cont)
+   return cont:FindAndReturn("MoonDist.MoonshineMashBaseClear") or cont:FindAndReturn("MoonDist.MoonshineMashBaseApple") or cont:FindAndReturn("MoonDist.MoonshineMashBasePeach")
+end
 -----------------------            ---------------------------
 --[[
 obj:getModData()[''] =

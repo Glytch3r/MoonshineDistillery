@@ -282,16 +282,16 @@ function MoonshineDistillery.checkDist(pl, sq)
    return math.floor(dist) <= 3
 end
 function MoonshineDistillery.delInvItem(item, inv)
+   local bool = false
+
    if item and inv then
-      if getCore():getDebug() then
-         print("Debug mode bypassed Item Removal")
-      else
-         inv:Remove(item)
-      end
+      inv:Remove(item)
+      bool = true
    end
    getPlayerInventory(0):refreshBackpacks()
    getPlayerLoot(0):refreshBackpacks()
    ISInventoryPage.renderDirty = true
+   return bool
 end
 function MoonshineDistillery.spawnPart(sprToSpawn, sq, item, inv)
    local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())

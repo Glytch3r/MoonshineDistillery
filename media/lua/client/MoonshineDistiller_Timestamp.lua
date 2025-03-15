@@ -180,10 +180,6 @@ function MoonshineDistillery.setTimeStamp(obj)
    obj:getModData()['MoonshineCookTimeStamp'] = getGameTime():getWorldAgeHours() +  tonumber(MoonshineDistillery.getCookingVatTimer())
 end
 
-function MoonshineDistillery.hasMashBasePlaced(cont)
-
-   return cont:getItems():contains("MoonDist.MoonshineMashBaseClear") or cont:getItems():contains("MoonDist.MoonshineMashBaseApple") or cont:getItems():contains("MoonDist.MoonshineMashBasePeach")
-end
 function MoonshineDistillery.getMashBase(inv)
    local tab = {
       ["Clear"] = inv:FindAndReturn("MoonDist.MoonshineMashBaseClear") or nil,
@@ -212,11 +208,22 @@ function MoonshineDistillery.timetester(pl)
       if cont and MoonshineDistillery.hasMashBasePlaced(cont) then
          MoonshineDistillery.setStage(cookingVat, "water")
       end
-   elseif stage == "water" and isLit then
+   elseif stage == "water"  then
       MoonshineDistillery.setStage(cookingVat, "cooking")
-      cookData['flavor'] =
+      cookData["Flavor"] = nil
+      if  cont:FindAndReturn("MoonDist.MoonshineMashBaseClear") then
+         cookData["Flavor"] = "Clear"
+      elseif cont:FindAndReturn("MoonDist.MoonshineMashBaseApple")  then
+         cookData["Flavor"] = "Clear"
+      elseif cont:FindAndReturn("MoonDist.MoonshineMashBasePeach")  then
+         cookData["Flavor"] = "Clear"
+      end
+
       if not cookData['timestamp'] then
          cookData['timestamp'] = getGameTime():getWorldAgeHours()
+      end
+      if isLit then
+         MoonshineDistillery.setStage(cookingVat, "cooking")
       end
       cookingVat:transmitModData()
    elseif stage == "cooking" then
@@ -225,12 +232,20 @@ function MoonshineDistillery.timetester(pl)
 
          cookData['timestamp'] = nil
 
-         --cookData['flavor'] = nil
          cookingVat:transmitModData()
       elseif not isLit then
          MoonshineDistillery.setStage(cookingVat, "water")
          cookData['timestamp'] = nil
          cookingVat:transmitModData()
+      end
+   elseif stage == "unfermented" then
+      if not (cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedClear") and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple")
+      and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedPeach")) then
+         MoonshineDistillery.setStage(cookingVat, "empty")
+         cookData['timestamp'] = nil
+         cookData['Flavor'] = nil
+         cookData['MashCount'] = nil
+
       end
    end
 end
