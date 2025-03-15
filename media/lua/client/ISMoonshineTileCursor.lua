@@ -43,8 +43,9 @@ function MoonshineDistillery.loadCursor()
                 {x + 1, y, z, "MoonshineDistillery_17"}, -- thumper tall
                 {x + 1, y - 1, z, "MoonshineDistillery_18"}, -- thumper short
                 {x + 1, y - 1, z, "MoonshineDistillery_19"}, -- can
-                --{x + 1, y - 1, z, "MoonshineDistillery_19"}, -- DrainPort
-
+                --{x + 1, y - 1, z, "MoonshineDistillery_22"}, -- DrainPort
+                --{x, y, z, "MoonshineDistillery_21"}, --Thermometer
+                --{x, y, z, "MoonshineDistillery_20"}, --StillCap
             }
         elseif spr == "MoonshineDistillery_27" then
             positions = {
@@ -53,6 +54,8 @@ function MoonshineDistillery.loadCursor()
                 {x - 1, y + 1, z, "MoonshineDistillery_25"}, -- thumper short
                 {x - 1, y + 1, z, "MoonshineDistillery_24"}, -- can
                 --{x - 1, y + 1, z, "MoonshineDistillery_30"} -- DrainPort
+                --{x, y, z, "MoonshineDistillery_29"}, --Thermometer
+                --{x, y, z, "MoonshineDistillery_28"}, --StillCap
             }
         end
         self.positions = positions
