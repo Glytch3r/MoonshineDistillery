@@ -53,7 +53,13 @@ end
 function MoonshineDistillery.hasCampfire(sq)
    return MoonshineDistillery.getCampfire(sq) ~= nil
 end
+function MoonshineDistillery.hasLitCampfire(sq)
+   local campfire = MoonshineDistillery.getCampfire(sq)
+   if campfire then
 
+   end
+   return false
+end
 -----------------------
 
 function MoonshineDistillery.isCookingVat(sprName)
@@ -208,14 +214,18 @@ function MoonshineDistillery.timetester(pl)
       end
    elseif stage == "water" and isLit then
       MoonshineDistillery.setStage(cookingVat, "cooking")
+      cookData['flavor'] =
       if not cookData['timestamp'] then
          cookData['timestamp'] = getGameTime():getWorldAgeHours()
-         cookingVat:transmitModData()
       end
+      cookingVat:transmitModData()
    elseif stage == "cooking" then
       if timecheck >= targtime and isLit then
          MoonshineDistillery.setStage(cookingVat, "mash")
+
          cookData['timestamp'] = nil
+
+         --cookData['flavor'] = nil
          cookingVat:transmitModData()
       elseif not isLit then
          MoonshineDistillery.setStage(cookingVat, "water")

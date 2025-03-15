@@ -257,9 +257,9 @@ module MoonDist {
 
 	/* -----------------------    bucket*        --------------------------- */
 
-	item BucketMoonshineMash
+	item BucketMoonshineMashClear
 	{
-		DisplayName	=	Bucket of Moonshine Mash,
+		DisplayName	=	Bucket of Clear Moonshine Mash,
 	    DisplayCategory = Water,
 		IsWaterSource	=	TRUE,
 		Weight	=	4,
@@ -280,7 +280,52 @@ module MoonDist {
 		IsCookable = TRUE,
 		Tags = HasMetal,
 	}
-
+	item BucketMoonshineMashApple
+	{
+		DisplayName	=	Bucket of Apple Moonshine Mash,
+	    DisplayCategory = Water,
+		IsWaterSource	=	TRUE,
+		Weight	=	4,
+		CanStoreWater	=	TRUE,
+		FillFromDispenserSound = GetWaterFromDispenserMetalBig,
+		FillFromTapSound = GetWaterFromTapMetalBig,
+		Type	=	Drainable,
+		UseWhileEquipped	=	FALSE,
+		UseDelta	=	0.04,
+		ReplaceOnDeplete	=	BucketEmpty,
+		ReplaceOnUseOn	=	WaterSource-BucketWaterFull,
+		Icon	=	BucketMoonshineMash,
+		RainFactor = 1,
+		Tooltip = Tooltip_item_RainFromGround,
+		StaticModel = Bucket,
+		EatType = Bucket,
+		WorldStaticModel = BucketMoonshineMash,
+		IsCookable = TRUE,
+		Tags = HasMetal,
+	}
+	item BucketMoonshineMashPeach
+	{
+		DisplayName	=	Bucket of Peach Moonshine Mash,
+	    DisplayCategory = Water,
+		IsWaterSource	=	TRUE,
+		Weight	=	4,
+		CanStoreWater	=	TRUE,
+		FillFromDispenserSound = GetWaterFromDispenserMetalBig,
+		FillFromTapSound = GetWaterFromTapMetalBig,
+		Type	=	Drainable,
+		UseWhileEquipped	=	FALSE,
+		UseDelta	=	0.04,
+		ReplaceOnDeplete	=	BucketEmpty,
+		ReplaceOnUseOn	=	WaterSource-BucketWaterFull,
+		Icon	=	BucketMoonshineMash,
+		RainFactor = 1,
+		Tooltip = Tooltip_item_RainFromGround,
+		StaticModel = Bucket,
+		EatType = Bucket,
+		WorldStaticModel = BucketMoonshineMash,
+		IsCookable = TRUE,
+		Tags = HasMetal,
+	}
 	item BucketMoonshineUnfermented
 	{
 		DisplayName	=	Bucket of Unfermented Moonshine,

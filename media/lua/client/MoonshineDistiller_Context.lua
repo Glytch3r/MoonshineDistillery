@@ -181,7 +181,7 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            local item = MoonshineDistillery.getDrainPort(pl)
                            if item then
                               MoonshineDistillery.setDrainPort(sq2, sprName)
-                              MoonshineDistillery.delPart(item, inv)
+                              MoonshineDistillery.delInvItem(item, inv)
                            end
                         end)
                         if not MoonshineDistillery.hasDrainPortItem(pl) then
@@ -240,20 +240,21 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
 
                      if cont and MoonshineDistillery.hasMashBasePlaced(cont) then
                         local addClear = optMash:addOptionOnTop('Clear Base', worldobjects, function()
-                           MoonshineDistillery.delPart(clearbase, inv)
+                           MoonshineDistillery.delInvItem(clearbase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
                         local addApple = optMash:addOptionOnTop('Apple Base', worldobjects, function()
-                           MoonshineDistillery.delPart(applebase, inv)
+                           MoonshineDistillery.delInvItem(applebase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
                         local addPeach = optMash:addOptionOnTop('Peach Base', worldobjects, function()
-                           MoonshineDistillery.delPart(peachbase, inv)
+                           MoonshineDistillery.delInvItem(peachbase, inv)
                            MoonshineDistillery.setStage(obj, "mash")
+                           modData.MashCount
                            getSoundManager():playUISound("UIActivateMainMenuItem")
                         end)
 
@@ -267,13 +268,40 @@ function MoonshineDistillery.context(player, context, worldobjects, test)
                            if not cont:FindAndReturn("MoonDist.MoonshineMashBasePeach") then addPeach.notAvailable = true end
                         end
                      end
+                     local emptyBucket = inv:FindAndReturn("Base.BucketEmpty")
+                     if stage == "mash" then
+                        local optTip = context:addOptionOnTop('Filter using Strainer', worldobjects, function()
+                           if not obj or not obj:getModData() then return end
 
-                    if stage == "mash" then
-                        context:addOptionOnTop('Prepare Moonshine Process', worldobjects, function()
-                           MoonshineDistillery.setStage(obj, "cooking")
-                           MoonshineDistillery.setTimeStamp(obj)
-                           getSoundManager():playUISound("UIActivateMainMenuItem")
+                           local modData = obj:getModData()
+                           if modData.MashCount and modData.MashCount > 0 then
+                              local inv = player:getInventory()
+                              local cont = obj:getContainer()
+
+
+                              if not emptyBucket then return end
+
+                              MoonshineDistillery.delInvItem("emptyBucket", inv)
+                              local flav = modData.Flavor or "Clear"
+                              local itemType = "BucketMoonshineMash" .. tostring(flav)
+
+                              if cont and MoonshineDistillery.delContItem("BucketEmpty", cont) then
+                                 cont:AddItem(itemType)
+                                 modData.MashCount = modData.MashCount - 1
+                                 obj:transmitModData()
+                              end
+                           end
+                           if modData.MashCount <= 0 then
+                              MoonshineDistillery.setStage(obj, "unfermented")
+                           end
                         end)
+                        if (not pl:getPrimaryHandItem() or pl:getPrimaryHandItem():getFullType() ~= "MoonDist.Strainer") or not emptyBucket then
+                           local tip = ISWorldObjectContextMenu.addToolTip()
+                           tip.description = "Required Strainer and Empty Buckets"
+                           optTip.toolTip = tip
+                           optTip.notAvailable = true
+                        end
+                     end
                      elseif stage == "cooking" then
                         local eta = MoonshineDistillery.getRemainingHours(obj)
                         local cookOpt = context:addOptionOnTop('Process Moonshine', worldobjects, function()
@@ -303,6 +331,12 @@ Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.context)
 Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.context)
 
 -----------------------            ---------------------------
-
-
+--[[
+obj:getModData()[''] =
+if isClient() then
+   obj:transmitCompleteItemToServer()
+   obj:transmitUpdatedSpriteToClients()
+end
+obj:transmitModData()
+]]
 -----------------------            ---------------------------

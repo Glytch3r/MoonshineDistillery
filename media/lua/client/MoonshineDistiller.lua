@@ -281,7 +281,7 @@ function MoonshineDistillery.checkDist(pl, sq)
 	local dist = pl:DistTo(x, y)
    return math.floor(dist) <= 3
 end
-function MoonshineDistillery.delPart(item, inv)
+function MoonshineDistillery.delInvItem(item, inv)
    if item and inv then
       if getCore():getDebug() then
          print("Debug mode bypassed Item Removal")
@@ -297,11 +297,30 @@ function MoonshineDistillery.spawnPart(sprToSpawn, sq, item, inv)
    local props = ISMoveableSpriteProps.new(IsoObject.new(sq, sprToSpawn):getSprite())
    props.rawWeight = 10
    local obj = props:placeMoveableInternal(sq, InventoryItemFactory.CreateItem("Base.Plank"), sprToSpawn)
-   MoonshineDistillery.delPart(item, inv)
+   MoonshineDistillery.delInvItem(item, inv)
    return obj
 end
 function MoonshineDistillery.isLearned(pl)
     local recipe = "Build Moonshine Distiller"
     pl = pl or getPlayer()
     return pl:getKnownRecipes():contains(recipe) or pl:isRecipeKnown(recipe)
+end
+function MoonshineDistillery.delContItem(itemType, cont)
+   local bool = false
+   if cont then
+      for i=1, cont:getItems():size() do
+         local item = cont:getItems():get(i-1)
+         local type = item:getType()
+         if type == itemType then
+            if isClient() then cont:removeItemOnServer(item) end
+            cont:DoRemoveItem(item)
+            bool = true
+            break
+         end
+      end
+   end
+   getPlayerInventory(0):refreshBackpacks()
+   getPlayerLoot(0):refreshBackpacks()
+   ISInventoryPage.renderDirty = true
+   return bool
 end
