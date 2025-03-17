@@ -125,31 +125,35 @@ end
 Events.EveryOneMinute.Remove(MoonshineDistillery.FermentationTimer)
 Events.EveryOneMinute.Add(MoonshineDistillery.FermentationTimer)
 
-
-
-
 function MoonshineDistillery.findBoiler()
-   local rad = 8
-   local pl = getPlayer()
-   local sq = pl:getCurrentSquare()
-   local cell = getCell()
-   local x, y, z = sq:getX(), sq:getY(), sq:getZ()
-   for xDelta = -rad, rad do
-      for yDelta = -rad, rad do
-         local sq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
-         for i = 0, sq:getObjects():size() - 1 do
-            local obj = sq:getObjects():get(i)
-            if obj and obj:getSprite() then
-               local sprName = obj:getSprite():getName()
-               if sprName and MoonshineDistillery.isBoilerTile(sprName) then
-                  return obj
-               end
+    local rad = 8
+    local pl = getPlayer()
+    local csq = pl:getCurrentSquare()
+    if not csq then return nil end
+
+    local cell = getCell()
+    local x, y, z = csq:getX(), csq:getY(), csq:getZ()
+
+    for xDelta = -rad, rad do
+        for yDelta = -rad, rad do
+            local sq = cell:getGridSquare(x + xDelta, y + yDelta, z)
+            if sq then
+                for i = 0, sq:getObjects():size() - 1 do
+                    local obj = sq:getObjects():get(i)
+                    local spr = obj:getSprite()
+                    if spr then
+                        local sprName = spr:getName()
+                        if sprName and MoonshineDistillery.isBoilerTile(sprName) then
+                            return obj
+                        end
+                    end
+                end
             end
-         end
-      end
-   end
-   return nil
+        end
+    end
+    return nil
 end
+
 
 
 function MoonshineDistillery.FermentationContext(player, context, worldobjects, test)

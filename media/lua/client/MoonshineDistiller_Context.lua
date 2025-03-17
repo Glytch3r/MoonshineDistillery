@@ -77,38 +77,39 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
    local pl = getSpecificPlayer(player)
    local inv = pl:getInventory()
    local sq = clickedSquare
-   if not MoonshineDistillery.isLearned(pl) then return end
-   if not sq then return end
-   -----------------------            ---------------------------
-   if MoonshineDistillery.CanPlace(pl) then
+   if MoonshineDistillery.isLearned(pl) then
+      if not sq then return end
+      -----------------------            ---------------------------
+      if MoonshineDistillery.CanPlace(pl) then
 
-      local buildm = context:addOptionOnTop("Build Distiller: ")
-      buildm.iconTexture = getTexture("media/ui/Moonshine.png")
-      local bopt = ISContextMenu:getNew(context)
-      context:addSubMenu(buildm, bopt)
+         local buildm = context:addOptionOnTop("Build Distiller: ")
+         buildm.iconTexture = getTexture("media/ui/Moonshine.png")
+         local bopt = ISContextMenu:getNew(context)
+         context:addSubMenu(buildm, bopt)
 
-      local sOpt = bopt:addOption('South', worldobjects, function()
-         local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_16",  pl, sq)
-         getCell():setDrag(cursor, 0)
-         ISMoveableCursor.clearCacheForAllPlayers();
-      end)
+         local sOpt = bopt:addOption('South', worldobjects, function()
+            local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_16",  pl, sq)
+            getCell():setDrag(cursor, 0)
+            ISMoveableCursor.clearCacheForAllPlayers();
+         end)
 
-      local stip = ISWorldObjectContextMenu.addToolTip()
-      stip.description = "South"
-      sOpt.iconTexture = getTexture("media/ui/MoonshineDistillerSouth.png")
-      --tip:setTexture(iconPath)
-      sOpt.toolTip = stip
-      local eOpt = bopt:addOption('East', worldobjects, function()
-         local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_27",  pl, sq)
-         getCell():setDrag(cursor, 0)
-         ISMoveableCursor.clearCacheForAllPlayers();
-      end)
+         local stip = ISWorldObjectContextMenu.addToolTip()
+         stip.description = "South"
+         sOpt.iconTexture = getTexture("media/ui/MoonshineDistillerSouth.png")
+         --tip:setTexture(iconPath)
+         sOpt.toolTip = stip
+         local eOpt = bopt:addOption('East', worldobjects, function()
+            local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_27",  pl, sq)
+            getCell():setDrag(cursor, 0)
+            ISMoveableCursor.clearCacheForAllPlayers();
+         end)
 
-      local etip = ISWorldObjectContextMenu.addToolTip()
-      etip.description = "East"
-      eOpt.iconTexture = getTexture("media/ui/MoonshineDistillerEast.png")
-      --tip:setTexture(iconPath)
-      eOpt.toolTip = etip
+         local etip = ISWorldObjectContextMenu.addToolTip()
+         etip.description = "East"
+         eOpt.iconTexture = getTexture("media/ui/MoonshineDistillerEast.png")
+         --tip:setTexture(iconPath)
+         eOpt.toolTip = etip
+      end
    end
 end
 
