@@ -36,7 +36,8 @@ end
 
 
 function MoonshineDistillery.setSprite(obj, sprName)
-   obj:setSprite(sprName)
+   --obj:setSprite(sprName)
+   obj:setSpriteFromName(sprName)
    obj:getSprite():setName(sprName)
    local cont = obj:getContainer()
    if cont then
@@ -46,6 +47,7 @@ function MoonshineDistillery.setSprite(obj, sprName)
    if isClient() then
       obj:transmitCompleteItemToServer()
       obj:transmitUpdatedSpriteToClients()
+      obj:transmitUpdatedSpriteToServer()
    end
    getPlayerInventory(0):refreshBackpacks()
    getPlayerLoot(0):refreshBackpacks()
@@ -96,7 +98,6 @@ function MoonshineDistillery.DistillerContext(player, context, worldobjects, tes
       sOpt.iconTexture = getTexture("media/ui/MoonshineDistillerSouth.png")
       --tip:setTexture(iconPath)
       sOpt.toolTip = stip
-
       local eOpt = bopt:addOption('East', worldobjects, function()
          local cursor = ISMoonshineTileCursor:new("MoonshineDistillery_27",  pl, sq)
          getCell():setDrag(cursor, 0)

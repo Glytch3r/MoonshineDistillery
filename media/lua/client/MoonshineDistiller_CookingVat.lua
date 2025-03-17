@@ -75,30 +75,32 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
          if MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
             isCampfire = true
             campfire = obj
+            if not MoonshineDistillery.hasCookingVat(sq)  then
+               local fireopt = context:addOptionOnTop("Build Cooking Vat", worldobjects, function()
+                  local item = MoonshineDistillery.getMetalDrumItem(pl)
+                  if item then
+                     if not getCore():getDebug() then inv:Remove(item) end
 
-            local fireopt = context:addOptionOnTop("Build Cooking Vat", worldobjects, function()
-               local item = MoonshineDistillery.getMetalDrumItem(pl)
-               if item then
-                  if not getCore():getDebug() then inv:Remove(item) end
+                     local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
+                     sq:AddTileObject(toSpawn)
+                     toSpawn:setName("Cooking Vat")
+                     toSpawn:setIsDismantable(false)
+                     toSpawn:setIsThumpable(true)
+                     toSpawn:setWaterAmount(0)
+                     toSpawn:setIsContainer(true)
+                     toSpawn:getContainer():setType("CookingVat")
+                     getPlayerInventory(0):refreshBackpacks()
+                     getPlayerLoot(0):refreshBackpacks()
+                     toSpawn:getContainer():setDrawDirty(true)
+                     toSpawfffn:transmitModData()
+                     getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
+                  end
+               end)
+               fireopt.iconTexture = getTexture("media/ui/CookingVat.png")
 
-                  local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
-                  sq:AddTileObject(toSpawn)
-                  toSpawn:setName("Cooking Vat")
-                  toSpawn:setIsDismantable(false)
-                  toSpawn:setIsThumpable(true)
-                  toSpawn:setWaterAmount(0)
-                  toSpawn:setIsContainer(true)
-                  toSpawn:getContainer():setType("CookingVat")
-                  getPlayerInventory(0):refreshBackpacks()
-                  getPlayerLoot(0):refreshBackpacks()
-                  toSpawn:getContainer():setDrawDirty(true)
-                  toSpawn:transmitModData()
-                  getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
+               if not MoonshineDistillery.getMetalDrumItem(pl) then
+                  fireopt.notAvailable = true
                end
-            end)
-
-            if MoonshineDistillery.hasCookingVat(sq) or not MoonshineDistillery.getMetalDrumItem(pl) then
-               fireopt.notAvailable = true
             end
          end
 
@@ -107,11 +109,22 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
             local cookingvatCont = cookingVat:getContainer()
             local stage = MoonshineDistillery.getStage(sprName)
             if cookingvatCont and stage then
+               local cookM = context:addOptionOnTop("Cooking Vat: ")
+               cookM.iconTexture = getTexture("media/ui/CookingVat.png")
+               local cookopt = ISContextMenu:getNew(context)
+               context:addSubMenu(cookM, cookopt)
+
+               if  stage == "empty" then
+                  cookopt:addOptionOnTop("Place Bucket of Water Inside Cooking Vat")
+               end
+               if  stage == "water" then
+                  cookopt:addOptionOnTop("Place Moonshine Mash Base Inside Cooking Vat")
+               end
+               if  stage == "mash" then
+                  cookopt:addOptionOnTop("Light The Campfire")
+               end
                if  stage == "cooking" then
-                  local cookM = context:addOptionOnTop("Cooking Vat: ")
-                  cookM.iconTexture = getTexture("media/ui/Moonshine.png")
-                  local cookopt = ISContextMenu:getNew(context)
-                  context:addSubMenu(cookM, cookopt)
+
 
                   local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
                   cookopt:addOptionOnTop("Flavor: "..tostring(cookingVat:getModData()['Flavor']))
@@ -125,45 +138,44 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                   end)
                end
                if  stage == "mash" then
-                  if  MoonshineDistillery.getStage(sprName) == "mash" then
-                     local vatopt = context:addOptionOnTop("Filter Moonshine", worldobjects, function()
-                        local flavorMap = {
-                           ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
-                           ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
-                           ["MoonDist.BucketMoonshineMashPeach"] = "MoonDist.BucketMoonshineUnfermentedPeach"
-                        }
-                        for itemType, newType in pairs(flavorMap) do
-                           local item = cookingvatCont:FindAndReturn(itemType)
-                           if item then
-                              if isClient() then cookingvatCont:removeItemOnServer(item) end
-                              cookingvatCont:DoRemoveItem(item)
-                              cookingvatCont:AddItem(newType)
-                              ISInventoryPage.dirtyUI()
-                              break
-                           end
+                  cookopt:addOptionOnTop("Leave the mash inside\nUse Strainer to filter")
+                  local vatopt = cookopt:addOption("Filter Moonshine", worldobjects, function()
+                     local flavorMap = {
+                        ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
+                        ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
+                        ["MoonDist.BucketMoonshineMashPeach"] = "MoonDist.BucketMoonshineUnfermentedPeach"
+                     }
+                     for itemType, newType in pairs(flavorMap) do
+                        local item = cookingvatCont:FindAndReturn(itemType)
+                        if item then
+                           if isClient() then cookingvatCont:removeItemOnServer(item) end
+                           cookingvatCont:DoRemoveItem(item)
+                           cookingvatCont:AddItem(newType)
+                           ISInventoryPage.dirtyUI()
+                           break
                         end
-                        MoonshineDistillery.setStage(obj, "empty")
-                     end)
-                     local ftip = ISWorldObjectContextMenu.addToolTip()
-                     if not (pr and pr:getFullType() == "MoonDist.Strainer") then
-                        ftip.description = "Need to use Strainer"
-                        vatopt.notAvailable = true
                      end
-                     if not checkDist then
-                        ftip.description = "Need to use Strainer\n"..ftip.description
-                        vatopt.notAvailable = true
-                     end
-                     vatopt.toolTip = ftip
+                     MoonshineDistillery.setStage(obj, "unfermented")
+                  end)
+                  local ftip = ISWorldObjectContextMenu.addToolTip()
+                  if not (pr and pr:getFullType() == "MoonDist.Strainer") then
+                     ftip.description = "Need to use Strainer"
+                     vatopt.notAvailable = true
                   end
+                  if not checkDist then
+                     ftip.description = "Too Far Away"
+                     vatopt.notAvailable = true
+                  end
+                  vatopt.toolTip = ftip
+               end
+               if  stage == "unfermented" then
+                  cookopt:addOptionOnTop("Take the Unfermented Moonshine to the distiller")
                end
             end
          end
       end
    end
 
-   if getCore():getDebug() and isAdmin() then
-      if isCampfire then print("isCampfire") end
-   end
 end
 
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.contextCV)

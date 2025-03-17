@@ -109,11 +109,12 @@ function MoonshineDistillery.addOverlay(obj, sprName, part, item)
    if not (obj or sprName) then return end
    local overlay = MoonshineDistillery.getOverlayToAdd(sprName, part)
    if overlay then
-   if getCore():getDebug() then
-      print(tostring(overlay))
-   end
-      getPlayer():getInventory():Remove(item)
-      obj:setOverlaySprite(tostring(overlay), 1,1,1,1)
+      if getCore():getDebug() then
+         print(tostring(overlay))
+      end
+         getPlayer():getInventory():Remove(item)
+         obj:setOverlaySprite(tostring(overlay), 1,1,1,1)
+      end
    end
 end
 ---------------------------

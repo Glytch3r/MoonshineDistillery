@@ -223,7 +223,7 @@ function MoonshineDistillery.CookTimer()
          end
       end
    end
-   if stage == "cooking" and isLit then
+   if stage == "cooking" then
       cookingVat:setHighlighted(isLit, false)
       cookingVat:setHighlightColor(1, 0, 0, 0.8)
       local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
@@ -241,9 +241,17 @@ function MoonshineDistillery.CookTimer()
          end
       end
    end
-   if FireFighting.isSquareToExtinguish(sq) then
-      FireFighting.isSquareToExtinguish(sq)
+   if stage == "unfermented" then
+      if not (cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedClear")
+      and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple")
+      and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedPeach")) then
+         MoonshineDistillery.setStage(cookingVat, "empty")
+      end
    end
+--[[    if FireFighting.isSquareToExtinguish(sq) then
+      sq:stopFire()
+      if isClient() then sq:transmitStopFire() end
+   end ]]
 end
 Events.EveryOneMinute.Remove(MoonshineDistillery.CookTimer)
 Events.EveryOneMinute.Add(MoonshineDistillery.CookTimer)
