@@ -60,10 +60,6 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     local isntopt = ISContextMenu:getNew(context)
     context:addSubMenu(instMenu, isntopt)
 
-    if MoonshineDistillery.isCompleteParts(boiler) then
-        context:setOptionChecked(instMenu, true)
-    end
-
     local fake = isntopt:addOptionOnTop('Boiler', worldobjects, nil)
     fake.notAvailable = true
     local tip01 = ISWorldObjectContextMenu.addToolTip()
@@ -90,7 +86,10 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     end)
     local done1 = MoonshineDistillery.hasThermometerOverlay(boiler)
     local hasPart1 = MoonshineDistillery.hasThermometerItem(pl)
-    if not hasPart1 or done1 then optTipThermo.notAvailable = true end
+    if not hasPart1 or done1 then
+        optTipThermo.notAvailable = true
+        context:setOptionChecked(optTipThermo, true)
+    end
     local tip1 = ISWorldObjectContextMenu.addToolTip()
     optTipThermo.iconTexture = getTexture("media/textures/Item_MoonshineThermometer.png")
     tip1.description = done1 and "Already Installed" or "Install Thermometer"
@@ -117,14 +116,19 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     end)
     local done2 = MoonshineDistillery.hasStillCapOverlay(boiler)
     local hasPart2 = MoonshineDistillery.hasStillCapItem(pl)
-    if not hasPart2 or done2 then optTipSCap.notAvailable = true end
+    if not hasPart2 or done2 then
+        optTipSCap.notAvailable = true
+        context:setOptionChecked(optTipSCap, true)
+    end
     local tip2 = ISWorldObjectContextMenu.addToolTip()
     optTipSCap.iconTexture = getTexture("media/textures/Item_MoonshineStillCap.png")
     tip2.description = done2 and "Already Installed" or "Install Still Cap"
     optTipSCap.toolTip = tip2
-
+    -----------------------            ---------------------------
     local x, y, z = boiler:getX(), boiler:getY(), boiler:getZ()
     local sq2 = MoonshineDistillery.getDrainPortSquare(x, y, z, boiler:getSprite():getName())
+
+    local drainPort = MoonshineDistillery.getDrainPortObj(boiler)
 
     local optTipDrain = isntopt:addOptionOnTop('Drain Port', worldobjects, function()
         local item = MoonshineDistillery.getDrainPort(pl)
@@ -133,10 +137,14 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
             MoonshineDistillery.delInvItem(item, inv)
         end
     end)
-    local done3 = sq2 and MoonshineDistillery.hasDrainPortOverlay(sq2) or false
+    local done3 = ( sq2 and MoonshineDistillery.hasDrainPortOverlay(sq2) ) or drainPort
     local hasPart3 = MoonshineDistillery.hasDrainPortItem(pl)
-    if hasPart3 or done3 then optTipDrain.notAvailable = true end
+
+    if not hasPart3 or done3 then optTipDrain.notAvailable = true end
     local tip3 = ISWorldObjectContextMenu.addToolTip()
+
+
+
     optTipDrain.iconTexture = getTexture("media/textures/Item_MoonshineDrainPort.png")
     tip3.description = done3 and "Already Installed" or "Install Drain Port"
     if done3 then context:setOptionChecked(optTipDrain, true) end

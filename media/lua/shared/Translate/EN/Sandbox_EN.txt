@@ -7,5 +7,6 @@ Sandbox_EN = {
     Sandbox_MoonshineDistillery_FermentationMinutes = "Fermentation Minutes",
     Sandbox_MoonshineDistillery_FermentationMinutes_tooltip = "Number of Minutes ingame it takes for Moonshine Distillation. When set to 0 Fermentation becomes instant",
 
-
+    Sandbox_MoonshineDistillery_RequirePower = "Require Power",
+    Sandbox_MoonshineDistillery_RequirePower_tooltip = "Distiller Requires Power to Operate",
 }

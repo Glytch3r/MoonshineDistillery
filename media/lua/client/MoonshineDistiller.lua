@@ -200,26 +200,13 @@ function MoonshineDistillery.hasStillCapOverlay(obj)
    return false
 end
 
-function MoonshineDistillery.getStillCapContainer(obj)
-   if obj:getOverlaySprite() ~= nil then
-      local sprName = obj:getOverlaySprite():getName()
-      if sprName then
-         local tab = {
-            ["MoonshineDistillery_20"] = true,
-            ["MoonshineDistillery_28"] = true
-         }
-         return tab[sprName]
-      end
-   else
-      local sq = obj:getSquare()
-      for i = 0, sq:getObjects():size() - 1 do
-         local obj2 = sq:getObjects():get(i)
-         if obj2:getSprite() and  MoonshineDistillery.isStillCap(obj2:getSprite():getName()) then
-            local cont = obj2:getContainer()
-            if cont then
-               return cont
-            end
-         end
+function MoonshineDistillery.getStillCapObj(obj)
+   local sq = obj:getSquare()
+   if not obj or not sq then return nil end
+   for i = 0, sq:getObjects():size() - 1 do
+      local obj2 = sq:getObjects():get(i)
+      if obj2:getSprite() and  MoonshineDistillery.isStillCap(obj2:getSprite():getName()) then
+         return obj2
       end
    end
    return nil

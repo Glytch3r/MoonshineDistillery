@@ -49,10 +49,8 @@ function MoonshineDistillery.getDrainPortObj(obj)
         ["MoonshineDistillery_16"] = {1, -1},
         ["MoonshineDistillery_27"] = {-1, 1}
     }
-
-    local dx, dy = offset[sprName] and unpack(offset[sprName]) or nil, nil
+    local dx, dy = unpack(offset[sprName] or {})
     if not dx or not dy then return nil end
-
     local sq2 = getCell():getGridSquare(sq:getX() + dx, sq:getY() + dy, sq:getZ())
     if not sq2 then return nil end
 
