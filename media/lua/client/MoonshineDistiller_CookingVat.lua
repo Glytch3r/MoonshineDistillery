@@ -105,7 +105,7 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
          if MoonshineDistillery.isCookingVat(sprName) then
             local cookingvatCont = obj:getContainer()
             if cookingvatCont and MoonshineDistillery.getStage(sprName) == "mash" then
-               local fireopt = context:addOptionOnTop("Filter Moonshine", worldobjects, function()
+               local vatopt = context:addOptionOnTop("Filter Moonshine", worldobjects, function()
                   local flavorMap = {
                      ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
                      ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
@@ -123,13 +123,16 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                   end
                   MoonshineDistillery.setStage(obj, "empty")
                end)
-
+               local ftip = ISWorldObjectContextMenu.addToolTip()
                if not (pr and pr:getFullType() == "MoonDist.Strainer") then
-                  local ftip = ISWorldObjectContextMenu.addToolTip()
                   ftip.description = "Need to use Strainer"
-                  fireopt.toolTip = ftip
-                  fireopt.notAvailable = true
+                  vatopt.notAvailable = true
                end
+               if not checkDist then
+                  ftip.description = "Need to use Strainer\n"..ftip.description
+                  vatopt.notAvailable = true
+               end
+               vatopt.toolTip = ftip
             end
          end
       end

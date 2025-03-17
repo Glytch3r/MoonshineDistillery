@@ -39,7 +39,7 @@ function MoonshineDistillery.loadCursor()
         local positions = {}
         if spr == "MoonshineDistillery_16" then
             positions = {
-                --{x, y, z, "MoonshineDistillery_16"}, --boiler
+                {x, y, z, "MoonshineDistillery_16"}, --boiler
                 {x + 1, y, z, "MoonshineDistillery_17"}, -- thumper tall
                 {x + 1, y - 1, z, "MoonshineDistillery_18"}, -- thumper short
                 {x + 1, y - 1, z, "MoonshineDistillery_19"}, -- can
@@ -49,7 +49,7 @@ function MoonshineDistillery.loadCursor()
             }
         elseif spr == "MoonshineDistillery_27" then
             positions = {
-                --{x, y, z, "MoonshineDistillery_27"}, --boiler
+                {x, y, z, "MoonshineDistillery_27"}, --boiler
                 {x, y + 1, z, "MoonshineDistillery_26"}, -- thumper tall
                 {x - 1, y + 1, z, "MoonshineDistillery_25"}, -- thumper short
                 {x - 1, y + 1, z, "MoonshineDistillery_24"}, -- can
