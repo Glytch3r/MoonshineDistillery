@@ -92,7 +92,7 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                      getPlayerInventory(0):refreshBackpacks()
                      getPlayerLoot(0):refreshBackpacks()
                      toSpawn:getContainer():setDrawDirty(true)
-                     toSpawfffn:transmitModData()
+                     toSpawn:transmitModData()
                      getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
                   end
                end)
