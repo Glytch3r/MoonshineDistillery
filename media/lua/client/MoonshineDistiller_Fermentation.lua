@@ -30,9 +30,10 @@ function MoonshineDistillery.getRemainingFermentationMins(boiler)
     if not fermentData or not fermentData['timestamp'] then return nil end
     local targTime = MoonshineDistillery.getFermentationTarget()
     local timecheck = getGameTime():getWorldAgeHours() - fermentData['timestamp']
-    local remaining = targTime - timecheck
-    return math.floor(remaining * 60)
+    local remaining = math.max(0, (targTime - timecheck) * 60)
+    return math.floor(remaining)
 end
+
 
 function MoonshineDistillery.FermentationTimer()
     local boiler = MoonshineDistillery.findBoiler()

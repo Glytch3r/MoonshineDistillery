@@ -158,16 +158,16 @@ function MoonshineDistillery.setStage(obj, stage)
    MoonshineDistillery.setSprite(obj, nextStage)
 end
 -----------------------            ---------------------------
-
 function MoonshineDistillery.getRemainingCook(cookingVat)
     if not cookingVat then return nil end
     local cookData = cookingVat:getModData()
-    if not cookData or not fermentData['timestamp'] then return nil end
+    if not cookData or not cookData['timestamp'] then return nil end
     local targTime = MoonshineDistillery.getCookTarget()
     local timecheck = getGameTime():getWorldAgeHours() - cookData['timestamp']
     local remaining = targTime - timecheck
     return math.floor(remaining * 60)
 end
+
 --[[
    local campfire = CCampfireSystem.instance:getLuaObjectOnSquare(sq)
    if not campfire then return end
