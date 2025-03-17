@@ -223,7 +223,7 @@ function MoonshineDistillery.CookTimer()
          end
       end
    end
-   if stage == "cooking" then
+   if stage == "cooking" and isLit then
       cookingVat:setHighlighted(isLit, false)
       cookingVat:setHighlightColor(1, 0, 0, 0.8)
       local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
@@ -240,6 +240,9 @@ function MoonshineDistillery.CookTimer()
             MoonshineDistillery.setStage(cookingVat, "mash")
          end
       end
+   end
+   if FireFighting.isSquareToExtinguish(sq) then
+      FireFighting.isSquareToExtinguish(sq)
    end
 end
 Events.EveryOneMinute.Remove(MoonshineDistillery.CookTimer)

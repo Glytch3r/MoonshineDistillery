@@ -103,36 +103,59 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
          end
 
          if MoonshineDistillery.isCookingVat(sprName) then
-            local cookingvatCont = obj:getContainer()
-            if cookingvatCont and MoonshineDistillery.getStage(sprName) == "mash" then
-               local vatopt = context:addOptionOnTop("Filter Moonshine", worldobjects, function()
-                  local flavorMap = {
-                     ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
-                     ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
-                     ["MoonDist.BucketMoonshineMashPeach"] = "MoonDist.BucketMoonshineUnfermentedPeach"
-                  }
-                  for itemType, newType in pairs(flavorMap) do
-                     local item = cookingvatCont:FindAndReturn(itemType)
-                     if item then
-                        if isClient() then cookingvatCont:removeItemOnServer(item) end
-                        cookingvatCont:DoRemoveItem(item)
-                        cookingvatCont:AddItem(newType)
-                        ISInventoryPage.dirtyUI()
-                        break
+            cookingVat = obj
+            local cookingvatCont = cookingVat:getContainer()
+            local stage = MoonshineDistillery.getStage(sprName)
+            if cookingvatCont and stage then
+               if  stage == "cooking" then
+                  local cookM = context:addOptionOnTop("Cooking Vat: ")
+                  cookM.iconTexture = getTexture("media/ui/Moonshine.png")
+                  local cookopt = ISContextMenu:getNew(context)
+                  context:addSubMenu(cookM, cookopt)
+
+                  local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
+                  cookopt:addOptionOnTop("Flavor: "..tostring(cookingVat:getModData()['Flavor']))
+                  cookopt:addOptionOnTop("Time Remaining: "..tostring(timeleft))
+                  cookopt:addOption("Cancel", worldobjects, function()
+                     MoonshineDistillery.setStage(cookingVat, "empty")
+                     cookingVat:getModData()['timestamp'] = nil
+                     cookingVat:getModData()['Flavor'] = nil
+                     cookingVat:transmitModData()
+                     ISInventoryPage.dirtyUI();
+                  end)
+               end
+               if  stage == "mash" then
+                  if  MoonshineDistillery.getStage(sprName) == "mash" then
+                     local vatopt = context:addOptionOnTop("Filter Moonshine", worldobjects, function()
+                        local flavorMap = {
+                           ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
+                           ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
+                           ["MoonDist.BucketMoonshineMashPeach"] = "MoonDist.BucketMoonshineUnfermentedPeach"
+                        }
+                        for itemType, newType in pairs(flavorMap) do
+                           local item = cookingvatCont:FindAndReturn(itemType)
+                           if item then
+                              if isClient() then cookingvatCont:removeItemOnServer(item) end
+                              cookingvatCont:DoRemoveItem(item)
+                              cookingvatCont:AddItem(newType)
+                              ISInventoryPage.dirtyUI()
+                              break
+                           end
+                        end
+                        MoonshineDistillery.setStage(obj, "empty")
+                     end)
+                     local ftip = ISWorldObjectContextMenu.addToolTip()
+                     if not (pr and pr:getFullType() == "MoonDist.Strainer") then
+                        ftip.description = "Need to use Strainer"
+                        vatopt.notAvailable = true
                      end
+                     if not checkDist then
+                        ftip.description = "Need to use Strainer\n"..ftip.description
+                        vatopt.notAvailable = true
+                     end
+                     vatopt.toolTip = ftip
                   end
-                  MoonshineDistillery.setStage(obj, "empty")
-               end)
-               local ftip = ISWorldObjectContextMenu.addToolTip()
-               if not (pr and pr:getFullType() == "MoonDist.Strainer") then
-                  ftip.description = "Need to use Strainer"
-                  vatopt.notAvailable = true
                end
-               if not checkDist then
-                  ftip.description = "Need to use Strainer\n"..ftip.description
-                  vatopt.notAvailable = true
-               end
-               vatopt.toolTip = ftip
             end
          end
       end
