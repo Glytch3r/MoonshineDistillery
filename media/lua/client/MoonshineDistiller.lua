@@ -62,7 +62,7 @@ function MoonshineDistillery.getDrainPort(pl)
    local inv = pl:getInventory()
    return inv:FindAndReturn("MoonDist.DrainPort")
 end
-function MoonshineDistillery.getStillCap(pl)
+function MoonshineDistillery.getStillCapItem(pl)
    local inv = pl:getInventory()
    return inv:FindAndReturn("MoonDist.StillCap")
 end
@@ -198,6 +198,31 @@ function MoonshineDistillery.hasStillCapOverlay(obj)
       end
    end
    return false
+end
+
+function MoonshineDistillery.getStillCapContainer(obj)
+   if obj:getOverlaySprite() ~= nil then
+      local sprName = obj:getOverlaySprite():getName()
+      if sprName then
+         local tab = {
+            ["MoonshineDistillery_20"] = true,
+            ["MoonshineDistillery_28"] = true
+         }
+         return tab[sprName]
+      end
+   else
+      local sq = obj:getSquare()
+      for i = 0, sq:getObjects():size() - 1 do
+         local obj2 = sq:getObjects():get(i)
+         if obj2:getSprite() and  MoonshineDistillery.isStillCap(obj2:getSprite():getName()) then
+            local cont = obj2:getContainer()
+            if cont then
+               return cont
+            end
+         end
+      end
+   end
+   return nil
 end
 
 function MoonshineDistillery.hasDrainPortOverlay(sq2)
