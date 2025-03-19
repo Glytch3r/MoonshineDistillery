@@ -30,6 +30,16 @@ function MoonshineDistillery.getBoilerObj(sq, partSprite)
 
     return nil
 end
+function MoonshineDistillery.getDrainPortFromBoiler(boiler, sprName)
+    if not boiler then return nil end
+    local sq = boiler:getSquare()
+    if not sq then return nil end
+    sprName = sprName or boiler:getSprite():getName()
+    local x, y, z = round(boiler:getX()),  round(boiler:getY()), boiler:getZ()
+    local drainPort = MoonshineDistillery.getDrainPortSquare(x, y, z, sprName)
+    if not drainPort then return nil end
+    return drainPort
+end
 
 function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     local pl = getSpecificPlayer(player)

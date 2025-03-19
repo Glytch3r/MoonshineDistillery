@@ -274,6 +274,14 @@ function MoonshineDistillery.setDrainPort(sq2, sprName)
    local cont = toSpawn:getContainer()
    cont:setType('DrainPort')
    cont:setDrawDirty(true);
+   local yieldData = toSpawn:getModData()
+
+   yieldData['Yield'] = {
+      ["Clear"]=0,
+      ["Apple"]=0,
+      ["Peach"]=0,
+   }
+   toSpawn:transmitModData()
    ISInventoryPage.renderDirty = true
    if isClient() then
       toSpawn:transmitCompleteItemToServer()
