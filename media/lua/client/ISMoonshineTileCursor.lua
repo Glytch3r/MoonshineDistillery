@@ -30,6 +30,9 @@ MoonshineDistillery = MoonshineDistillery or {}
 function MoonshineDistillery.loadCursor()
     ISMoonshineTileCursor = ISBuildingObject:derive("ISMoonshineTileCursor")
 
+    function ISMoonshineTileCursor:setDragNilAfterPlace(nilAfter)
+        self.dragNilAfterPlace = nilAfter
+    end
     function ISMoonshineTileCursor:create(x, y, z, firstSq)
         local pl = getPlayer()
         local spr = self.spr
@@ -67,7 +70,7 @@ function MoonshineDistillery.loadCursor()
 
         for _, pos in ipairs(positions) do
             local square = getCell():getGridSquare(pos[1], pos[2], pos[3])
-            if not (square or square:isFree(false)) then
+            if not (square or square:isFree(false)) and MoonshineDistillery.isNothingThere(square) then
                 pl:setHaloNote("Cannot place there", 150, 250, 150, 900)
                 err = true
             end
@@ -76,12 +79,10 @@ function MoonshineDistillery.loadCursor()
                 flr:setHighlighted(true, true);
             end
         end
-
-        if not err then
-            if not MoonshineDistillery.delBuildItems(pl) then
-                pl:setHaloNote(tostring("Failed to build Moonshine Disiller"), 250,250,250,900)
-                return
-            end
+        if err then
+            getCell():setDrag(nil, 0)
+            ISMoveableCursor.clearCacheForAllPlayers();
+            return
         end
         for _, pos in ipairs(positions) do
             local square = getCell():getGridSquare(pos[1], pos[2], pos[3])
@@ -89,11 +90,22 @@ function MoonshineDistillery.loadCursor()
                 local props = ISMoveableSpriteProps.new(IsoObject.new(square, pos[4]):getSprite())
                 props.rawWeight = 10
                 props:placeMoveableInternal(square, InventoryItemFactory.CreateItem("Base.Plank"), pos[4])
-                addSound(pl, square:getX(), square:getY(), square:getZ(), 5, 1)
-                getSoundManager():PlayWorldSound('MoonshineBuild', square, 0, 5, 5, false)
+                getCell():setDrag(nil, 0)
             end
         end
-        ISMoveableCursor.clearCacheForAllPlayers();
+        addSound(pl, firstSq:getX(), firstSq:getY(), firstSq:getZ(), 5, 1)
+        getSoundManager():PlayWorldSound('MoonshineBuild', firstSq, 0, 5, 5, false)
+
+        if not err then
+            if not MoonshineDistillery.delBuildItems(pl) then
+                pl:setHaloNote(tostring("Failed to build Moonshine Distiller"), 250,250,250,900)
+                ISMoveableCursor.clearCacheForAllPlayers();
+                getCell():setDrag(nil, 0)
+
+                return
+            end
+        end
+
     end
 
 
@@ -104,16 +116,6 @@ function MoonshineDistillery.loadCursor()
             else
                 self.spr = "MoonshineDistillery_16"
             end
-
-
-            --self.RENDER_SPRITE_NAME = self.spr
-           -- self.RENDER_SPRITE:LoadFramesNoDirPageSimple(self.spr)
---[[
-            if self:isValid(square) then
-                self.RENDER_SPRITE:RenderGhostTile(x, y, z);
-            else
-                self.RENDER_SPRITE:RenderGhostTileRed(x, y, z);
-            end ]]
 
             local cursor = ISMoonshineTileCursor:new(self.spr,  getPlayer() , square)
             getCell():setDrag(cursor, 0)
@@ -156,6 +158,27 @@ function MoonshineDistillery.loadCursor()
     end
 end
 
+function MoonshineDistillery.isNothingThere(square)
+    local pl = getPlayer()
+	if not square then return false end
+
+    --if square:isSomethingTo(pl:getSquare()) then return false end
+	--if pl:getCurrentSquare():isBlockedTo(square) then return false end
+	if square:isSolid() or square:isSolidTrans() then return false end
+	if square:HasStairs() then return false end
+	if square:HasTree() then return false end
+	--if not square:getMovingObjects():isEmpty() then return false end
+	if not square:TreatAsSolidFloor() then return false end
+	--if not self:haveMaterial(square) then return false end
+--[[ 	for i=1,square:getObjects():size() do
+		local obj = square:getObjects():get(i-1)
+		if obj:getSprite() == obj:getTextureName() then return false end
+    end ]]
+    if buildUtil.stairIsBlockingPlacement( square, true ) then return false; end
+	if square:isVehicleIntersecting() then return false end
+	return true
+end
+-------
 Events.OnCreatePlayer.Add(function()
     MoonshineDistillery.loadCursor()
 end)
@@ -165,7 +188,6 @@ end)
    MoonshineDistillery.loadCursor()
 
 ]]
-
 
 
 

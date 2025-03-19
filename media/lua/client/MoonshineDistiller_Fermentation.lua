@@ -137,7 +137,7 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
     local sq = clickedSquare
     if not MoonshineDistillery.isLearned(pl) then return end
     if not sq then return end
-    if not MoonshineDistillery.checkDist(pl, sq) then return end
+
     local boiler = nil
     for i = 0, sq:getObjects():size() - 1 do
         local obj = sq:getObjects():get(i)
@@ -165,13 +165,21 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
         local peachYield = yieldData["Yield"]['Peach'] or 0
 
         local timeLeft = MoonshineDistillery.getRemainingFermentationMins(boiler)
-        if timeLeft ~= nil then
-            if boiler:getModData()['Flavor'] ~= nil and boiler:getModData()['timestamp'] ~= nil then
-                local Main = context:addOptionOnTop("Moonshine Distiller: ")
-                Main.iconTexture = getTexture("media/ui/MoonshineTime.png")
-                local opt = ISContextMenu:getNew(context)
-                context:addSubMenu(Main, opt)
-                if boiler:getModData()['active'] then
+
+        local Main = context:addOptionOnTop("Moonshine Distiller: ")
+        Main.iconTexture = getTexture("media/ui/MoonshineTime.png")
+        local opt = ISContextMenu:getNew(context)
+        context:addSubMenu(Main, opt)
+
+        local jug = "MoonDist.EmptyCeramicJug"
+        local availableJugs = drainPortCont:getItemCount(jug)
+
+
+
+        if boiler:getModData()['active'] then
+            if timeLeft ~= nil then
+                if boiler:getModData()['Flavor'] ~= nil and boiler:getModData()['timestamp'] ~= nil then
+
                     opt:addOptionOnTop("Cancel", worldobjects, function()
                         boiler:getModData()['Flavor'] = nil
                         boiler:getModData()['timestamp'] = nil
@@ -181,87 +189,97 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
                     --opt:addOptionOnTop("timestamp: "..boiler:getModData()['timestamp'], nil)
                     opt:addOptionOnTop("Time Remaining: "..tostring(timeLeft))
                 end
+            end
+        else
+            local tip = ISWorldObjectContextMenu.addToolTip()
+            tip.description = "Place Mash Base inside The Boiler"
+            Main.toolTip = tip
+        end
 
-                -----------------------            ---------------------------
-                local jug = "MoonDist.EmptyCeramicJug"
-                local availableJugs = drainPortCont:getItemCount(jug)
-                local subm = opt:addOptionOnTop("Yield: ")
-                local yieldOpt = ISContextMenu:getNew(opt)
-                opt:addSubMenu(subm, yieldOpt)
+        -----------------------            ---------------------------
+
+        local subm = opt:addOptionOnTop("Yield: ")
+
+        local yieldOpt = ISContextMenu:getNew(opt)
+        opt:addSubMenu(subm, yieldOpt)
 
 
-                if availableJugs > 0 then
-                    local submClear = yieldOpt:addOptionOnTop("Clear: "..tostring(clearYield))
-                    local clearOpt = ISContextMenu:getNew(yieldOpt)
-                    yieldOpt:addSubMenu(submClear, clearOpt)
-                    local clearOptCount = math.max(0, math.min(yieldData["Yield"]["Clear"], availableJugs))
-                    if clearOptCount then
-                        for i = 1, clearOptCount do
-                            clearOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Clear Moonshine", worldobjects, function()
-                                local product = "MoonDist.MoonshineClear"
-                                local item = drainPortCont:FindAndReturn(jug)
-                                if not item then return end
-                                for x = 1, i do
-                                    if isClient() then drainPortCont:removeItemOnServer(item) end
-                                    drainPortCont:DoRemoveItem(item)
-                                    drainPortCont:AddItem(toSpawn)
-                                    yieldData["Yield"]["Clear"] = math.max(0,yieldData["Yield"]["Clear"] - 1)
-                                    ISInventoryPage.dirtyUI()
-                                    drainPort:transmitModData()
-                                    drainPort:setHighlighted(true, true)
-                                end
-                            end)
+        local tip = ISWorldObjectContextMenu.addToolTip()
+		tip.description = "Available Ceramic Jugs: "..tostring(availableJugs)
+		subm.toolTip = tip
+
+
+       -- if availableJugs > 0 then
+            local submClear = yieldOpt:addOptionOnTop("Clear: "..tostring(clearYield))
+            local clearOpt = ISContextMenu:getNew(yieldOpt)
+            yieldOpt:addSubMenu(submClear, clearOpt)
+            local clearOptCount = math.max(0, math.min(yieldData["Yield"]["Clear"], availableJugs))
+            if clearOptCount then
+                for i = 1, clearOptCount do
+                    clearOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Clear Moonshine", worldobjects, function()
+                        local product = "MoonDist.MoonshineClear"
+                        local item = drainPortCont:FindAndReturn(jug)
+                        if not item then return end
+                        for x = 1, i do
+                            if isClient() then drainPortCont:removeItemOnServer(item) end
+                            drainPortCont:DoRemoveItem(item)
+                            drainPortCont:AddItem(toSpawn)
+                            yieldData["Yield"]["Clear"] = math.max(0,yieldData["Yield"]["Clear"] - 1)
+                            ISInventoryPage.dirtyUI()
+                            drainPort:transmitModData()
+                            drainPort:setHighlighted(true, true)
                         end
-                    end
-                    local submApple = yieldOpt:addOptionOnTop("Apple: "..tostring(appleYield))
-                    local appleOpt = ISContextMenu:getNew(yieldOpt)
-                    yieldOpt:addSubMenu(submApple, appleOpt)
-                    local appleOptCount = math.max(0, math.min(yieldData["Yield"]["Apple"], availableJugs))
-                    if appleOptCount then
-                        for i = 1, appleOptCount do
-                            appleOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Apple Moonshine", worldobjects, function()
-                                local product = "MoonDist.MoonshineApple"
-                                local item = drainPortCont:FindAndReturn(jug)
-                                if not item then return end
-                                for x = 1, i do
-                                    if isClient() then drainPortCont:removeItemOnServer(item) end
-                                    drainPortCont:DoRemoveItem(item)
-                                    drainPortCont:AddItem(toSpawn)
-                                    yieldData["Yield"]["Apple"] = math.max(0,yieldData["Yield"]["Apple"] - 1)
-                                    ISInventoryPage.dirtyUI()
-                                    drainPort:transmitModData()
-                                    drainPort:setHighlighted(true, true)
-                                end
-                            end)
-                        end
-                    end
-                    local submPeach = yieldOpt:addOptionOnTop("Peach: "..tostring(peachYield))
-                    local peachOpt = ISContextMenu:getNew(yieldOpt)
-                    yieldOpt:addSubMenu(submPeach, peachOpt)
-                    local peachOptCount = math.max(0, math.min(yieldData["Yield"]["Peach"], availableJugs))
-                    if peachOptCount then
-                        for i = 1, peachOptCount do
-                            peachOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Peach Moonshine", worldobjects, function()
-                                local product = "MoonDist.MoonshinePeach"
-                                local item = drainPortCont:FindAndReturn(jug)
-                                if not item then return end
-                                for x = 1, i do
-                                    if isClient() then drainPortCont:removeItemOnServer(item) end
-                                    drainPortCont:DoRemoveItem(item)
-                                    drainPortCont:AddItem(toSpawn)
-                                    yieldData["Yield"]["Peach"] = math.max(0,yieldData["Yield"]["Peach"] - 1)
-                                    ISInventoryPage.dirtyUI()
-                                    drainPort:transmitModData()
-                                    drainPort:setHighlighted(true, true)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    yieldOpt:addOptionOnTop("Place MoonDist.EmptyCeramicJug inside Output Container")
+                    end)
                 end
             end
-        end
+            local submApple = yieldOpt:addOptionOnTop("Apple: "..tostring(appleYield))
+            local appleOpt = ISContextMenu:getNew(yieldOpt)
+            yieldOpt:addSubMenu(submApple, appleOpt)
+            local appleOptCount = math.max(0, math.min(yieldData["Yield"]["Apple"], availableJugs))
+            if appleOptCount then
+                for i = 1, appleOptCount do
+                    appleOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Apple Moonshine", worldobjects, function()
+                        local product = "MoonDist.MoonshineApple"
+                        local item = drainPortCont:FindAndReturn(jug)
+                        if not item then return end
+                        for x = 1, i do
+                            if isClient() then drainPortCont:removeItemOnServer(item) end
+                            drainPortCont:DoRemoveItem(item)
+                            drainPortCont:AddItem(toSpawn)
+                            yieldData["Yield"]["Apple"] = math.max(0,yieldData["Yield"]["Apple"] - 1)
+                            ISInventoryPage.dirtyUI()
+                            drainPort:transmitModData()
+                            drainPort:setHighlighted(true, true)
+                        end
+                    end)
+                end
+            end
+            local submPeach = yieldOpt:addOptionOnTop("Peach: "..tostring(peachYield))
+            local peachOpt = ISContextMenu:getNew(yieldOpt)
+            yieldOpt:addSubMenu(submPeach, peachOpt)
+            local peachOptCount = math.max(0, math.min(yieldData["Yield"]["Peach"], availableJugs))
+            if peachOptCount then
+                for i = 1, peachOptCount do
+                    peachOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Peach Moonshine", worldobjects, function()
+                        local product = "MoonDist.MoonshinePeach"
+                        local item = drainPortCont:FindAndReturn(jug)
+                        if not item then return end
+                        for x = 1, i do
+                            if isClient() then drainPortCont:removeItemOnServer(item) end
+                            drainPortCont:DoRemoveItem(item)
+                            drainPortCont:AddItem(toSpawn)
+                            yieldData["Yield"]["Peach"] = math.max(0,yieldData["Yield"]["Peach"] - 1)
+                            ISInventoryPage.dirtyUI()
+                            drainPort:transmitModData()
+                            drainPort:setHighlighted(true, true)
+                        end
+                    end)
+                end
+            end
+        --else
+           -- yieldOpt:addOptionOnTop("Place MoonDist.EmptyCeramicJug inside Output Container")
+        --end
+
         -----------------------            ---------------------------
     end
 end
