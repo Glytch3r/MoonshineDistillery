@@ -84,16 +84,16 @@ function MoonshineDistillery.FermentationTimer()
 
     local timeleft = MoonshineDistillery.getRemainingFermentationMins(boiler)
     if timeleft == nil then return end
-
+    local outputCount = SandboxVars.MoonshineDistillery.Yield or 8
     if timeleft and timeleft <= 0 and fermentData['active'] ~= nil then
         getSoundManager():PlayWorldSound('MoonshineDing', sq, 0, 5, 5, false)
         local flav = fermentData['Flavor']
         if flav == "Clear" then
-            drainPort:getModData()["Clear"] = drainPort:getModData()["Clear"] + 8
+            drainPort:getModData()["Clear"] = drainPort:getModData()["Clear"] + outputCount
         elseif flav == "Apple" then
-            drainPort:getModData()["Apple"] = drainPort:getModData()["Apple"] + 8
+            drainPort:getModData()["Apple"] = drainPort:getModData()["Apple"] + outputCount
         elseif flav == "Peach" then
-            drainPort:getModData()["Peach"] = drainPort:getModData()["Peach"] + 8
+            drainPort:getModData()["Peach"] = drainPort:getModData()["Peach"] + outputCount
         end
         fermentData['timestamp'] = nil
         fermentData['Flavor'] = nil

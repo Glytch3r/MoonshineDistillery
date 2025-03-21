@@ -9,4 +9,8 @@ Sandbox_EN = {
 
     Sandbox_MoonshineDistillery_RequirePower = "Require Power",
     Sandbox_MoonshineDistillery_RequirePower_tooltip = "Distiller Requires Power to Operate",
+
+    Sandbox_MoonshineDistillery_Yield = "Fermented Yield",
+    Sandbox_MoonshineDistillery_Yield_tooltip = "Set to 0 to disable Moonshine Production",
+
 }

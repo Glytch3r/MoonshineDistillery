@@ -17,5 +17,10 @@ option MoonshineDistillery.RequirePower
 	type = boolean, default = false,
 	page = MoonshineDistillery, translation = MoonshineDistillery_RequirePower,
 }
+option MoonshineDistillery.Yield
+{
+	type = integer, min = 0, max = 50, default = 8,
+	page = MoonshineDistillery, translation = MoonshineDistillery_Yield,
+}
 
 
