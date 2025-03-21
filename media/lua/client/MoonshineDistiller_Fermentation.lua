@@ -1,8 +1,4 @@
---[[
-function MoonshineDistillery.getTimeStamp()
-   return getGameTime():getWorldAgeHours()
-end
- ]]
+
 MoonshineDistillery = MoonshineDistillery or {}
 function MoonshineDistillery.getFermentationTarget()
    return SandboxVars.MoonshineDistillery.FermentationMinutes or 7200
@@ -10,18 +6,16 @@ end
 
 
 function MoonshineDistillery.hasPower(sq)
-    return (SandboxVars.ElecShutModifier > -1 and getGameTime():getNightsSurvived() < SandboxVars.ElecShutModifier) or not SandboxVars.MoonshineDistillery.RequirePower or (sq and sq:haveElectricity())
+    if  SandboxVars.MoonshineDistillery.RequirePower then
+        return (SandboxVars.ElecShutModifier > -1 and getGameTime():getNightsSurvived() < SandboxVars.ElecShutModifier)  or (sq and sq:haveElectricity())
+    else
+        return true
+    end
 end
 
 -----------------------            ---------------------------
 
---[[
-local stillCap = MoonshineDistillery.getStillCap(MoonshineDistillery.findBoiler())
-local stillCapCont = stillCap:getContainer()
-local item = stillCap:getContainer():FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple")
 
-
- ]]
 -----------------------            ---------------------------
 
 function MoonshineDistillery.getRemainingFermentationMins(boiler)
@@ -56,7 +50,8 @@ function MoonshineDistillery.FermentationTimer()
 
     local isFermenting = fermentData['timestamp'] ~= nil and fermentData['Flavor'] ~= nil
 
-    if not isFermenting then
+    --if not isFermenting then
+    if not fermentData['active'] then
         local flavorMap = {
             ["MoonDist.BucketMoonshineUnfermentedClear"] = "Clear",
             ["MoonDist.BucketMoonshineUnfermentedApple"] = "Apple",
@@ -70,17 +65,21 @@ function MoonshineDistillery.FermentationTimer()
                 fermentData['timestamp'] = getGameTime():getWorldAgeHours()
                 fermentData['Flavor'] = flavor
                 fermentData['active'] = true
-                if isClient() then cont:removeItemOnServer(item) end
+                if isClient() then
+                    cont:removeItemOnServer(item)
+                    cont:removeItemOnServer(yeast)
+                end
                 cont:DoRemoveItem(item)
-                if isClient() then cont:removeItemOnServer(yeast) end
                 cont:DoRemoveItem(yeast)
-
+                --drainPort:transmitModData()
                 boiler:transmitModData()
                 ISInventoryPage.dirtyUI()
                 getPlayer():setHaloNote("Distiller set " .. tostring(flavor), 150, 250, 150, 900)
                 break
             end
         end
+    else
+        boiler:setHighlighted(true, false)
     end
 
     local timeleft = MoonshineDistillery.getRemainingFermentationMins(boiler)
@@ -89,17 +88,25 @@ function MoonshineDistillery.FermentationTimer()
     if timeleft and timeleft <= 0 and fermentData['active'] ~= nil then
         getSoundManager():PlayWorldSound('MoonshineDing', sq, 0, 5, 5, false)
         local flav = fermentData['Flavor']
-        yieldData['Yield'][tostring(flav)] = yieldData['Yield'][tostring(flav)] + 8
+        if flav == "Clear" then
+            drainPort:getModData()["Clear"] = drainPort:getModData()["Clear"] + 8
+        elseif flav == "Apple" then
+            drainPort:getModData()["Apple"] = drainPort:getModData()["Apple"] + 8
+        elseif flav == "Peach" then
+            drainPort:getModData()["Peach"] = drainPort:getModData()["Peach"] + 8
+        end
+        fermentData['timestamp'] = nil
+        fermentData['Flavor'] = nil
         fermentData['active'] = nil
-        boiler:setHighlighted(false, false)
         drainPort:transmitModData()
         boiler:transmitModData()
+        boiler:setHighlighted(false, false)
     end
 end
 
 Events.EveryOneMinute.Remove(MoonshineDistillery.FermentationTimer)
 Events.EveryOneMinute.Add(MoonshineDistillery.FermentationTimer)
-
+-----------------------            ---------------------------
 function MoonshineDistillery.findBoiler()
     local rad = 8
     local pl = getPlayer()
@@ -128,6 +135,7 @@ function MoonshineDistillery.findBoiler()
     end
     return nil
 end
+-----------------------            ---------------------------
 
 
 
@@ -160,9 +168,9 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
         local yieldData = drainPort:getModData()
         local drainPortCont = drainPort:getContainer()
         if not drainPortCont then return end
-        local clearYield = yieldData["Yield"]['Clear'] or 0
-        local appleYield = yieldData["Yield"]['Apple'] or 0
-        local peachYield = yieldData["Yield"]['Peach'] or 0
+        local clearYield = yieldData['Clear'] or 0
+        local appleYield = yieldData['Apple'] or 0
+        local peachYield = yieldData['Peach'] or 0
 
         local timeLeft = MoonshineDistillery.getRemainingFermentationMins(boiler)
 
@@ -192,7 +200,7 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             end
         else
             local tip = ISWorldObjectContextMenu.addToolTip()
-            tip.description = "Place Mash Base inside The Boiler"
+            tip.description = "Place Unfermented Moonshine inside The Boiler"
             Main.toolTip = tip
         end
 
@@ -206,25 +214,33 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
 
         local tip = ISWorldObjectContextMenu.addToolTip()
 		tip.description = "Available Ceramic Jugs: "..tostring(availableJugs)
+        -----------------------            ---------------------------
+        if availableJugs <= 0 then
+            subm.notAvailable = true
+            tip.description = "Available Ceramic Jugs: "..tostring(availableJugs).."\nPlace Ceramic Jugs inside Drain Port Container"
+        end
 		subm.toolTip = tip
 
+        -----------------------            ---------------------------
 
-       -- if availableJugs > 0 then
+        if availableJugs > 0 then
+
+
             local submClear = yieldOpt:addOptionOnTop("Clear: "..tostring(clearYield))
             local clearOpt = ISContextMenu:getNew(yieldOpt)
             yieldOpt:addSubMenu(submClear, clearOpt)
-            local clearOptCount = math.max(0, math.min(yieldData["Yield"]["Clear"], availableJugs))
+            local clearOptCount = math.max(0, math.min(yieldData["Clear"], availableJugs))
+
             if clearOptCount then
                 for i = 1, clearOptCount do
                     clearOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Clear Moonshine", worldobjects, function()
                         local product = "MoonDist.MoonshineClear"
-                        local item = drainPortCont:FindAndReturn(jug)
-                        if not item then return end
                         for x = 1, i do
+                            local item = drainPortCont:FindAndReturn(jug)
                             if isClient() then drainPortCont:removeItemOnServer(item) end
                             drainPortCont:DoRemoveItem(item)
-                            drainPortCont:AddItem(toSpawn)
-                            yieldData["Yield"]["Clear"] = math.max(0,yieldData["Yield"]["Clear"] - 1)
+                            drainPortCont:AddItem(product)
+                            yieldData["Clear"] = math.max(0,yieldData["Clear"] - 1)
                             ISInventoryPage.dirtyUI()
                             drainPort:transmitModData()
                             drainPort:setHighlighted(true, true)
@@ -235,18 +251,17 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             local submApple = yieldOpt:addOptionOnTop("Apple: "..tostring(appleYield))
             local appleOpt = ISContextMenu:getNew(yieldOpt)
             yieldOpt:addSubMenu(submApple, appleOpt)
-            local appleOptCount = math.max(0, math.min(yieldData["Yield"]["Apple"], availableJugs))
+            local appleOptCount = math.max(0, math.min(yieldData["Apple"], availableJugs))
             if appleOptCount then
                 for i = 1, appleOptCount do
                     appleOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Apple Moonshine", worldobjects, function()
                         local product = "MoonDist.MoonshineApple"
-                        local item = drainPortCont:FindAndReturn(jug)
-                        if not item then return end
                         for x = 1, i do
+                            local item = drainPortCont:FindAndReturn(jug)
                             if isClient() then drainPortCont:removeItemOnServer(item) end
                             drainPortCont:DoRemoveItem(item)
-                            drainPortCont:AddItem(toSpawn)
-                            yieldData["Yield"]["Apple"] = math.max(0,yieldData["Yield"]["Apple"] - 1)
+                            drainPortCont:AddItem(product)
+                            yieldData["Apple"] = math.max(0,yieldData["Apple"] - 1)
                             ISInventoryPage.dirtyUI()
                             drainPort:transmitModData()
                             drainPort:setHighlighted(true, true)
@@ -257,18 +272,17 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             local submPeach = yieldOpt:addOptionOnTop("Peach: "..tostring(peachYield))
             local peachOpt = ISContextMenu:getNew(yieldOpt)
             yieldOpt:addSubMenu(submPeach, peachOpt)
-            local peachOptCount = math.max(0, math.min(yieldData["Yield"]["Peach"], availableJugs))
+            local peachOptCount = math.max(0, math.min(yieldData["Peach"], availableJugs))
             if peachOptCount then
                 for i = 1, peachOptCount do
                     peachOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Peach Moonshine", worldobjects, function()
                         local product = "MoonDist.MoonshinePeach"
-                        local item = drainPortCont:FindAndReturn(jug)
-                        if not item then return end
                         for x = 1, i do
+                            local item = drainPortCont:FindAndReturn(jug)
                             if isClient() then drainPortCont:removeItemOnServer(item) end
                             drainPortCont:DoRemoveItem(item)
-                            drainPortCont:AddItem(toSpawn)
-                            yieldData["Yield"]["Peach"] = math.max(0,yieldData["Yield"]["Peach"] - 1)
+                            drainPortCont:AddItem(product)
+                            yieldData["Peach"] = math.max(0,yieldData["Peach"] - 1)
                             ISInventoryPage.dirtyUI()
                             drainPort:transmitModData()
                             drainPort:setHighlighted(true, true)
@@ -276,85 +290,10 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
                     end)
                 end
             end
-        --else
-           -- yieldOpt:addOptionOnTop("Place MoonDist.EmptyCeramicJug inside Output Container")
-        --end
-
+        end
         -----------------------            ---------------------------
     end
 end
 
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.FermentationContext)
 Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.FermentationContext)
-
------------------------            ---------------------------
---[[
-function MoonshineDistillery.FermentationTimer()
-    local boiler = MoonshineDistillery.findBoiler()
-    if not boiler then return end
-    local spr = boiler:getSprite()
-    if not spr or not spr:getName() then return end
-
-    local isOn = false
-    local fermentData = boiler:getModData()
-    if fermentData['timestamp'] ~= nil then isOn = true end
-
-    local drainPort = MoonshineDistillery.getDrainPortObj(boiler)
-    if not drainPort then return end
-
-    local sq = drainPort:getSquare()
-    if not MoonshineDistillery.hasPower(sq) then
-        isOn = false
-    end
-
-    boiler:setHighlighted(isOn, false)
-    boiler:setHighlightColor(1, 0, 0, 0.8)
-
-    if not fermentData['timestamp'] then return end
-    if not fermentData["Flavor"] then
-        local cont = boiler:getContainer()
-        if cont then
-            local flavors = {
-                "MoonDist.BucketMoonshineUnfermentedClear",
-                "MoonDist.BucketMoonshineUnfermentedApple",
-                "MoonDist.BucketMoonshineUnfermentedPeach"
-            }
-
-            for _, itemType in ipairs(flavors) do
-                local item = cont:FindAndReturn(itemType)
-                if item then
-                    fermentData["Flavor"] = item:getType()
-                    boiler:transmitModData()
-                    cont:Remove(item)
-                    if isClient() then
-                        cont:removeItemOnServer(item)
-                    end
-                    break
-                end
-            end
-        end
-    end
-
-    local targtime = MoonshineDistillery.getFermentationMinutes() / 60
-    local timecheck = getGameTime():getWorldAgeHours() - fermentData['timestamp']
-
-    if MoonshineDistillery.isCompleteParts(boiler) and timecheck >= targtime and fermentData['Flavor'] then
-        local cont = drainPort:getContainer()
-        if cont then
-            local toSpawn = "MoonDist.Moonshine" .. fermentData['Flavor']
-            cont:AddItems(toSpawn, 20)
-
-            if sq then
-                getSoundManager():PlayWorldSound('MoonshineDing', sq, 0, 5, 5, false)
-            end
-        end
-
-        fermentData['timestamp'] = nil
-        fermentData['Flavor'] = nil
-        boiler:transmitModData()
-    end
-end
-
-Events.EveryOneMinute.Add(MoonshineDistillery.FermentationTimer) ]]
-
------------------------            ---------------------------
