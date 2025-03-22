@@ -234,6 +234,7 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             if clearOptCount then
                 for i = 1, clearOptCount do
                     clearOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Clear Moonshine", worldobjects, function()
+                        getSoundManager():PlayWorldSound('MoonshineProduct', sq, 0, 5, 5, false);
                         local product = "MoonDist.MoonshineClear"
                         for x = 1, i do
                             local item = drainPortCont:FindAndReturn(jug)
@@ -255,6 +256,7 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             if appleOptCount then
                 for i = 1, appleOptCount do
                     appleOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Apple Moonshine", worldobjects, function()
+                        getSoundManager():PlayWorldSound('MoonshineProduct', sq, 0, 5, 5, false);
                         local product = "MoonDist.MoonshineApple"
                         for x = 1, i do
                             local item = drainPortCont:FindAndReturn(jug)
@@ -276,6 +278,7 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             if peachOptCount then
                 for i = 1, peachOptCount do
                     peachOpt:addOptionOnTop("Fill "..tostring(i).." Jug With Peach Moonshine", worldobjects, function()
+                        getSoundManager():PlayWorldSound('MoonshineProduct', sq, 0, 5, 5, false);
                         local product = "MoonDist.MoonshinePeach"
                         for x = 1, i do
                             local item = drainPortCont:FindAndReturn(jug)

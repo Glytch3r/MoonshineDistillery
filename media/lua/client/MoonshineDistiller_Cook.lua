@@ -103,29 +103,7 @@ function MoonshineDistillery.getCookingVat(sq)
    return nil
 end
 
-function MoonshineDistillery.findCookingVat()
-   local count = 0
-   local rad = 8
-   local pl = getPlayer()
-   local sq = pl:getCurrentSquare()
-   local cell = getCell()
-   local x, y, z = sq:getX(), sq:getY(), sq:getZ()
-   for xDelta = -rad, rad do
-      for yDelta = -rad, rad do
-         local sq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
-         for i = 0, sq:getObjects():size() - 1 do
-            local obj = sq:getObjects():get(i)
-            if obj and obj:getSprite() then
-               local sprName = obj:getSprite():getName()
-               if sprName and MoonshineDistillery.isCookingVat(sprName) then
-                  return obj
-               end
-            end
-         end
-      end
-   end
-   return nil
-end
+
 
 
 

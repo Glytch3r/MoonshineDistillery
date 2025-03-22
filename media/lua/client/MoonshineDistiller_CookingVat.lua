@@ -31,9 +31,9 @@ MoonshineDistillery = MoonshineDistillery or {}
 function MoonshineDistillery.findCookingVat()
    local rad = 8
    local pl = getPlayer()
-   local sq = pl:getCurrentSquare()
+   if not pl then return end
    local cell = getCell()
-   local x, y, z = sq:getX(), sq:getY(), sq:getZ()
+   local x, y, z = pl:getX(), pl:getY(), pl:getZ()
    for xDelta = -rad, rad do
       for yDelta = -rad, rad do
          local sq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)

@@ -2,6 +2,19 @@
 module Base
 {
 
+
+	sound MoonshineProduct
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineProduct.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 0.1,
+			volume = 1, loop = false,
+		}
+    }
+
 	sound MoonshineDing
 	{
 		category = Item,
