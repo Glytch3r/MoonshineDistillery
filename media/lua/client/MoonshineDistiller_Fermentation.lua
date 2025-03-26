@@ -24,9 +24,9 @@ function MoonshineDistillery.doFerment(boiler, pl)
     local isCompleteParts = MoonshineDistillery.isCompleteParts(boiler, false)
     local sq = boiler:getSquare()
     if not sq then return end
-    local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
+--[[     local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
     if not isClosestPl then return end
-
+ ]]
     if not MoonshineDistillery.hasThermometerOverlay(boiler) then return end
 
     local spr = boiler:getSprite()

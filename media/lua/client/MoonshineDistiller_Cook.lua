@@ -161,11 +161,11 @@ function MoonshineDistillery.doCook(cookingVat, pl)
    if not sq then return end
 
    local isLit = MoonshineDistillery.hasLitCampfire(sq)
-
+--[[
    local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
    if not isClosestPl then return end
 
-
+ ]]
 
    local stage = MoonshineDistillery.getStage(sprName)
    if not stage then return end
