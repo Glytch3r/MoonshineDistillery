@@ -27,6 +27,30 @@
 
 MoonshineDistillery = MoonshineDistillery or {}
 -----------------------            ---------------------------
+function MoonshineDistillery.findCookingVats()
+   local rad = 8
+   local pl = getPlayer()
+   if not pl then return {} end
+   local cell = getCell()
+   local x, y, z = pl:getX(), pl:getY(), pl:getZ()
+   local vats = {}
+
+   for xDelta = -rad, rad do
+      for yDelta = -rad, rad do
+         local sq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
+         for i = 0, sq:getObjects():size() - 1 do
+            local obj = sq:getObjects():get(i)
+            if obj and obj:getSprite() then
+               local sprName = obj:getSprite():getName()
+               if sprName and MoonshineDistillery.isCookingVat(sprName) then
+                  table.insert(vats, obj)
+               end
+            end
+         end
+      end
+   end
+   return vats
+end
 
 function MoonshineDistillery.findCookingVat()
    local rad = 8
@@ -136,7 +160,6 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                      toSpawn:getModData()['itemFullType'] = itemFullType or "Base.MetalDrum"
                      toSpawn:transmitModData()
                      getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
-
 
 
                   end

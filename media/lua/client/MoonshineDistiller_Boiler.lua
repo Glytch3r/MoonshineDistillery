@@ -40,7 +40,6 @@ function MoonshineDistillery.getDrainPortFromBoiler(boiler, sprName)
     if not drainPort then return nil end
     return drainPort
 end
-
 function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     local pl = getSpecificPlayer(player)
     local inv = pl:getInventory()

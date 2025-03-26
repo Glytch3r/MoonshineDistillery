@@ -193,7 +193,7 @@ function MoonshineDistillery.hasStillCapOverlay(obj)
       for i = 0, sq:getObjects():size() - 1 do
          local obj2 = sq:getObjects():get(i)
          if obj2:getSprite() and  MoonshineDistillery.isStillCap(obj2:getSprite():getName()) then
-               return true
+            return true
          end
       end
    end

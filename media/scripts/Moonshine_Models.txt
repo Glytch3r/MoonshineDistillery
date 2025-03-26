@@ -150,7 +150,7 @@ module Base
 	{
 		mesh = WorldItems/KeyPadlock,
 		texture = WorldItems/MoonshineStrainer,
-		scale = 3,
+		scale = 2,
 	}
 }
 

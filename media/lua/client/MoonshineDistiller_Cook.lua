@@ -147,14 +147,7 @@ function MoonshineDistillery.setStage(obj, stage)
 end
 -----------------------            ---------------------------
 
------------------------            ---------------------------
---[[
-   local campfire = CCampfireSystem.instance:getLuaObjectOnSquare(sq)
-   if not campfire then return end
- ]]
-
-function MoonshineDistillery.CookTimer()
-   local cookingVat = MoonshineDistillery.findCookingVat()
+function MoonshineDistillery.doCook(cookingVat, pl)
    if not cookingVat then return end
    local spr = cookingVat:getSprite()
    if not spr then return end
@@ -169,7 +162,6 @@ function MoonshineDistillery.CookTimer()
 
    local isLit = MoonshineDistillery.hasLitCampfire(sq)
 
-   local pl = getPlayer()
    local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
    if not isClosestPl then return end
 
@@ -269,11 +261,21 @@ function MoonshineDistillery.CookTimer()
          MoonshineDistillery.setStage(cookingVat, "empty")
       end
    end
---[[    if FireFighting.isSquareToExtinguish(sq) then
-      sq:stopFire()
-      if isClient() then sq:transmitStopFire() end
-   end ]]
+end
+-----------------------            ---------------------------
+--[[
+   local campfire = CCampfireSystem.instance:getLuaObjectOnSquare(sq)
+   if not campfire then return end
+ ]]
 
+function MoonshineDistillery.CookTimer()
+   local vats = MoonshineDistillery.findCookingVats()
+   if not vats or #vats == 0 then return end
+   local pl = getPlayer()
+   if not pl then return end
+   for _, cookingVat in ipairs(vats) do
+      MoonshineDistillery.doCook(cookingVat, pl)
+   end
 end
 Events.EveryOneMinute.Remove(MoonshineDistillery.CookTimer)
 Events.EveryOneMinute.Add(MoonshineDistillery.CookTimer)
