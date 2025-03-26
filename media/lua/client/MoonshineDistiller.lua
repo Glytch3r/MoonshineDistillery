@@ -290,7 +290,7 @@ function MoonshineDistillery.setDrainPort(sq2, sprName)
    getPlayerLoot(0):refreshBackpacks()
 
 end
------------------------            ---------------------------
+-----------------------   hook*         ---------------------------
 function MoonshineDistillery.doSledge(obj)
    if isClient() then
       sledgeDestroy(obj)
@@ -305,8 +305,40 @@ function MoonshineDistillery.doSledge(obj)
    end
 end
 
+function MoonshineDistillery.isMoonshineDistillery(obj)
+   if not obj then return false end
+   local spr = obj:getSprite()
+   if not spr then return false end
+   local sprName = spr:getName()
+   return sprName and luautils.stringStarts(sprName, "MoonshineDistillery")
+end
 
+Events.OnGameStart.Add(function()
+--[[
+    local placeHook = ISMoveableSpriteProps.placeMoveableInternal
+    function ISMoveableSpriteProps:placeMoveableInternal(_character, _square, _item, _forceTypeObject)
+        if MoonshineDistillery.isMoonshineDistillery(_item) then
+            return false
+        end
+        return placeHook(self, _character, _square, _item, _forceTypeObject)
+    end ]]
 
+    local pickUpHook = ISMoveableSpriteProps.pickUpMoveableInternal
+    function ISMoveableSpriteProps:pickUpMoveableInternal(_character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+        if MoonshineDistillery.isMoonshineDistillery(_object) then
+            return false
+        end
+        return pickUpHook(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    end
+
+   local sledgeHook = ISDestroyCursor.canDestroy
+   function ISDestroyCursor:canDestroy(obj)
+      if (obj and (MoonshineDistillery.isMoonshineDistillery(obj) or obj:getModData()['isCantSledge'])) and not isAdmin() then
+         return false
+      end
+      return sledgeHook(self, obj)
+   end
+end)
 
 
 -----------------------            ---------------------------
@@ -390,4 +422,41 @@ function MoonshineDistillery.delContItem(itemType, cont)
    getPlayerLoot(0):refreshBackpacks()
    ISInventoryPage.renderDirty = true
    return bool
+end
+-----------------------            ---------------------------
+
+function ISMoveableSpriteProps:placeHook(_character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    if not luautils.stringStarts("MoonshineDistillery") then return pickUpHook(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating) end
+    local returnedItem = pickUpHook(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    returnedItem:getModData()[modDataKay] = _object:getModData()[modDataKay]
+    return returnedItem
+end
+
+function ISMoveableSpriteProps:pickUpMoveableInternal(_character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    if not luautils.stringStarts(_spriteName, "MoonshineDistillery") then
+      return pickUpHook(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    end
+    local returnedItem = pickUpHook(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+    returnedItem:getModData()[modDataKay] = _object:getModData()[modDataKay]
+    return returnedItem
+end
+function ISMoveableSpriteProps:placeMoveableInternal(_square, _item, _spriteName)
+    if type(_spriteName) == 'string' and luautils.stringStarts(_spriteName, "safes_01") and _item:getModData()[modDataKay] then
+        modDataBuffer = _item:getModData()[modDataKay]
+        old_ISMoveableSpriteProps_placeMoveableInternal(self, _square, _item, _spriteName)
+        return
+    end
+    old_ISMoveableSpriteProps_placeMoveableInternal(self, _square, _item, _spriteName)
+end
+local destroyHook = ISDestroyCursor.canDestroy
+function ISDestroyCursor.canDestroy(self, object)
+   --local atmTiles = {"location_business_bank_01_64", "location_business_bank_01_65", "location_business_bank_01_66", "location_business_bank_01_67"}
+   local origReturn = oldDestroy(self, object)
+   if origReturn then
+      if object:getModData()['atmConverted'] == true and not isAdmin() then
+            return false
+      else
+            return origReturn
+      end
+   end
 end
