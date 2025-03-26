@@ -107,8 +107,26 @@ function MoonshineDistillery.loadCursor()
         end
 
     end
-
-
+    function ISMoonshineTileCursor:rotateKey(key)
+        --getCell():setDrag(nil, 0)
+        self.main = "MoonshineDistillery_16"
+        self.alt = "MoonshineDistillery_27"
+        if self.spr == self.main then
+            self.spr = self.alt
+            self:setSprite(self.alt)
+            self:setNorthSprite(self.main)
+            self.spriteName = self.alt
+        else
+            self.spr = self.main
+            self:setSprite(self.main)
+            self:setNorthSprite(self.alt)
+            self.spriteName = self.main
+        end
+        if getCore():getDebug() then
+            print(self:getSprite())
+        end
+    end
+--[[
     function ISMoonshineTileCursor:rotateKey(key)
         if key == getCore():getKey("Rotate building") then
             if self.spr	 == "MoonshineDistillery_16" then
@@ -122,7 +140,7 @@ function MoonshineDistillery.loadCursor()
             ISMoveableCursor.clearCacheForAllPlayers();
             return
         end
-    end
+    end ]]
 
     function ISMoonshineTileCursor:render(x, y, z, square)
 
@@ -135,10 +153,12 @@ function MoonshineDistillery.loadCursor()
         self.__index = self
         o:init()
         o:setSprite(spr)
-
-        o:setNorthSprite(spr2)
-
         o.spr = spr
+        o.spr2 = "MoonshineDistillery_27"
+        if spr == "MoonshineDistillery_27" then
+          o.spr2 = "MoonshineDistillery_16"
+        end
+        o:setNorthSprite(o.spr2)
         o.firstSq = firstSq
         o.square = firstSq
         o.character = character
@@ -151,9 +171,6 @@ function MoonshineDistillery.loadCursor()
         o.canBeAlwaysPlaced = true
         o.cd = false
         o.ticks = 0
-
-
-
         return o
     end
 end

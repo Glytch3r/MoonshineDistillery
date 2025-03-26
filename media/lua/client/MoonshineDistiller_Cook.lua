@@ -133,7 +133,31 @@ function MoonshineDistillery.setStage(obj, stage)
       ["cooking"] =  "MoonshineDistillery_4",
     }
    local nextStage =  tab[stage]
-   MoonshineDistillery.setSprite(obj, nextStage)
+   if stage == "empty" then
+      obj:getModData()['timestamp'] = nil
+      obj:getModData()['Flavor'] = nil
+   end
+
+
+
+   obj:setCustomColor(ColorInfo.new(color.r, color.g, color.b, 1));
+   obj:transmitCustomColor();
+
+
+
+   obj:setSpriteFromName(sprName)
+   obj:getSprite():setName(sprName)
+   obj:transmitUpdatedSpriteToServer();
+
+   obj:transmitModData()
+   ISInventoryPage.renderDirty = true
+   getPlayerInventory(0):refreshBackpacks()
+   getPlayerLoot(0):refreshBackpacks()
+
+
+
+
+
 end
 -----------------------            ---------------------------
 function MoonshineDistillery.getRemainingCook(cookingVat)
@@ -167,6 +191,10 @@ function MoonshineDistillery.CookTimer()
    local isCooking = cookData['timestamp'] ~= nil and cookData['Flavor'] ~= nil
    local isLit = MoonshineDistillery.hasLitCampfire(sq)
 
+   local pl = getPlayer()
+   local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
+   if not isClosestPl then return end
+
    local stage = MoonshineDistillery.getStage(sprName)
    if not stage then return end
    if stage == "empty" then
@@ -177,6 +205,18 @@ function MoonshineDistillery.CookTimer()
          ISInventoryPage.dirtyUI();
          MoonshineDistillery.setStage(cookingVat, "water")
       end
+
+      if (cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedClear") or
+         cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple") or
+         cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedPeach")) then
+         MoonshineDistillery.setStage(cookingVat, "unfermented")
+      elseif (cont:FindAndReturn("MoonDist.BucketMoonshineMashClear") or
+         cont:FindAndReturn("MoonDist.BucketMoonshineMashApple") or
+         cont:FindAndReturn("MoonDist.BucketMoonshineMashPeach")) then
+         MoonshineDistillery.setStage(cookingVat, "mash")
+      end
+
+
    end
    if stage == "water" then
       if not isCooking and isLit then
@@ -194,7 +234,7 @@ function MoonshineDistillery.CookTimer()
                cont:DoRemoveItem(item)
                cookingVat:transmitModData()
                ISInventoryPage.dirtyUI();
-               getPlayer():setHaloNote("Cooking Vat set "..tostring(flavor),150,250,150,900)
+               pl:setHaloNote("Cooking Vat set "..tostring(flavor),150,250,150,900)
                MoonshineDistillery.setStage(cookingVat, "cooking")
                break
             end
@@ -205,18 +245,28 @@ function MoonshineDistillery.CookTimer()
       cookingVat:setHighlighted(isLit, false)
       cookingVat:setHighlightColor(1, 0, 0, 0.8)
       local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
-      if timeleft and timeleft <= 0 then
-         local toSpawn = "MoonDist.BucketMoonshineMash" .. cookData['Flavor']
-         if toSpawn then
-            cont:AddItem(toSpawn)
-            ISInventoryPage.dirtyUI();
-            getSoundManager():PlayWorldSound('MoonshineSlosh', sq, 0, 5, 5, false)
-            cookingVat:getModData()['timestamp'] = nil
-            cookingVat:getModData()['Flavor'] = nil
-            cookingVat:setHighlighted(false, false)
-            cookingVat:transmitModData()
-            MoonshineDistillery.setStage(cookingVat, "mash")
+      if timeleft then
+         if isLit and timeleft <= 0 then
+            local toSpawn = "MoonDist.BucketMoonshineMash" .. cookData['Flavor']
+            if toSpawn then
+               cont:AddItem(toSpawn)
+               ISInventoryPage.dirtyUI();
+               getSoundManager():PlayWorldSound('MoonshineSlosh', sq, 0, 5, 5, false)
+               cookingVat:setHighlighted(false, false)
+
+               MoonshineDistillery.setStage(cookingVat, "mash")
+            end
+         elseif not (isLit and timeleft > 0)
+            cookingVat:getModData()['timestamp'] = getGameTime():getWorldAgeHours()
+            MoonshineDistillery.setStage(cookingVat, "water")
          end
+      end
+   end
+   if stage == "mash" then
+      if not (cont:FindAndReturn("MoonDist.BucketMoonshineMashClear")
+      and cont:FindAndReturn("MoonDist.BucketMoonshineMashApple")
+      and cont:FindAndReturn("MoonDist.BucketMoonshineMashPeach")) then
+         MoonshineDistillery.setStage(cookingVat, "empty")
       end
    end
    if stage == "unfermented" then

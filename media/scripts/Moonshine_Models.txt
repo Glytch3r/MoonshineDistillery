@@ -30,7 +30,26 @@ module Base
         texture = WorldItems/MoonshineMashBase,
     }
 
+    /*  -----------------------      empty*      --------------------------- */
 
+	model MoonshineGroundEmpty
+    {
+        mesh = WorldItems/Moonshine,
+        texture = WorldItems/MoonshineEmpty,
+    }
+
+	model MoonshineEmpty
+    {
+        mesh = Moonshine,
+        texture = WorldItems/MoonshineEmpty,
+    }
+
+
+	model MoonshineCaseEmpty
+    {
+        mesh = MoonshineCase,
+        texture = WorldItems/MoonshineEmpty,
+    }
     /*  -----------------------      flavors*      --------------------------- */
 
 

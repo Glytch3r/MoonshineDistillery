@@ -160,7 +160,7 @@ module MoonDist {
 		ReplaceOnUseOn	=	WaterSource-MoonshineWaterFull,
 		Icon	=	Moonshine,
 		StaticModel = Moonshine,
-		WorldStaticModel = MoonshineGround,
+		WorldStaticModel = MoonshineGroundEmpty,
 
 	    DisplayCategory = WaterContainer,
 		Weight	=	0.3,
@@ -168,17 +168,18 @@ module MoonDist {
 		Type	=	Normal,
 		Tags = EmptyPetrol,
 	}
-    item CeramicJugBox
-    {
-        DisplayName	=	Box of Ceramic Jugs,
-        DisplayCategory = Material,
-        DisplayCategory = Cooking,
-        Weight	=	0.8,
-        Type	=	Normal,
-		Icon	=	MoonshineCase,
-        SurvivalGear = TRUE,
-        WorldStaticModel = CeramicJugBox,
-    }
+
+
+	item CeramicJugBox
+	{
+		DisplayName		= Box of Ceramic Jugs,
+		DisplayCategory = Furniture,
+		Type			= Moveable,
+		Icon			= default,
+		Weight		  	= 0.5,
+		WorldObjectSprite	= trashcontainers_01_24,
+	}
+
 
     item MoonshinePetrol
 	{

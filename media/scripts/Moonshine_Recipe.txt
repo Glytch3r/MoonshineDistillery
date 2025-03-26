@@ -1,6 +1,36 @@
 
 module Base
 {
+
+
+
+
+
+
+	/* -----------------------       jar*     --------------------------- */
+
+    recipe Pack Empty Ceramic Jugs
+    {
+		MoonDist.EmptyCeramicJug=4,
+        Result:MoonDist.CeramicJugBox,
+
+        AnimNode:disassemble,
+        RemoveResultItem:true,
+        Time:15.0,
+		Category:Cooking,
+
+        Sound:MoonshinePack,
+    }
+
+	recipe Unpack Ceramic Jug Box
+    {
+        MoonDist.CeramicJugBox,
+        Result:MoonDist.EmptyCeramicJug=4,
+		Category:Cooking,
+        Time:15.0,
+
+        Sound:MoonshineUnpack,
+    }
 	/* -----------------------       moonshine*     --------------------------- */
 
 
@@ -52,6 +82,7 @@ module Base
 
 
 	/* -----------------------       pack*     --------------------------- */
+
     recipe Pack Clear Moonshine
     {
 		MoonDist.MoonshineClear=4,

@@ -35,27 +35,6 @@ end
 
 
 
-function MoonshineDistillery.setSprite(obj, sprName)
-   --obj:setSprite(sprName)
-   obj:setSpriteFromName(sprName)
-   obj:getSprite():setName(sprName)
-   local cont = obj:getContainer()
-   if cont then
-      cont:setDrawDirty(true)
-   end
-   ISInventoryPage.renderDirty = true
-   if isClient() then
-      obj:transmitCompleteItemToServer()
-      obj:transmitUpdatedSpriteToClients()
-      obj:transmitUpdatedSpriteToServer()
-   end
-   getPlayerInventory(0):refreshBackpacks()
-   getPlayerLoot(0):refreshBackpacks()
-
-end
-
-
-
 function MoonshineDistillery.delItem(cont, fType, qty)
     qty = qty or 1
     local count = cont:getItemCount(fType)

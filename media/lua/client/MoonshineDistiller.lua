@@ -294,13 +294,44 @@ end
 
 
 -----------------------            ---------------------------
-
 function MoonshineDistillery.checkDist(pl, sq)
    pl = pl or getPlayer()
-	local x, y = sq:getX(), sq:getY()
-	local dist = pl:DistTo(x, y)
-   return math.floor(dist) <= 3
+   local x, y, z = sq:getX(), sq:getY(), sq:getZ()
+   return pl:getZ() == z and math.floor(pl:DistTo(x, y)) <= 3
 end
+
+function MoonshineDistillery.isWithinRange(pl, targ, range)
+   return pl:getZ() == targ:getZ() and pl:DistTo(targ:getX(), targ:getY()) <= range
+end
+
+function myModule.getClosestPlayer(sq)
+    local closestPlayer = nil
+    local closestDistance = 15
+    local onlinePlayers = getOnlinePlayers()
+    for i = 0, onlinePlayers:size() - 1 do
+        local pl = onlinePlayers:get(i)
+        if pl then
+            local plSq = pl:getSquare()
+            if plSq then
+                local distance = sq:DistTo(plSq)
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestPlayer = pl
+                end
+            end
+        end
+    end
+    return closestPlayer
+end
+
+
+function MoonshineDistillery.isClosestPl(pl, sq)
+   pl = pl or getPlayer()
+   if not sq then return false end
+   return MoonshineDistillery.getClosestPl(sq) == pl
+end
+
+-----------------------            ---------------------------
 function MoonshineDistillery.delInvItem(item, inv)
    local bool = false
 
