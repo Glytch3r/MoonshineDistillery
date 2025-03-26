@@ -19,7 +19,7 @@ module Base
 
 	model MoonshineCase
     {
-        mesh = MoonshineCase,
+        mesh = WorldItems/MoonshineCaseBox,
         texture = WorldItems/Moonshine,
         /* scale = 1.4, */
     }
@@ -44,12 +44,11 @@ module Base
         texture = WorldItems/MoonshineEmpty,
     }
 
-
-	model MoonshineCaseEmpty
-    {
-        mesh = MoonshineCase,
-        texture = WorldItems/MoonshineEmpty,
-    }
+    model MoonshineCaseEmpty
+	{
+		mesh = WorldItems/MoonshineCaseBoxBox,
+		texture = WorldItems/MoonshineEmpty,
+	}
     /*  -----------------------      flavors*      --------------------------- */
 
 
@@ -70,8 +69,8 @@ module Base
 
 	model MoonshineCaseClear
     {
-        mesh = MoonshineCase,
-        texture = WorldItems/MoonshineClear,
+        mesh = WorldItems/MoonshineCaseBox,
+        texture = WorldItems/MoonshineCaseClear,
     }
 
     /*  -----------------------     apple*      --------------------------- */
@@ -91,8 +90,8 @@ module Base
 
 	model MoonshineCaseApple
     {
-        mesh = MoonshineCase,
-        texture = WorldItems/MoonshineApple,
+        mesh = WorldItems/MoonshineCaseBox,
+        texture = WorldItems/MoonshineCaseApple,
 
     }
     /*  -----------------------     peach*      --------------------------- */
@@ -112,8 +111,8 @@ module Base
 
 	model MoonshineCasePeach
     {
-        mesh = MoonshineCase,
-        texture = WorldItems/MoonshinePeach,
+        mesh = WorldItems/MoonshineCaseBox,
+        texture = WorldItems/MoonshineCasePeach,
     }
 
     /*  -----------------------            --------------------------- */

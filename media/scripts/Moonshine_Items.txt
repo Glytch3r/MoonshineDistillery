@@ -7,11 +7,11 @@ module MoonDist {
 	item MoonshineClear
 	{
 		DisplayName = Clear Moonshine,
-		Icon = Moonshine,
+		Icon = MoonshineClear,
 		ReplaceOnUse = EmptyCeramicJug,
 		StaticModel = Moonshine,
 		WorldStaticModel = MoonshineGroundClear,
-
+		Weight	=	0.45,
 		FoodType = Liquor,
 		AlcoholPower = 2,
 		Alcoholic = TRUE,
@@ -43,7 +43,7 @@ module MoonDist {
         DisplayCategory = Cooking,
         Weight	=	1.8,
         Type	=	Normal,
-        Icon	=	MoonshineCase,
+        Icon	=	MoonshineCaseClear,
         SurvivalGear = TRUE,
         WorldStaticModel = MoonshineCaseClear,
     }
@@ -51,11 +51,11 @@ module MoonDist {
 	item MoonshineApple
 	{
 		DisplayName = Apple Moonshine,
-		Icon = Moonshine,
+		Icon = MoonshineApple,
 		ReplaceOnUse = EmptyCeramicJug,
 		StaticModel = Moonshine,
 		WorldStaticModel = MoonshineGroundApple,
-
+		Weight	=	0.45,
 		FoodType = Liquor,
 		AlcoholPower = 2,
 		Alcoholic = TRUE,
@@ -87,7 +87,7 @@ module MoonDist {
         DisplayCategory = Cooking,
         Weight	=	1.8,
         Type	=	Normal,
-        Icon	=	MoonshineCase,
+        Icon	=	MoonshineCaseApple,
         SurvivalGear = TRUE,
         WorldStaticModel = MoonshineCaseApple,
     }
@@ -95,11 +95,11 @@ module MoonDist {
 	item MoonshinePeach
 	{
 		DisplayName = Peach Moonshine,
-		Icon = Moonshine,
+		Icon = MoonshinePeach,
 		ReplaceOnUse = EmptyCeramicJug,
 		StaticModel = Moonshine,
 		WorldStaticModel = MoonshineGroundPeach,
-
+		Weight	=	0.45,
 		FoodType = Liquor,
 		AlcoholPower = 2,
 		Alcoholic = TRUE,
@@ -131,7 +131,7 @@ module MoonDist {
         DisplayCategory = Cooking,
         Weight	=	1.8,
         Type	=	Normal,
-		Icon	=	MoonshineCase,
+		Icon	=	MoonshineCasePeach,
         SurvivalGear = TRUE,
         WorldStaticModel = MoonshineCasePeach,
     }
@@ -158,27 +158,30 @@ module MoonDist {
 		DisplayName	=	Ceramic Jug,
 		ReplaceTypes = PetrolSource MoonshinePetrol;WaterSource MoonshineWaterFull,
 		ReplaceOnUseOn	=	WaterSource-MoonshineWaterFull,
-		Icon	=	Moonshine,
-		StaticModel = Moonshine,
+		Icon	=	MoonshineEmpty,
+		StaticModel = MoonshineEmpty,
 		WorldStaticModel = MoonshineGroundEmpty,
 
 	    DisplayCategory = WaterContainer,
-		Weight	=	0.3,
+		Weight	=	0.25,
 		CanStoreWater = TRUE,
 		Type	=	Normal,
 		Tags = EmptyPetrol,
 	}
 
 
-	item CeramicJugBox
-	{
-		DisplayName		= Box of Ceramic Jugs,
-		DisplayCategory = Furniture,
-		Type			= Moveable,
-		Icon			= default,
-		Weight		  	= 0.5,
-		WorldObjectSprite	= trashcontainers_01_24,
-	}
+
+    item CeramicJugBox
+    {
+        DisplayName	=	Box of Ceramic Jugs,
+        DisplayCategory = Material,
+        DisplayCategory = Cooking,
+        Weight	=	1.8,
+        Type	=	Normal,
+		Icon	=	MoonshineCaseEmpty,
+        SurvivalGear = TRUE,
+        WorldStaticModel = MoonshineCaseEmpty,
+    }
 
 
     item MoonshinePetrol
