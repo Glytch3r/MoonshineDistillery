@@ -29,10 +29,6 @@ MoonshineDistillery = MoonshineDistillery or {}
 
 MoonshineDistillery.flavors = {"Clear","Apple","Peach"}
 
-function MoonshineDistillery.getDistillerTimer()
-   return SandboxVars.MoonshineDistillery.FermentationMinutes or 120
-end
-
 
 
 function MoonshineDistillery.delItem(cont, fType, qty)
@@ -95,9 +91,6 @@ end
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.DistillerContext)
 Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.DistillerContext)
 
-function MoonshineDistillery.hasMashBasePlaced(cont)
-   return cont:FindAndReturn("MoonDist.MoonshineMashBaseClear") or cont:FindAndReturn("MoonDist.MoonshineMashBaseApple") or cont:FindAndReturn("MoonDist.MoonshineMashBasePeach")
-end
 -----------------------            ---------------------------
 --[[
 obj:getModData()[''] =

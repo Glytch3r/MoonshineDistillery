@@ -290,6 +290,22 @@ function MoonshineDistillery.setDrainPort(sq2, sprName)
    getPlayerLoot(0):refreshBackpacks()
 
 end
+-----------------------            ---------------------------
+function MoonshineDistillery.doSledge(obj)
+   if isClient() then
+      sledgeDestroy(obj)
+   else
+      local sq = obj:getSquare()
+      if sq then
+         sq:RemoveTileObject(obj);
+         sq:getSpecialObjects():remove(obj);
+         sq:getObjects():remove(obj);
+         sq:transmitRemoveItemFromSquare(obj)
+      end
+   end
+end
+
+
 
 
 

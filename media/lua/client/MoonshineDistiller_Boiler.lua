@@ -153,8 +153,6 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
         if not hasPart3 or done3 then optTipDrain.notAvailable = true end
         local tip3 = ISWorldObjectContextMenu.addToolTip()
 
-
-
         optTipDrain.iconTexture = getTexture("media/textures/Item_MoonshineDrainPort.png")
         tip3.description = done3 and "Already Installed" or "Install Drain Port"
         if done3 then context:setOptionChecked(optTipDrain, true) end

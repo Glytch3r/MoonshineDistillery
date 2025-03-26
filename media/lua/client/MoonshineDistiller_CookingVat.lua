@@ -50,21 +50,47 @@ function MoonshineDistillery.findCookingVat()
    end
    return nil
 end
-function MoonshineDistillery.doSledge(obj)
-   if isClient() then
-      sledgeDestroy(obj)
-   else
-      local sq = obj:getSquare()
-      if sq then
-         sq:RemoveTileObject(obj);
-         sq:getSpecialObjects():remove(obj);
-         sq:getObjects():remove(obj);
-         sq:transmitRemoveItemFromSquare(obj)
-      end
-   end
+-----------------------            ---------------------------
+function MoonshineDistillery.getMashBase(cookingvatCont)
+    if not cookingvatCont then return nil end
+    local mashBuckets = {
+        "MoonDist.MoonshineMashBaseClear",
+        "MoonDist.MoonshineMashBaseApple",
+        "MoonDist.MoonshineMashBasePeach"
+    }
+    for _, bucket in ipairs(mashBuckets) do
+        local item = cookingvatCont:FindAndReturn(bucket)
+        if item then return item end
+    end
+    return nil
+end
+function MoonshineDistillery.getMashBucket(cookingvatCont)
+    if not cookingvatCont then return nil end
+    local mashBuckets = {
+        "MoonDist.BucketMoonshineMashClear",
+        "MoonDist.BucketMoonshineMashApple",
+        "MoonDist.BucketMoonshineMashPeach"
+    }
+    for _, bucket in ipairs(mashBuckets) do
+        local item = cookingvatCont:FindAndReturn(bucket)
+        if item then return item end
+    end
+    return nil
 end
 
-
+function MoonshineDistillery.getUnfermentedBucket(cookingvatCont)
+    if not cookingvatCont then return nil end
+    local unfermentedBuckets = {
+        "MoonDist.BucketMoonshineUnfermentedClear",
+        "MoonDist.BucketMoonshineUnfermentedApple",
+        "MoonDist.BucketMoonshineUnfermentedPeach"
+    }
+    for _, bucket in ipairs(unfermentedBuckets) do
+        local item = cookingvatCont:FindAndReturn(bucket)
+        if item then return item end
+    end
+    return nil
+end
 
 -----------------------   cookingVat*        ---------------------------
 function MoonshineDistillery.contextCV(player, context, worldobjects, test)
@@ -153,9 +179,7 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                end
                if  stage == "water" then
                   local hasMashBase = false
-                  if cookingvatCont:FindAndReturn("MoonDist.MoonshineMashBaseClear") or
-                  cookingvatCont:FindAndReturn("MoonDist.MoonshineMashBaseApple") or
-                  cookingvatCont:FindAndReturn("MoonDist.MoonshineMashBasePeach") then
+                  if MoonshineDistillery.getMashBase(cookingvatCont) ~= nil then
                      hasMashBase = true
                   end
                   if not hasMashBase then
@@ -168,7 +192,8 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                end
 
                if  stage == "cooking" then
-                  local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
+
+                  local timeleft = MoonshineDistillery.getRemainingCookMins(cookingVat)
                   cap = cap.."Flavor: "..tostring(cookingVat:getModData()['Flavor'])
                   cap = cap.."\nTime Remaining: "..tostring(timeleft)
 

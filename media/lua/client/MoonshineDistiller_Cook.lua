@@ -119,10 +119,6 @@ function MoonshineDistillery.getStage(sprName)
 end
 
 
-function MoonshineDistillery.getCookTarget()
-   return SandboxVars.MoonshineDistillery.HeatingMinutes or 24
-end
-
 
 function MoonshineDistillery.setStage(obj, stage)
     local tab = {
@@ -138,15 +134,8 @@ function MoonshineDistillery.setStage(obj, stage)
       obj:getModData()['Flavor'] = nil
    end
 
-
-
-   obj:setCustomColor(ColorInfo.new(color.r, color.g, color.b, 1));
-   obj:transmitCustomColor();
-
-
-
-   obj:setSpriteFromName(sprName)
-   obj:getSprite():setName(sprName)
+   obj:setSpriteFromName(nextStage)
+   obj:getSprite():setName(nextStage)
    obj:transmitUpdatedSpriteToServer();
 
    obj:transmitModData()
@@ -155,21 +144,10 @@ function MoonshineDistillery.setStage(obj, stage)
    getPlayerLoot(0):refreshBackpacks()
 
 
-
-
-
 end
 -----------------------            ---------------------------
-function MoonshineDistillery.getRemainingCook(cookingVat)
-    if not cookingVat then return nil end
-    local cookData = cookingVat:getModData()
-    if not cookData or not cookData['timestamp'] then return nil end
-    local targTime = MoonshineDistillery.getCookTarget()
-    local timecheck = getGameTime():getWorldAgeHours() - cookData['timestamp']
-    local remaining = targTime - timecheck
-    return math.floor(remaining * 60)
-end
 
+-----------------------            ---------------------------
 --[[
    local campfire = CCampfireSystem.instance:getLuaObjectOnSquare(sq)
    if not campfire then return end
@@ -184,35 +162,35 @@ function MoonshineDistillery.CookTimer()
    if not sprName then return end
 
    local cookData = cookingVat:getModData()
-   local cont = cookingVat:getContainer()
-   if not cont then return end
+   local cookingvatCont = cookingVat:getContainer()
+   if not cookingvatCont then return end
    local sq = cookingVat:getSquare()
    if not sq then return end
-   local isCooking = cookData['timestamp'] ~= nil and cookData['Flavor'] ~= nil
+
    local isLit = MoonshineDistillery.hasLitCampfire(sq)
 
    local pl = getPlayer()
    local isClosestPl = MoonshineDistillery.isClosestPl(pl, sq)
    if not isClosestPl then return end
 
+
+
    local stage = MoonshineDistillery.getStage(sprName)
    if not stage then return end
+   local isCooking = cookData['timestamp'] ~= nil and cookData['Flavor'] ~= nil and stage == "cooking"
+
    if stage == "empty" then
-      local item = cont:FindAndReturn("Base.BucketWaterFull")
+      local item = cookingvatCont:FindAndReturn("Base.BucketWaterFull")
       if item then
-         if isClient() then cont:removeItemOnServer(item) end
-         cont:DoRemoveItem(item)
+         if isClient() then cookingvatCont:removeItemOnServer(item) end
+         cookingvatCont:DoRemoveItem(item)
          ISInventoryPage.dirtyUI();
          MoonshineDistillery.setStage(cookingVat, "water")
       end
 
-      if (cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedClear") or
-         cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple") or
-         cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedPeach")) then
+      if MoonshineDistillery.getUnfermentedBucket(cookingvatCont) ~= nil then
          MoonshineDistillery.setStage(cookingVat, "unfermented")
-      elseif (cont:FindAndReturn("MoonDist.BucketMoonshineMashClear") or
-         cont:FindAndReturn("MoonDist.BucketMoonshineMashApple") or
-         cont:FindAndReturn("MoonDist.BucketMoonshineMashPeach")) then
+      elseif MoonshineDistillery.getMashBucket(cookingvatCont) ~= nil then
          MoonshineDistillery.setStage(cookingVat, "mash")
       end
 
@@ -226,12 +204,12 @@ function MoonshineDistillery.CookTimer()
             ["MoonDist.MoonshineMashBasePeach"] = "Peach"
          }
          for itemType, flavor in pairs(flavorMap) do
-            local item = cont:FindAndReturn(itemType)
+            local item = cookingvatCont:FindAndReturn(itemType)
             if item then
                cookingVat:getModData()['timestamp'] = getGameTime():getWorldAgeHours()
                cookingVat:getModData()['Flavor'] = flavor
-               if isClient() then cont:removeItemOnServer(item) end
-               cont:DoRemoveItem(item)
+               if isClient() then cookingvatCont:removeItemOnServer(item) end
+               cookingvatCont:DoRemoveItem(item)
                cookingVat:transmitModData()
                ISInventoryPage.dirtyUI();
                pl:setHaloNote("Cooking Vat set "..tostring(flavor),150,250,150,900)
@@ -244,12 +222,12 @@ function MoonshineDistillery.CookTimer()
    if stage == "cooking" then
       cookingVat:setHighlighted(isLit, false)
       cookingVat:setHighlightColor(1, 0, 0, 0.8)
-      local timeleft = MoonshineDistillery.getRemainingCook(cookingVat)
+      local timeleft = MoonshineDistillery.getRemainingCookMins(cookingVat)
       if timeleft then
          if isLit and timeleft <= 0 then
             local toSpawn = "MoonDist.BucketMoonshineMash" .. cookData['Flavor']
             if toSpawn then
-               cont:AddItem(toSpawn)
+               cookingvatCont:AddItem(toSpawn)
                ISInventoryPage.dirtyUI();
                getSoundManager():PlayWorldSound('MoonshineSlosh', sq, 0, 5, 5, false)
                cookingVat:setHighlighted(false, false)
@@ -257,22 +235,37 @@ function MoonshineDistillery.CookTimer()
                MoonshineDistillery.setStage(cookingVat, "mash")
             end
          elseif not (isLit and timeleft > 0) then
-            cookingVat:getModData()['timestamp'] = getGameTime():getWorldAgeHours()
-            MoonshineDistillery.setStage(cookingVat, "water")
+            cookingVat:getModData()['timestamp'] = nil
+            local flav = cookingVat:getModData()['Flavor']
+            if flav then
+               local toReturn = {
+                  ["Clear"] = ["MoonDist.MoonshineMashBaseClear"],
+                  ["Apple"] = ["MoonDist.MoonshineMashBaseApple"],
+                  ["Peach"] = ["MoonDist.MoonshineMashBasePeach"],
+               }
+
+               cookingvatCont:AddItem(toReturn[flav])
+               ISInventoryPage.dirtyUI()
+               cookingVat:getModData()['Flavor'] = nil
+               MoonshineDistillery.setStage(cookingVat, "water")
+            else
+               MoonshineDistillery.setStage(cookingVat, "empty")
+            end
          end
       end
+
    end
    if stage == "mash" then
-      if not (cont:FindAndReturn("MoonDist.BucketMoonshineMashClear")
-      and cont:FindAndReturn("MoonDist.BucketMoonshineMashApple")
-      and cont:FindAndReturn("MoonDist.BucketMoonshineMashPeach")) then
-         MoonshineDistillery.setStage(cookingVat, "empty")
+      if MoonshineDistillery.getMashBucket(cookingvatCont) == nil then
+         cookingVat:setCustomColor(ColorInfo.new(1, 0, 0, 0.5))
+         cookingVat:transmitCustomColor()
+      else
+         cookingVat:setCustomColor(ColorInfo.new(1, 1, 1, 1))
+         cookingVat:transmitCustomColor()
       end
    end
    if stage == "unfermented" then
-      if not (cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedClear")
-      and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedApple")
-      and cont:FindAndReturn("MoonDist.BucketMoonshineUnfermentedPeach")) then
+      if MoonshineDistillery.getUnfermentedBucket(cookingvatCont) == nil then
          MoonshineDistillery.setStage(cookingVat, "empty")
       end
    end
@@ -280,6 +273,7 @@ function MoonshineDistillery.CookTimer()
       sq:stopFire()
       if isClient() then sq:transmitStopFire() end
    end ]]
+
 end
 Events.EveryOneMinute.Remove(MoonshineDistillery.CookTimer)
 Events.EveryOneMinute.Add(MoonshineDistillery.CookTimer)

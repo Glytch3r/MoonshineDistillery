@@ -1,8 +1,5 @@
 
 MoonshineDistillery = MoonshineDistillery or {}
-function MoonshineDistillery.getFermentationTarget()
-   return SandboxVars.MoonshineDistillery.FermentationMinutes or 7200
-end
 
 
 function MoonshineDistillery.hasPower(sq)
@@ -17,16 +14,6 @@ end
 
 
 -----------------------            ---------------------------
-
-function MoonshineDistillery.getRemainingFermentationMins(boiler)
-    if not boiler then return nil end
-    local fermentData = boiler:getModData()
-    if not fermentData or not fermentData['timestamp'] then return nil end
-    local targTime = MoonshineDistillery.getFermentationTarget()
-    local timecheck = getGameTime():getWorldAgeHours() - fermentData['timestamp']
-    local remaining = math.max(0, (targTime - timecheck) * 60)
-    return math.floor(remaining)
-end
 
 
 function MoonshineDistillery.FermentationTimer()
@@ -48,7 +35,7 @@ function MoonshineDistillery.FermentationTimer()
 
     if not MoonshineDistillery.hasPower(sq) then return end
 
-    local isFermenting = fermentData['timestamp'] ~= nil and fermentData['Flavor'] ~= nil
+    local isFermenting = fermentData['timestamp'] ~= nil and fermentData['Flavor'] ~= nil and fermentData['active']
 
     --if not isFermenting then
     if not fermentData['active'] then
@@ -161,6 +148,8 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
         end
     end
     if boiler then
+
+
         local fermentData = boiler:getModData()
         --local spr = boiler:getSprite()
         local drainPort = MoonshineDistillery.getDrainPortObj(boiler)
@@ -183,16 +172,12 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
         local availableJugs = drainPortCont:getItemCount(jug)
 
 
+        local resetCap = "Reset Boiler"
 
         if boiler:getModData()['active'] then
+            resetCap = "Cancel"
             if timeLeft ~= nil then
                 if boiler:getModData()['Flavor'] ~= nil and boiler:getModData()['timestamp'] ~= nil then
-
-                    opt:addOptionOnTop("Cancel", worldobjects, function()
-                        boiler:getModData()['Flavor'] = nil
-                        boiler:getModData()['timestamp'] = nil
-                        boiler:getModData()['active'] = nil
-                    end)
                     opt:addOptionOnTop("Flavor: "..boiler:getModData()['Flavor'], nil)
                     --opt:addOptionOnTop("timestamp: "..boiler:getModData()['timestamp'], nil)
                     opt:addOptionOnTop("Time Remaining: "..tostring(timeLeft))
@@ -203,7 +188,11 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
             tip.description = "Place Unfermented Moonshine inside The Boiler"
             Main.toolTip = tip
         end
-
+        opt:addOptionOnTop(resetCap, worldobjects, function()
+            boiler:getModData()['Flavor'] = nil
+            boiler:getModData()['timestamp'] = nil
+            boiler:getModData()['active'] = nil
+        end)
         -----------------------            ---------------------------
 
         local subm = opt:addOptionOnTop("Yield: ")

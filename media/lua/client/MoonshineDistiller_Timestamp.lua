@@ -26,3 +26,40 @@
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
 
 MoonshineDistillery = MoonshineDistillery or {}
+
+
+-----------------------            ---------------------------
+function MoonshineDistillery.getRemainingTime(obj, targTime)
+   if not obj then return nil end
+   local data = obj:getModData()
+   if not data or not data['timestamp'] then return nil end
+   local timecheck = getGameTime():getWorldAgeHours() - data['timestamp']
+   local remaining = math.max(0, (targTime - timecheck) * 60)
+   return math.floor(remaining)
+end
+
+-----------------------            ---------------------------
+
+function MoonshineDistillery.getFermentationTarget()
+   return SandboxVars.MoonshineDistillery.FermentationMinutes or 7200
+end
+
+function MoonshineDistillery.getRemainingFermentationMins(boiler)
+    local targTime = MoonshineDistillery.getFermentationTarget()
+    return MoonshineDistillery.getRemainingTime(boiler, targTime)
+end
+
+-----------------------            ---------------------------
+
+function MoonshineDistillery.getCookTarget()
+   return SandboxVars.MoonshineDistillery.HeatingMinutes or 24
+end
+
+function MoonshineDistillery.getRemainingCookMins(cookingVat)
+    local targTime = MoonshineDistillery.getCookTarget()
+    return MoonshineDistillery.getRemainingTime(cookingVat, targTime)
+end
+
+
+
+-----------------------            ---------------------------
