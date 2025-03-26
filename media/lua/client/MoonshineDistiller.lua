@@ -320,7 +320,7 @@ function MoonshineDistillery.isWithinRange(pl, targ, range)
    return pl:getZ() == targ:getZ() and pl:DistTo(targ:getX(), targ:getY()) <= range
 end
 
-function myModule.getClosestPlayer(sq)
+function MoonshineDistillery.getClosestPlayer(sq)
     local closestPlayer = nil
     local closestDistance = 15
     local onlinePlayers = getOnlinePlayers()
