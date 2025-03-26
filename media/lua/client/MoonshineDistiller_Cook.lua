@@ -256,7 +256,7 @@ function MoonshineDistillery.CookTimer()
 
                MoonshineDistillery.setStage(cookingVat, "mash")
             end
-         elseif not (isLit and timeleft > 0)
+         elseif not (isLit and timeleft > 0) then
             cookingVat:getModData()['timestamp'] = getGameTime():getWorldAgeHours()
             MoonshineDistillery.setStage(cookingVat, "water")
          end
