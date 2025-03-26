@@ -180,7 +180,12 @@ function MoonshineDistillery.FermentationContext(player, context, worldobjects, 
                 if boiler:getModData()['Flavor'] ~= nil and boiler:getModData()['timestamp'] ~= nil then
                     opt:addOptionOnTop("Flavor: "..boiler:getModData()['Flavor'], nil)
                     --opt:addOptionOnTop("timestamp: "..boiler:getModData()['timestamp'], nil)
-                    opt:addOptionOnTop("Time Remaining: "..tostring(timeLeft))
+
+                    if MoonshineDistillery.hasThermometerOverlay(boiler) then
+                        opt:addOptionOnTop("Time Remaining: "..tostring(timeLeft))
+                    else
+                        opt:addOptionOnTop("Time Remaining: REQUIRES THERMOMETER TO VIEW")
+                    end
                 end
             end
         else
