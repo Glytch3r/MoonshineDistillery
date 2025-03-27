@@ -231,9 +231,9 @@ function MoonshineDistillery.doCook(cookingVat, pl)
             local flav = cookingVat:getModData()['Flavor']
             if flav then
                local toReturn = {
-                  ["Clear"] = ["MoonDist.MoonshineMashBaseClear"],
-                  ["Apple"] = ["MoonDist.MoonshineMashBaseApple"],
-                  ["Peach"] = ["MoonDist.MoonshineMashBasePeach"],
+                  ["Clear"] = "MoonDist.MoonshineMashBaseClear",
+                  ["Apple"] = "MoonDist.MoonshineMashBaseApple",
+                  ["Peach"] = "MoonDist.MoonshineMashBasePeach",
                }
 
                cookingvatCont:AddItem(toReturn[flav])

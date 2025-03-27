@@ -33,7 +33,7 @@ function MoonshineDistillery.doFerment(boiler, pl)
     if not spr then return end
 
     local drainPort = MoonshineDistillery.getDrainPortObj(boiler)
-    if not drainPort then break end
+    if not drainPort then return end
 
     local boilerData = boiler:getModData()
 
@@ -54,8 +54,8 @@ function MoonshineDistillery.doFerment(boiler, pl)
 
     local cont = boiler:getContainer()
     local drainPortCont = drainPort:getContainer()
-    if not cont or not drainPortCont then break end
-    if not MoonshineDistillery.hasPower(sq) then break end
+    if not cont or not drainPortCont then return end
+    if not MoonshineDistillery.hasPower(sq) then return end
 
     local isFermenting = boilerData['timestamp'] and boilerData['Flavor'] and boilerData['active']
 
@@ -91,7 +91,7 @@ function MoonshineDistillery.doFerment(boiler, pl)
     end
 
     local timeleft = MoonshineDistillery.getRemainingFermentationMins(boiler)
-    if not timeleft then break end
+    if not timeleft then return end
 
     local outputCount = SandboxVars.MoonshineDistillery.Yield or 8
     if timeleft <= 0 and boilerData['active'] then

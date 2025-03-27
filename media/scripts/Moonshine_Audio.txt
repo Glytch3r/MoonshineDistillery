@@ -2,7 +2,17 @@
 module Base
 {
 
-
+	sound MoonshineReclaim
+	{
+		category = Item,
+		clip
+		{
+			file = media/sound/MoonshineReclaim.ogg,
+			distanceMin = 4, distanceMax = 16, is3D = true,
+			maxInstancesPerEmitter = 1,  reverbFactor = 5,
+			volume = 1, loop = false,
+		}
+    }
 	sound MoonshineProduct
 	{
 		category = Item,

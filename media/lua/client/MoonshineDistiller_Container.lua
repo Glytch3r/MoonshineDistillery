@@ -80,17 +80,16 @@ function MoonshineDistillery.isCompleteParts(obj, checkThermometer)
     local offsets = {
         ["MoonshineDistillery_16"] = { -- boiler
             {0, 0, "MoonshineDistillery_20"}, -- StillCap
+            --{0, 0, "MoonshineDistillery_21"}, -- Thermometer
             {1, -1, "MoonshineDistillery_22"}, -- DrainPort
-
             {1, 0, "MoonshineDistillery_17"}, -- thumper tall
             {1, -1, "MoonshineDistillery_18"}, -- thumper short
             {1, -1, "MoonshineDistillery_19"}, -- can
         },
         ["MoonshineDistillery_27"] = { -- boiler
             {0, 0, "MoonshineDistillery_28"}, -- StillCap
-            {0, 0, "MoonshineDistillery_29"}, -- Thermometer
+            --{0, 0, "MoonshineDistillery_29"}, -- Thermometer
             {-1, 1, "MoonshineDistillery_30"}, -- DrainPort
-
             {0, 1, "MoonshineDistillery_26"}, -- thumper tall
             {-1, 1, "MoonshineDistillery_25"}, -- thumper short
             {-1, 1, "MoonshineDistillery_24"}, -- can
@@ -101,6 +100,7 @@ function MoonshineDistillery.isCompleteParts(obj, checkThermometer)
         offsets = {
             ["MoonshineDistillery_16"] = { -- boiler
                 {0, 0, "MoonshineDistillery_20"}, -- StillCap
+                {0, 0, "MoonshineDistillery_21"}, -- Thermometer
                 {1, -1, "MoonshineDistillery_22"}, -- DrainPort
                 {1, 0, "MoonshineDistillery_17"}, -- thumper tall
                 {1, -1, "MoonshineDistillery_18"}, -- thumper short
@@ -108,6 +108,7 @@ function MoonshineDistillery.isCompleteParts(obj, checkThermometer)
             },
             ["MoonshineDistillery_27"] = { -- boiler
                 {0, 0, "MoonshineDistillery_28"}, -- StillCap
+                {0, 0, "MoonshineDistillery_29"}, -- Thermometer
                 {-1, 1, "MoonshineDistillery_30"}, -- DrainPort
                 {0, 1, "MoonshineDistillery_26"}, -- thumper tall
                 {-1, 1, "MoonshineDistillery_25"}, -- thumper short

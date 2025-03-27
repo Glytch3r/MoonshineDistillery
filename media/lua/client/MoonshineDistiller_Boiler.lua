@@ -40,19 +40,145 @@ function MoonshineDistillery.getDrainPortFromBoiler(boiler, sprName)
     if not drainPort then return nil end
     return drainPort
 end
+
+local thumperList = {
+    ["MoonshineDistillery_17"] = true,
+    ["MoonshineDistillery_18"] = true,
+    ["MoonshineDistillery_26"] = true,
+    ["MoonshineDistillery_25"] = true,
+
+}
+local canCondenserList = {
+    ["MoonshineDistillery_19"] = true,
+    ["MoonshineDistillery_24"] = true,
+
+}
+
+
+
+
+function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
+    local pl = getSpecificPlayer(player)
+    local inv = pl:getInventory()
+    local sq = clickedSquare
+    if not MoonshineDistillery.isLearned(pl) or not sq then return end
+
+    local thumper, boiler, canCondenser = nil, nil, nil
+    for i = 0, sq:getObjects():size() - 1 do
+        local obj = sq:getObjects():get(i)
+        local sprName = obj:getSprite() and obj:getSprite():getName() or nil
+        if sprName then
+            if thumperList[sprName] then thumper = obj end
+            if canCondenserList[sprName] then canCondenser = obj end
+            if MoonshineDistillery.isBoilerTile(sprName) then
+                boiler = obj
+            elseif luautils.stringStarts(sprName, "MoonshineDistillery") then
+                boiler = MoonshineDistillery.getBoilerObj(sq, sprName)
+            end
+        end
+    end
+    if not boiler then return end
+
+    local instMenu = context:addOptionOnTop("Install Parts")
+    instMenu.iconTexture = getTexture("media/ui/MoonshineInstall.png")
+    local instOpt = ISContextMenu:getNew(context)
+    context:addSubMenu(instMenu, instOpt)
+
+    local function addInstallOption(name, itemCheck, installFunc, icon)
+        local option = instOpt:addOption(name, worldobjects, installFunc)
+        local hasItem = itemCheck()
+        if not hasItem then option.notAvailable = true end
+        local tip = ISWorldObjectContextMenu.addToolTip()
+        tip.description = hasItem and "Install " .. name or "Missing " .. name
+        option.iconTexture = getTexture(icon)
+        option.toolTip = tip
+    end
+
+    addInstallOption("Thermometer", function() return MoonshineDistillery.hasThermometerItem(pl) end,
+        function() MoonshineDistillery.spawnPart(MoonshineDistillery.getOverlayToAdd(boiler:getSprite():getName(), "Thermometer"), sq, MoonshineDistillery.getThermometer(pl), inv) end,
+        "media/textures/Item_MoonshineThermometer.png")
+
+    addInstallOption("Still Cap", function() return MoonshineDistillery.hasStillCapItem(pl) end,
+        function()
+            local spr = MoonshineDistillery.getOverlayToAdd(boiler:getSprite():getName(), "StillCap")
+            MoonshineDistillery.spawnPart(spr, sq, MoonshineDistillery.getStillCapItem(pl), inv)
+            boiler:setIsThumpable(true)
+            boiler:setIsContainer(true)
+            boiler:setIsDismantable(false)
+            boiler:getContainer():setType('Distiller')
+            if isClient() then
+                boiler:transmitCompleteItemToServer()
+                boiler:transmitUpdatedSpriteToClients()
+            end
+        end, "media/textures/Item_MoonshineStillCap.png")
+
+    addInstallOption("Drain Port", function() return MoonshineDistillery.hasDrainPortItem(pl) end,
+        function() MoonshineDistillery.setDrainPort(sq, boiler:getSprite():getName()) end,
+        "media/textures/Item_MoonshineDrainPort.png")
+
+    local brkMenu = context:addOptionOnTop("Reclaim Distiller Parts")
+    brkMenu.iconTexture = getTexture("media/ui/MoonshineInstall.png")
+    local brkOpt = ISContextMenu:getNew(context)
+    context:addSubMenu(brkMenu, brkOpt)
+
+    local function addReclaimOption(name, obj, icon)
+        local option = brkOpt:addOption(name, worldobjects, function() MoonshineDistillery.doReclaim(obj) end)
+        if not obj then option.notAvailable = true end
+        option.iconTexture = getTexture(icon)
+    end
+
+    addReclaimOption("Can Condenser", canCondenser, "media/textures/Item_MoonshineBoiler.png")
+    addReclaimOption("Boiler", boiler, "media/textures/Item_MoonshineBoiler.png")
+    addReclaimOption("Thumper", thumper, "media/textures/Item_MoonshineThumper.png")
+    addReclaimOption("Thermometer", MoonshineDistillery.getThermometerCapObj(boiler), "media/textures/Item_MoonshineThermometer.png")
+    addReclaimOption("Still Cap", MoonshineDistillery.getStillCapObj(boiler), "media/textures/Item_MoonshineStillCap.png")
+    addReclaimOption("Drain Port", MoonshineDistillery.getDrainPortObj(boiler), "media/textures/Item_MoonshineDrainPort.png")
+
+    if not MoonshineDistillery.checkDist(pl, sq) then
+        instMenu.notAvailable = true
+        brkMenu.notAvailable = true
+    end
+end
+
+Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.BoilerContext)
+Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.BoilerContext)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
 function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
     local pl = getSpecificPlayer(player)
     local inv = pl:getInventory()
     local sq = clickedSquare
     if MoonshineDistillery.isLearned(pl) then
         if not sq then return end
-
+        local thumper = nil
         local boiler = nil
         for i = 0, sq:getObjects():size() - 1 do
             local obj = sq:getObjects():get(i)
             local spr = obj:getSprite()
             local sprName = spr and spr:getName() or nil
             if sprName then
+
+
+                if thumperList[sprName] then
+                    thumper = obj
+                end
+                if canCondenserList[sprName] then
+                    canCondenser = obj
+                end
+
+
                 if MoonshineDistillery.isBoilerTile(sprName) then
                     boiler = obj
                 elseif luautils.stringStarts(sprName, "MoonshineDistillery") then
@@ -61,27 +187,61 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
                 if boiler then break end
             end
         end
-        if not boiler then return end
-        sq = boiler:getSquare()
+
+        --sq = boiler:getSquare()
         obj = boiler
         local instMenu = context:addOptionOnTop("Install Parts")
         instMenu.iconTexture = getTexture("media/ui/MoonshineInstall.png")
         local isntopt = ISContextMenu:getNew(context)
         context:addSubMenu(instMenu, isntopt)
 
+        local brkMenu = context:addOptionOnTop("Reclaim Distiller Parts")
+        brkMenu.iconTexture = getTexture("media/ui/MoonshineInstall.png")
+        local isntopt = ISContextMenu:getNew(context)
+        context:addSubMenu(brkMenu, brkopt)
+
+
+
+        local brk1 = brkopt:addOption('Can Condenser', worldobjects, function()
+            MoonshineDistillery.doReclaim(canCondenser)
+        end)
+        if not canCondenser then
+            brk1.notAvailable = true
+        end
+
+
+
+
         local fake = isntopt:addOptionOnTop('Boiler', worldobjects, nil)
-        fake.notAvailable = true
         local tip01 = ISWorldObjectContextMenu.addToolTip()
-        context:setOptionChecked(fake, true)
+        brkopt:addOption('Boiler', worldobjects, function()
+            MoonshineDistillery.doReclaim(boiler)
+        end)
+        if not boiler then
+            fake.notAvailable = true
+            brk2.notAvailable = true
+        else
+            context:setOptionChecked(fake, true)
+            tip01.description = "Already Installed"
+        end
         fake.iconTexture = getTexture("media/textures/Item_MoonshineBoiler.png")
-        tip01.description = "Already Installed"
         fake.toolTip = tip01
 
+
+
         local fake2 = isntopt:addOption('Thumper', worldobjects, nil)
-        fake2.notAvailable = true
         local tip02 = ISWorldObjectContextMenu.addToolTip()
-        context:setOptionChecked(fake2, true)
-        tip02.description = "Already Installed"
+
+        local brk2 = brkopt:addOption('Thumper', worldobjects, function()
+            MoonshineDistillery.doReclaim(thumper)
+        end)
+        if not thumper then
+            brk2.notAvailable = true
+            fake2.notAvailable = true
+        else
+            tip02.description = "Already Installed"
+            context:setOptionChecked(fake2, true)
+        end
         fake2.iconTexture = getTexture("media/textures/Item_MoonshineThumper.png")
         fake2.toolTip = tip02
 
@@ -98,6 +258,14 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
         if not hasPart1 or done1 then
             optTipThermo.notAvailable = true
             context:setOptionChecked(optTipThermo, true)
+
+
+            brkopt:addOption('Thermometer', worldobjects, function()
+                local brkObj = MoonshineDistillery.getThermometerCapObj(boiler)
+                MoonshineDistillery.doReclaim(brkObj)
+            end)
+
+
         end
         local tip1 = ISWorldObjectContextMenu.addToolTip()
         optTipThermo.iconTexture = getTexture("media/textures/Item_MoonshineThermometer.png")
@@ -128,6 +296,11 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
         if not hasPart2 or done2 then
             optTipSCap.notAvailable = true
             context:setOptionChecked(optTipSCap, true)
+
+            brkopt:addOption('Still Cap', worldobjects, function()
+                local brkObj = MoonshineDistillery.getStillCapObj(boiler)
+                MoonshineDistillery.doReclaim(brkObj)
+            end)
         end
         local tip2 = ISWorldObjectContextMenu.addToolTip()
         optTipSCap.iconTexture = getTexture("media/textures/Item_MoonshineStillCap.png")
@@ -154,7 +327,18 @@ function MoonshineDistillery.BoilerContext(player, context, worldobjects, test)
 
         optTipDrain.iconTexture = getTexture("media/textures/Item_MoonshineDrainPort.png")
         tip3.description = done3 and "Already Installed" or "Install Drain Port"
-        if done3 then context:setOptionChecked(optTipDrain, true) end
+        if done3 then
+            context:setOptionChecked(optTipDrain, true)
+
+
+        end
+        brkopt:addOption('Drain Port', worldobjects, function()
+            MoonshineDistillery.doReclaim(drainPort)
+        end)
+        if not drainPort then
+            optTipSCap.notAvailable = true
+        end
+
         optTipDrain.toolTip = tip3
 
         if not MoonshineDistillery.checkDist(pl, sq) then
@@ -168,3 +352,4 @@ end
 
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.BoilerContext)
 Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.BoilerContext)
+ ]]

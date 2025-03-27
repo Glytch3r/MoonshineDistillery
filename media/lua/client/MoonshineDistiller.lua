@@ -29,6 +29,17 @@
 MoonshineDistillery = MoonshineDistillery or {}
 
 
+function MoonshineDistillery.isDistillerPart(sprName)
+   local tab = {
+    ["MoonshineDistillery_17"] = true,
+    ["MoonshineDistillery_18"] = true,
+    ["MoonshineDistillery_19"] = true,
+    ["MoonshineDistillery_26"] = true,
+    ["MoonshineDistillery_25"] = true,
+    ["MoonshineDistillery_24"] = true,
+   }
+   return tab[sprName]
+end
 -----------------------            ---------------------------
 function MoonshineDistillery.CanPlace(pl)
    local inv = pl:getInventory()
@@ -156,6 +167,21 @@ function MoonshineDistillery.isDrainPort(sprName)
    return tab[sprName]
 end
 -----------------------            ---------------------------
+
+
+function MoonshineDistillery.getThermometerCapObj(obj)
+   local sq = obj:getSquare()
+   if not obj or not sq then return nil end
+   for i = 0, sq:getObjects():size() - 1 do
+      local obj2 = sq:getObjects():get(i)
+      if obj2:getSprite() and  MoonshineDistillery.isThermometer(obj2:getSprite():getName()) then
+         return obj2
+      end
+   end
+   return nil
+end
+
+
 function MoonshineDistillery.hasThermometerOverlay(obj)
    if obj:getOverlaySprite() ~= nil then
       local sprName = obj:getOverlaySprite():getName()
@@ -291,19 +317,7 @@ function MoonshineDistillery.setDrainPort(sq2, sprName)
 
 end
 -----------------------   hook*         ---------------------------
-function MoonshineDistillery.doSledge(obj)
-   if isClient() then
-      sledgeDestroy(obj)
-   else
-      local sq = obj:getSquare()
-      if sq then
-         sq:RemoveTileObject(obj);
-         sq:getSpecialObjects():remove(obj);
-         sq:getObjects():remove(obj);
-         sq:transmitRemoveItemFromSquare(obj)
-      end
-   end
-end
+
 
 function MoonshineDistillery.isMoonshineDistillery(obj)
    if not obj then return false end

@@ -11,6 +11,15 @@ module MoonDist {
         Icon = MoonshineBoiler,
     }
 
+    item ThumperPiece
+    {
+        DisplayName = Piece of Thumper,
+        DisplayCategory = Material,
+        Weight = 1.5,
+        Type = Normal,
+        Icon = MoonshineThumper,
+    }
+
     item Thumper
     {
         DisplayName = Thumper,
@@ -65,6 +74,19 @@ module MoonDist {
         Time:250.0,
         Category:Welding,
         OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        SkillRequired:MetalWelding=3;Electricity=3,
+        NeedToBeLearn:true,
+    }
+
+    recipe Build Thumper
+    {
+        MoonDist.ThumperPiece=2,
+        Result:MoonDist.Thumper,
+        Time:250.0,
+        Category:Welding,
+        OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
+        Prop1:Source=1,
+
         SkillRequired:MetalWelding=3;Electricity=3,
         NeedToBeLearn:true,
     }

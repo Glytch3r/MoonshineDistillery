@@ -189,10 +189,13 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                   cap = cap.."Place Bucket of Water Inside Cooking Vat"
                   --cookM.notAvailable = true
                   local recopt = cookopt:addOptionOnTop("Reclaim Barrel", worldobjects, function()
-                     local fType = cookingVat:getModData()['itemFullType'] or "Base.MetalDrum"
+                   --[[   local fType = cookingVat:getModData()['itemFullType'] or "Base.MetalDrum"
                      local item = InventoryItemFactory.CreateItem(fType);
                      sq:AddWorldInventoryItem(item, 0.5, 0.5, 0);
-                     MoonshineDistillery.doSledge(cookingVat)
+                     MoonshineDistillery.doSledge(cookingVat) ]]
+
+                     MoonshineDistillery.doReclaim(cookingVat)
+
                      ISInventoryPage.dirtyUI();
                      context:hideAndChildren()
                   end)
