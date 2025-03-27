@@ -61,6 +61,8 @@ function MoonshineDistillery.loadCursor()
                 --{x, y, z, "MoonshineDistillery_28"}, --StillCap
             }
         end
+
+
         self.positions = positions
         local firstSq = getCell():getOrCreateGridSquare(x, y, z)
         if not MoonshineDistillery.checkDist(pl, firstSq) then

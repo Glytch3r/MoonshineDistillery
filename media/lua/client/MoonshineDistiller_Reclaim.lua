@@ -41,10 +41,11 @@ function MoonshineDistilleryReclaim:isValid()
     return self.sq ~= nil
 end
 
-
 function MoonshineDistilleryReclaim:update()
-    -- No update logic needed
+    self.character:faceThisObject(self.part)
+	return self.character:shouldBeTurning()
 end
+
 
 function MoonshineDistilleryReclaim:start()
     self:setActionAnim("Loot")
@@ -76,8 +77,8 @@ function MoonshineDistilleryReclaim:new(character, sq, part)
     o.character = character
     o.sq = sq
     o.part = part
-    o.stopOnWalk = false
-    o.stopOnRun = false
+    o.stopOnWalk = true
+    o.stopOnRun = true
     o.maxTime = 100
     return o
 end
@@ -288,6 +289,66 @@ end
 
 
 
+local thumperList = {
+    ["MoonshineDistillery_17"] = true,
+    ["MoonshineDistillery_18"] = true,
+    ["MoonshineDistillery_26"] = true,
+    ["MoonshineDistillery_25"] = true,
+
+}
+local canCondenserList = {
+    ["MoonshineDistillery_19"] = true,
+    ["MoonshineDistillery_24"] = true,
+
+}
+
+
+
+function MoonshineDistillery.DistillerReclaimContext(player, context, worldobjects, test)
+    local pl = getSpecificPlayer(player)
+    local sq = clickedSquare
+    --if not MoonshineDistillery.isLearned(pl) or not sq then return end
+
+    local thumper, boiler, canCondenser = nil, nil, nil
+    for i = 0, sq:getObjects():size() - 1 do
+        local obj = sq:getObjects():get(i)
+        local sprName = obj:getSprite() and obj:getSprite():getName() or nil
+        if sprName then
+            if thumperList[sprName] then thumper = obj end
+            if canCondenserList[sprName] then canCondenser = obj end
+            if MoonshineDistillery.isBoilerTile(sprName) then
+                boiler = obj
+            elseif luautils.stringStarts(sprName, "MoonshineDistillery") then
+                boiler = MoonshineDistillery.getBoilerObj(sq, sprName)
+            end
+        end
+    end
+    if not boiler then return end
+
+    local brkMenu = context:addOptionOnTop("Reclaim Distiller Parts")
+    brkMenu.iconTexture = getTexture("media/ui/MoonshineReclaim.png")
+    local brkOpt = ISContextMenu:getNew(context)
+    context:addSubMenu(brkMenu, brkOpt)
+
+    local function addReclaimOption(name, obj, icon)
+        local option = brkOpt:addOption(name, worldobjects, function() MoonshineDistillery.doReclaim(obj) end)
+        if not obj then option.notAvailable = true end
+        option.iconTexture = getTexture(icon)
+    end
+
+    addReclaimOption("Can Condenser", canCondenser, "media/textures/Item_MoonshineBoiler.png")
+    addReclaimOption("Boiler", boiler, "media/textures/Item_MoonshineBoiler.png")
+    addReclaimOption("Thumper", thumper, "media/textures/Item_MoonshineThumper.png")
+    addReclaimOption("Thermometer", MoonshineDistillery.getThermometerCapObj(boiler), "media/textures/Item_MoonshineThermometer.png")
+    addReclaimOption("Still Cap", MoonshineDistillery.getStillCapObj(boiler), "media/textures/Item_MoonshineStillCap.png")
+    addReclaimOption("Drain Port", MoonshineDistillery.getDrainPortObj(boiler), "media/textures/Item_MoonshineDrainPort.png")
+--[[
+    if not MoonshineDistillery.checkDist(pl, sq) then
+        brkMenu.notAvailable = true
+    end ]]
+end
+
+Events.OnFillWorldObjectContextMenu.Add(MoonshineDistillery.DistillerReclaimContext)
 
 
 
