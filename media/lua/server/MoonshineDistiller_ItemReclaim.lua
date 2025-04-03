@@ -44,13 +44,7 @@ MoonshineDistillery.SprToItem = {
     --["MoonshineDistillery_24"]="", --can
 }
  ]]
- local cvatlist = {
-    ["MoonshineDistillery_0"] = true,
-    ["MoonshineDistillery_1"] = true,
-    ["MoonshineDistillery_2"] = true,
-    ["MoonshineDistillery_3"] = true,
-    ["MoonshineDistillery_4"] = true,
-}
+
 function MoonshineDistillery.ReclaimItem(obj)
     if not obj then return end
     local sq = obj:getSquare()
@@ -61,13 +55,13 @@ function MoonshineDistillery.ReclaimItem(obj)
     if not sprName then return end
 
     if luautils.stringStarts(sprName, "MoonshineDistillery") then
-        local isCookingVat = cvatlist[sprName]
+        local isCookingVat = MoonshineDistillery.cvatlist[sprName]
         local toSpawn = MoonshineDistillery.SprToItem[sprName]
 
         if isCookingVat then
             local cvData = obj:getModData()
             if cvData and cvData['itemFullType'] then
-                toSpawn = cvData['itemFullType']
+                toSpawn = cvData['itemFullType']  or "Base.MetalDrum"
             end
         end
 

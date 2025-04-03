@@ -116,66 +116,42 @@ function MoonshineDistillery.getUnfermentedBucket(cookingvatCont)
     return nil
 end
 
+function MoonshineDistillery.getSprName(obj)
+	local spr = obj:getSprite()
+   if spr then
+      local sprName = spr:getName()
+      if sprName then
+         return sprName
+      end
+   end
+	return nil
+end
+
 -----------------------   cookingVat*        ---------------------------
 function MoonshineDistillery.contextCV(player, context, worldobjects, test)
+
    local pl = getSpecificPlayer(player)
    local inv = pl:getInventory()
    local pr = pl:getPrimaryHandItem()
    local sq = clickedSquare
-   if not MoonshineDistillery.isLearned(pl) then return end
-   if not sq then return end
+
    local checkDist = MoonshineDistillery.checkDist(pl, sq)
 
    local isCampfire = false
    local campfire = nil
-
+   local cookingVat = nil
    for i = 0, sq:getObjects():size() - 1 do
       local obj = sq:getObjects():get(i)
       local spr = obj:getSprite()
-      local sprName = spr and spr:getName()
-
+      local sprName = MoonshineDistillery.getSprName(obj)
       if sprName then
-         if MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
-            isCampfire = true
-            campfire = obj
-            if not MoonshineDistillery.hasCookingVat(sq)  then
-               local fireopt = context:addOptionOnTop("Build Cooking Vat", worldobjects, function()
-                  local item = MoonshineDistillery.getMetalDrumItem(pl)
-                  if item then
-                     local itemFullType = item:getFullType()
-                     if not getCore():getDebug() then inv:Remove(item) end
-
-                     local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
-                     sq:AddTileObject(toSpawn)
-                     toSpawn:setName("Cooking Vat")
-                     toSpawn:setIsDismantable(false)
-                     toSpawn:setIsThumpable(true)
-                     --toSpawn:setWaterAmount(0)
-                     toSpawn:setIsContainer(true)
-                     toSpawn:getContainer():setType("CookingVat")
-                     getPlayerInventory(0):refreshBackpacks()
-                     getPlayerLoot(0):refreshBackpacks()
-                     toSpawn:getContainer():setDrawDirty(true)
-
-                     toSpawn:getModData()['itemFullType'] = itemFullType or "Base.MetalDrum"
-                     toSpawn:transmitModData()
-                     getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
-
-
-                  end
-               end)
-               fireopt.iconTexture = getTexture("media/ui/CookingVat.png")
-
-               if not MoonshineDistillery.getMetalDrumItem(pl) then
-                  fireopt.notAvailable = true
-               end
-            end
-         end
-
-         if MoonshineDistillery.isCookingVat(sprName) then
+         print(sprName)
+         local check = MoonshineDistillery.isCookingVat(sprName)
+         if check then
             cookingVat = obj
             local cookingvatCont = cookingVat:getContainer()
             local stage = MoonshineDistillery.getStage(sprName)
+
             if cookingvatCont and stage then
                local cookM = context:addOptionOnTop("Cooking Vat: ")
                cookM.iconTexture = getTexture("media/ui/CookingVat.png")
@@ -183,53 +159,28 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                context:addSubMenu(cookM, cookopt)
 
                local cookMtip = ISWorldObjectContextMenu.addToolTip()
+               local cap = "Stage: " .. tostring(stage) .. "\n"
 
-               local cap = "Stage: "..tostring(stage).."\n"
-               if  stage == "empty" then
-                  cap = cap.."Place Bucket of Water Inside Cooking Vat"
-                  --cookM.notAvailable = true
-                  local recopt = cookopt:addOptionOnTop("Reclaim Barrel", worldobjects, function()
-                   --[[   local fType = cookingVat:getModData()['itemFullType'] or "Base.MetalDrum"
-                     local item = InventoryItemFactory.CreateItem(fType);
-                     sq:AddWorldInventoryItem(item, 0.5, 0.5, 0);
-                     MoonshineDistillery.doSledge(cookingVat) ]]
-
-                     MoonshineDistillery.doReclaim(cookingVat)
-
-                     ISInventoryPage.dirtyUI();
-                     context:hideAndChildren()
-                  end)
-                  if checkDist then
-                      recopt.notAvailable = true
-                  end
-               end
-               if  stage == "water" then
-                  local hasMashBase = false
-                  if MoonshineDistillery.getMashBase(cookingvatCont) ~= nil then
-                     hasMashBase = true
-                  end
-                  if not hasMashBase then
-                     cap = cap.."Place Moonshine Mash Base Inside Cooking Vat\n"
+               if stage == "empty" then
+                  cap = cap .. "Place Bucket of Water Inside Cooking Vat"
+               elseif stage == "water" then
+                  if not MoonshineDistillery.getMashBase(cookingvatCont) then
+                     cap = cap .. "Place Moonshine Mash Base Inside Cooking Vat\n"
                   end
                   if not MoonshineDistillery.hasLitCampfire(sq) then
-                     cap =  cap.."Light The Campfire\n"
+                     cap = cap .. "Light The Campfire\n"
                   end
-
-               end
-
-               if  stage == "cooking" then
-
+               elseif stage == "cooking" then
                   local timeleft = MoonshineDistillery.getRemainingCookMins(cookingVat)
-                  cap = cap.."Flavor: "..tostring(cookingVat:getModData()['Flavor'])
-                  cap = cap.."\nTime Remaining: "..tostring(timeleft)
+                  cap = cap .. "Flavor: " .. tostring(cookingVat:getModData()['Flavor'])
+                  cap = cap .. "\nTime Remaining: " .. tostring(timeleft)
 
                   cookopt:addOption("Cancel", worldobjects, function()
                      MoonshineDistillery.setStage(cookingVat, "empty")
-                     ISInventoryPage.dirtyUI();
+                     ISInventoryPage.dirtyUI()
                   end)
-               end
-               if  stage == "mash" then
-                  cap = cap.."Leave the mash inside\nUse Strainer to filter"
+               elseif stage == "mash" then
+                  cap = cap .. "Leave the mash inside\nUse Strainer to filter"
 
                   local vatopt = cookopt:addOption("Filter Moonshine", worldobjects, function()
                      local flavorMap = {
@@ -249,6 +200,7 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                      end
                      MoonshineDistillery.setStage(obj, "unfermented")
                   end)
+
                   local ftip = ISWorldObjectContextMenu.addToolTip()
                   ftip.description = ""
                   if not (pr and pr:getFullType() == "MoonDist.Strainer") then
@@ -257,25 +209,56 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                   end
                   if not checkDist then
                      if ftip.description ~= "" then
-                        ftip.description = ftip.description.."\n"
+                        ftip.description = ftip.description .. "\n"
                      end
-                     ftip.description = ftip.description.."Too Far Away"
+                     ftip.description = ftip.description .. "Too Far Away"
                      vatopt.notAvailable = true
                   end
                   vatopt.toolTip = ftip
-               end
-
-               if  stage == "unfermented" then
-                  cap = cap.."Take the Unfermented Moonshine to the distiller"
+               elseif stage == "unfermented" then
+                  cap = cap .. "Take the Unfermented Moonshine to the distiller"
                end
 
                cookMtip.description = cap
                cookM.toolTip = cookMtip
             end
+         elseif not check and MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
+            isCampfire = true
+            campfire = obj
+            local item = MoonshineDistillery.getMetalDrumItem(pl)
+            if not MoonshineDistillery.hasCookingVat(sq) then
+               local fireopt = context:addOptionOnTop("Build Cooking Vat", worldobjects, function()
+
+                  if item then
+                     local itemFullType = item:getFullType()
+                     --if not getCore():getDebug() then   inv:Remove(item)  end
+                     inv:Remove(item)
+
+
+                     local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
+                     sq:AddTileObject(toSpawn)
+                     toSpawn:setName("Cooking Vat")
+                     toSpawn:setIsDismantable(false)
+                     toSpawn:setIsThumpable(true)
+                     toSpawn:setIsContainer(true)
+                     toSpawn:getContainer():setType("CookingVat")
+                     getPlayerInventory(0):refreshBackpacks()
+                     getPlayerLoot(0):refreshBackpacks()
+                     toSpawn:getContainer():setDrawDirty(true)
+
+                     toSpawn:getModData()['itemFullType'] = itemFullType or "Base.MetalDrum"
+                     toSpawn:transmitModData()
+                     getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
+                  end
+               end)
+               fireopt.iconTexture = getTexture("media/ui/CookingVat.png")
+               if not item then
+                  fireopt.notAvailable = true
+               end
+            end
          end
       end
    end
-
 end
 
 Events.OnFillWorldObjectContextMenu.Remove(MoonshineDistillery.contextCV)

@@ -21,23 +21,23 @@ MoonshineDistillery = MoonshineDistillery or {}
 
 -----------------------            ---------------------------
 MoonshineDistillery.SprToItem = {
-    ["MoonshineDistillery_16"]="MoonDist.Boiler",
-    ["MoonshineDistillery_27"]="MoonDist.Boiler",
+    ["MoonshineDistillery_16"]= "MoonDist.Boiler",
+    ["MoonshineDistillery_27"]= "MoonDist.Boiler",
 
-    ["MoonshineDistillery_17"]="MoonDist.ThumperPiece",
-    ["MoonshineDistillery_26"]="MoonDist.ThumperPiece",
+    ["MoonshineDistillery_17"]= "MoonDist.ThumperPiece",
+    ["MoonshineDistillery_26"]= "MoonDist.ThumperPiece",
 
-    ["MoonshineDistillery_18"]="MoonDist.ThumperPiece",
-    ["MoonshineDistillery_25"]="MoonDist.ThumperPiece",
+    ["MoonshineDistillery_18"]= "MoonDist.ThumperPiece",
+    ["MoonshineDistillery_25"]= "MoonDist.ThumperPiece",
 
-    ["MoonshineDistillery_21"]="MoonDist.Thermometer",
-    ["MoonshineDistillery_29"]="MoonDist.Thermometer",
+    ["MoonshineDistillery_21"]= "MoonDist.Thermometer",
+    ["MoonshineDistillery_29"]= "MoonDist.Thermometer",
 
-    ["MoonshineDistillery_20"]="MoonDist.StillCap",
-    ["MoonshineDistillery_28"]="MoonDist.StillCap",
+    ["MoonshineDistillery_20"]= "MoonDist.StillCap",
+    ["MoonshineDistillery_28"]= "MoonDist.StillCap",
 
-    ["MoonshineDistillery_22"]="MoonDist.DrainPort",
-    ["MoonshineDistillery_30"]="MoonDist.DrainPort",
+    ["MoonshineDistillery_22"]= "MoonDist.DrainPort",
+    ["MoonshineDistillery_30"]= "MoonDist.DrainPort",
 
     ["MoonshineDistillery_0"] = "Base.MetalDrum",
     ["MoonshineDistillery_1"] = "Base.MetalDrum",

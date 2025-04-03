@@ -29,6 +29,65 @@
 MoonshineDistillery = MoonshineDistillery or {}
 
 
+MoonshineDistillery.addParts = {
+   ["MoonshineDistillery_16"] = {["StillCap"] = "MoonshineDistillery_20", ["Thermometer"] = "MoonshineDistillery_21"},
+   ["MoonshineDistillery_27"] = {["StillCap"] = "MoonshineDistillery_28", ["Thermometer"] = "MoonshineDistillery_29"},
+   ["MoonshineDistillery_19"] = {["DrainPort"]= "MoonshineDistillery_22"},
+   ["MoonshineDistillery_24"] = {["DrainPort"]= "MoonshineDistillery_30"},
+}
+
+---------------------------
+function MoonshineDistillery.isBoilerTile(sprName)
+   local tab = {
+      ["MoonshineDistillery_16"] = true,
+      ["MoonshineDistillery_27"] = true
+   }
+   return tab[sprName]
+end
+
+function MoonshineDistillery.isStillCap(sprName)
+   local tab = {
+      ["MoonshineDistillery_20"] = true,
+      ["MoonshineDistillery_28"] = true
+   }
+   return tab[sprName]
+end
+function MoonshineDistillery.isThermometer(sprName)
+   local tab = {
+      ["MoonshineDistillery_21"] = true,
+      ["MoonshineDistillery_29"] = true
+   }
+   return tab[sprName]
+end
+function MoonshineDistillery.isCondenserCanTile(sprName)
+   local tab = {
+      ["MoonshineDistillery_19"] = true,
+      ["MoonshineDistillery_24"] = true
+   }
+   return tab[sprName]
+end
+function MoonshineDistillery.isDrainPort(sprName)
+   local tab = {
+      ["MoonshineDistillery_22"] = true,
+      ["MoonshineDistillery_30"] = true
+   }
+   return tab[sprName]
+end
+-----------------------            ---------------------------
+
+
+MoonshineDistillery.thumperList = {
+    ["MoonshineDistillery_17"] = true,
+    ["MoonshineDistillery_18"] = true,
+    ["MoonshineDistillery_26"] = true,
+    ["MoonshineDistillery_25"] = true,
+
+}
+MoonshineDistillery.canCondenserList = {
+    ["MoonshineDistillery_19"] = true,
+    ["MoonshineDistillery_24"] = true,
+
+}
 function MoonshineDistillery.isDistillerPart(sprName)
    local tab = {
     ["MoonshineDistillery_17"] = true,
@@ -40,6 +99,21 @@ function MoonshineDistillery.isDistillerPart(sprName)
    }
    return tab[sprName]
 end
+-----------------------            ---------------------------
+
+MoonshineDistillery.cvatlist = {
+    ["MoonshineDistillery_0"] = true,
+    ["MoonshineDistillery_1"] = true,
+    ["MoonshineDistillery_2"] = true,
+    ["MoonshineDistillery_3"] = true,
+    ["MoonshineDistillery_4"] = true,
+}
+MoonshineDistillery.FacePart = {
+    ["MoonshineDistillery_16"] = "MoonshineDistillery_22",
+    ["MoonshineDistillery_27"] = "MoonshineDistillery_30",
+    ["MoonshineDistillery_22"] = "MoonshineDistillery_16",
+    ["MoonshineDistillery_30"] = "MoonshineDistillery_27",
+}
 -----------------------            ---------------------------
 function MoonshineDistillery.CanPlace(pl)
    local inv = pl:getInventory()
@@ -106,13 +180,6 @@ function MoonshineDistillery.getMetalDrumItem(pl)
    return inv:FindAndReturn("MetalDrum") or inv:FindAndReturn("Moveables.industry_01_22") or inv:FindAndReturn("Moveables.industry_01_23")
 end
 -----------------------            ---------------------------
-MoonshineDistillery.addParts = {
-   ["MoonshineDistillery_16"] = {["StillCap"] = "MoonshineDistillery_20", ["Thermometer"] = "MoonshineDistillery_21"},
-   ["MoonshineDistillery_27"] = {["StillCap"] = "MoonshineDistillery_28", ["Thermometer"] = "MoonshineDistillery_29"},
-   ["MoonshineDistillery_19"] = {["DrainPort"]= "MoonshineDistillery_22"},
-   ["MoonshineDistillery_24"] = {["DrainPort"]= "MoonshineDistillery_30"},
-}
-
 function MoonshineDistillery.getOverlayToAdd(sprName, part)
    return MoonshineDistillery.addParts[sprName][part]
 end
@@ -128,45 +195,6 @@ function MoonshineDistillery.addOverlay(obj, sprName, part, item)
    end
 end
 ---------------------------
-
----------------------------
-function MoonshineDistillery.isBoilerTile(sprName)
-   local tab = {
-      ["MoonshineDistillery_16"] = true,
-      ["MoonshineDistillery_27"] = true
-   }
-   return tab[sprName]
-end
-
-function MoonshineDistillery.isStillCap(sprName)
-   local tab = {
-      ["MoonshineDistillery_20"] = true,
-      ["MoonshineDistillery_28"] = true
-   }
-   return tab[sprName]
-end
-function MoonshineDistillery.isThermometer(sprName)
-   local tab = {
-      ["MoonshineDistillery_21"] = true,
-      ["MoonshineDistillery_29"] = true
-   }
-   return tab[sprName]
-end
-function MoonshineDistillery.isCondenserCanTile(sprName)
-   local tab = {
-      ["MoonshineDistillery_19"] = true,
-      ["MoonshineDistillery_24"] = true
-   }
-   return tab[sprName]
-end
-function MoonshineDistillery.isDrainPort(sprName)
-   local tab = {
-      ["MoonshineDistillery_22"] = true,
-      ["MoonshineDistillery_30"] = true
-   }
-   return tab[sprName]
-end
------------------------            ---------------------------
 
 
 function MoonshineDistillery.getThermometerCapObj(obj)
@@ -251,13 +279,6 @@ function MoonshineDistillery.hasDrainPortOverlay(sq2)
     return false
 end
 
-
-MoonshineDistillery.FacePart = {
-    ["MoonshineDistillery_16"] = "MoonshineDistillery_22",
-    ["MoonshineDistillery_27"] = "MoonshineDistillery_30",
-    ["MoonshineDistillery_22"] = "MoonshineDistillery_16",
-    ["MoonshineDistillery_30"] = "MoonshineDistillery_27",
-}
 function MoonshineDistillery.getDrainPortSquare(x, y, z, sprName)
     if sprName == "MoonshineDistillery_16" then
         x = x + 1

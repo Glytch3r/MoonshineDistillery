@@ -106,7 +106,6 @@ end
 
 
 
-
 function MoonshineDistillery.getStage(sprName)
     local tab = {
         ["MoonshineDistillery_0"] = "empty",
