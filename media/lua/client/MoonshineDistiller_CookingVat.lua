@@ -200,13 +200,13 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                      end
                      MoonshineDistillery.setStage(obj, "unfermented")
                   end)
-
                   local ftip = ISWorldObjectContextMenu.addToolTip()
                   ftip.description = ""
-                  if not (pr and pr:getFullType() == "MoonDist.Strainer") then
+                  if not (pr ~= nil and pr:getFullType() == "MoonDist.Strainer") then
                      ftip.description = "Need to use Strainer"
                      vatopt.notAvailable = true
                   end
+
                   if not checkDist then
                      if ftip.description ~= "" then
                         ftip.description = ftip.description .. "\n"
