@@ -132,7 +132,7 @@ function MoonshineDistillery.setStage(obj, stage)
       obj:getModData()['timestamp'] = nil
       obj:getModData()['Flavor'] = nil
    end
-
+   obj:getModData()['stage'] = nextStage
    obj:setSpriteFromName(nextStage)
    obj:getSprite():setName(nextStage)
    obj:transmitUpdatedSpriteToServer();
@@ -273,6 +273,16 @@ function MoonshineDistillery.CookTimer()
    local pl = getPlayer()
    if not pl then return end
    for _, cookingVat in ipairs(vats) do
+      local sprName = MoonshineDistillery.getSprName(cookingVat)
+      local stage = MoonshineDistillery.getStage(sprName)
+      local cookData = cookingVat:getModData()
+      if cookData and stage and sprName then
+         if cookData['stage'] ~= nil then
+            if cookData['stage'] ~= stage then
+               MoonshineDistillery.setStage(cookingVat, tostring(cookData['stage']))
+            end
+         end
+      end
       MoonshineDistillery.doCook(cookingVat, pl)
    end
 end
