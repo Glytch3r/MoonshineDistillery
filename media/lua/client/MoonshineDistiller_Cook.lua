@@ -166,8 +166,9 @@ function MoonshineDistillery.doCook(cookingVat, pl)
    if not isClosestPl then return end
 
  ]]
-
-   local stage = MoonshineDistillery.getStage(sprName)
+   local overlay = cookingVat:getOverlaySprite()
+   local overlayName = overlay:getName()
+   local stage = MoonshineDistillery.getStage(overlayName) or  MoonshineDistillery.getStage(sprName) or cookData['stage']
    if not stage then return end
    local isCooking = cookData['timestamp'] ~= nil and cookData['Flavor'] ~= nil and stage == "cooking"
 
