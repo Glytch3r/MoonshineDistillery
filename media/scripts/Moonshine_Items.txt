@@ -145,7 +145,7 @@ module MoonDist {
         Type	=	Literature,
         Icon	=	MoonshineMag,
 
-        TeachedRecipes  =   Craft Clear Moonshine Mash Base;Craft Apple Moonshine Mash Base;Craft Peach Moonshine Mash Base;Build Moonshine Distiller;Build Boiler;Build Thumper;Build Thermometer;Build Still Cap;Build Drain Port;Craft Clear Moonshine;Craft Apple Moonshine;Craft Peach Moonshine;Gather Moonshine Mash into a Bucket;Separate the Mash from Unfermented Moonshine,
+        TeachedRecipes  =   Filter Moonshine;Craft Clear Moonshine Mash Base;Craft Apple Moonshine Mash Base;Craft Peach Moonshine Mash Base;Build Moonshine Distiller;Build Boiler;Build Thumper;Build Thermometer;Build Still Cap;Build Drain Port;Craft Clear Moonshine;Craft Apple Moonshine;Craft Peach Moonshine;Gather Moonshine Mash into a Bucket;Separate the Mash from Unfermented Moonshine,
         ReplaceOnUse    =   MoonshineMag,
         StaticModel = Magazine,
         WorldStaticModel = MoonshineMag,

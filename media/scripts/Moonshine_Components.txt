@@ -85,7 +85,6 @@ module MoonDist {
         Time:250.0,
         Category:Welding,
         OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
-        Prop1:Source=1,
 
         SkillRequired:MetalWelding=3;Electricity=3,
         NeedToBeLearn:true,
@@ -103,7 +102,7 @@ module MoonDist {
         Time:250.0,
         Category:Welding,
         OnGiveXP:Recipe.OnGiveXP.MoonshineCraftXP,
-        Prop1:Source=1,
+        Prop1:Source=2,
 
         SkillRequired:MetalWelding=3;Electricity=3,
         NeedToBeLearn:true,

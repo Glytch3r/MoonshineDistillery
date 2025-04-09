@@ -66,7 +66,7 @@ module Base
 
 	recipe Craft Peach Moonshine Mash Base
 	{
-		CannedPeachesOpen,
+		Peach,
 		SugarBrown/Sugar,
 		Cornmeal,
 		MoonDist.Malt=4,
@@ -79,8 +79,20 @@ module Base
         Sound:MoonshineDistiller,
 	}
 
+	/* -----------------------       filter*     --------------------------- */
 
-
+	recipe Filter Moonshine
+    {
+        MoonDist.BucketMoonshineMashClear/MoonDist.BucketMoonshineMashApple/MoonDist.BucketMoonshineMashPeach,
+        keep MoonDist.Strainer,
+        CanBeDoneFromFloor:true,
+        Result:MoonDist.Strainer,
+        Time:230.0,
+        Category:Cooking,
+        AnimNode:Disassemble,
+        OnCreate:Recipe.OnCreate.FilterMoonshine,
+        Sound:MoonshineSlosh,
+    }
 	/* -----------------------       pack*     --------------------------- */
 
     recipe Pack Clear Moonshine
@@ -141,6 +153,7 @@ module Base
 
         Sound:MoonshineUnpack,
     }
+
 	recipe Unpack Peach Moonshine
     {
         MoonDist.MoonshineCasePeach,

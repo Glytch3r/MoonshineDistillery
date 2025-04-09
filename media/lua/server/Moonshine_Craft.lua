@@ -43,6 +43,24 @@ function Recipe.OnGiveXP.MoonshineCraftXP2(recipe, ingredients, result, player)
     player:getXp():AddXP(Perks.MetalWelding, 1*mult);
 end
 
+function Recipe.OnCreate.FilterMoonshine(items, result, player)
+    for i=0,items:size() - 1 do
+        local item = items:get(i)
+        local fType = item:getFullType()
+        if fType then
+            local tab = {
+                ["MoonDist.BucketMoonshineMashClear"] = "MoonDist.BucketMoonshineUnfermentedClear",
+                ["MoonDist.BucketMoonshineMashApple"] = "MoonDist.BucketMoonshineUnfermentedApple",
+                ["MoonDist.BucketMoonshineMashPeach"] = "MoonDist.BucketMoonshineUnfermentedPeach",
+            }
+            local res = tab[fType]
+            if res then
+                player:getInventory():AddItem(res)
+            end
+        end
+    end
+end
+
 --[[
 
 getPlayer():getInventory():AddItem('Moveables.Moveable'):ReadFromWorldSprite('MoonshineDistillery_16')

@@ -101,6 +101,8 @@ function MoonshineDistillery.doFerment(boiler, pl)
         if flav then
             drainPortData[flav] = (drainPortData[flav] or 0) + outputCount
         end
+        boilerData['active'] = nil
+        boiler:transmitModData()
     end
 end
 

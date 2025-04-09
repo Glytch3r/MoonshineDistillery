@@ -27,8 +27,42 @@
 
 
 MoonshineDistillery = MoonshineDistillery or {}
+-----------------------            ---------------------------
+function MoonshineDistillery.ReclaimItem(obj)
+    if not obj then return end
+    local sq = obj:getSquare()
+    if not sq then return end
+    local spr = obj:getSprite()
+    if not spr then return end
+    local sprName = spr:getName()
+    if not sprName then return end
 
+    if luautils.stringStarts(sprName, "MoonshineDistillery") then
+        local isCookingVat = MoonshineDistillery.cvatlist[sprName]
+        local toSpawn = MoonshineDistillery.SprToItem[sprName]
 
+        if isCookingVat then
+            local cvData = obj:getModData()
+            if cvData and cvData['itemFullType'] then
+                toSpawn = cvData['itemFullType']  or "Base.MetalDrum"
+            end
+        end
+
+        if toSpawn then
+            getPlayer():getInventory():AddItem(toSpawn)
+            --sq:AddWorldInventoryItem(toSpawn, 0.0, 0.0, 0.0)
+            local sfx = "MoonshineReclaim"
+
+            if isServer() then
+                playServerSound(sfx, sq)
+            else
+                sq:playSound(sfx, true)
+            end
+
+        end
+    end
+    ISInventoryPage.dirtyUI()
+end
 -----------------------            ---------------------------
 
 --triggerEvent("OnObjectAboutToBeRemoved", dbgIso)
@@ -65,7 +99,7 @@ function MoonshineDistilleryReclaim:perform()
         self.character:getEmitter():stopSound(self.sound)
         self.sound = nil
     end
-
+    MoonshineDistillery.ReclaimItem(self.part)
     MoonshineDistillery.doSledge(self.part)
     ISBaseTimedAction.perform(self)
 end

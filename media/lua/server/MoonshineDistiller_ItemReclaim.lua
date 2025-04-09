@@ -21,30 +21,6 @@ MoonshineDistillery = MoonshineDistillery or {}
 
 -----------------------            ---------------------------
 --[[
-MoonshineDistillery.SprToItem = {
-    ["MoonshineDistillery_16"]="MoonDist.Boiler",
-    ["MoonshineDistillery_27"]="MoonDist.Boiler",
-
-    ["MoonshineDistillery_17"]="MoonDist.ThumperPiece",
-    ["MoonshineDistillery_26"]="MoonDist.ThumperPiece",
-
-    ["MoonshineDistillery_18"]="MoonDist.ThumperPiece",
-    ["MoonshineDistillery_25"]="MoonDist.ThumperPiece",
-
-    ["MoonshineDistillery_21"]="MoonDist.Thermometer",
-    ["MoonshineDistillery_29"]="MoonDist.Thermometer",
-
-    ["MoonshineDistillery_20"]="MoonDist.StillCap",
-    ["MoonshineDistillery_28"]="MoonDist.StillCap",
-
-    ["MoonshineDistillery_22"]="MoonDist.DrainPort",
-    ["MoonshineDistillery_30"]="MoonDist.DrainPort",
-
-    --["MoonshineDistillery_19"]="", --can
-    --["MoonshineDistillery_24"]="", --can
-}
- ]]
-
 function MoonshineDistillery.ReclaimItem(obj)
     if not obj then return end
     local sq = obj:getSquare()
@@ -66,6 +42,7 @@ function MoonshineDistillery.ReclaimItem(obj)
         end
 
         if toSpawn then
+           -- getPlayer():getInventory():AddItem(toSpawn)
             sq:AddWorldInventoryItem(toSpawn, 0.0, 0.0, 0.0)
             local sfx = "MoonshineReclaim"
 
@@ -78,8 +55,9 @@ function MoonshineDistillery.ReclaimItem(obj)
         end
     end
 end
+]]
 
-Events.OnObjectAboutToBeRemoved.Add(MoonshineDistillery.ReclaimItem)
+--Events.OnObjectAboutToBeRemoved.Add(MoonshineDistillery.ReclaimItem)
 --triggerEvent("OnObjectAboutToBeRemoved", dbgIso)
 --[[_____________________________________________________________________________________________________________________________
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░
