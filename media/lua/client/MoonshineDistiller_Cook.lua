@@ -135,6 +135,7 @@ function MoonshineDistillery.setStage(obj, stage)
    obj:getModData()['stage'] = nextStage
    obj:setSpriteFromName(nextStage)
    obj:getSprite():setName(nextStage)
+   obj:setOverlaySprite(nextStage, true)
    obj:transmitUpdatedSpriteToServer();
 
    obj:transmitModData()
