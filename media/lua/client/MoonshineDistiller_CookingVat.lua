@@ -222,34 +222,34 @@ function MoonshineDistillery.contextCV(player, context, worldobjects, test)
                cookMtip.description = cap
                cookM.toolTip = cookMtip
             end
-         elseif not check and MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
+         elseif MoonshineDistillery.isCampfire(obj) or CCampfireSystem.instance:getLuaObjectOnSquare(sq) then
             isCampfire = true
             campfire = obj
             local item = MoonshineDistillery.getMetalDrumItem(pl)
             if not MoonshineDistillery.hasCookingVat(sq) then
                local fireopt = context:addOptionOnTop("Build Cooking Vat", worldobjects, function()
 
-                  if item then
-                     local itemFullType = item:getFullType()
-                     --if not getCore():getDebug() then   inv:Remove(item)  end
-                     inv:Remove(item)
+
+                  local itemFullType = item:getFullType()
+                  --if not getCore():getDebug() then   inv:Remove(item)  end
+                  inv:Remove(item)
 
 
-                     local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
-                     sq:AddTileObject(toSpawn)
-                     toSpawn:setName("Cooking Vat")
-                     toSpawn:setIsDismantable(false)
-                     toSpawn:setIsThumpable(true)
-                     toSpawn:setIsContainer(true)
-                     toSpawn:getContainer():setType("CookingVat")
-                     getPlayerInventory(0):refreshBackpacks()
-                     getPlayerLoot(0):refreshBackpacks()
-                     toSpawn:getContainer():setDrawDirty(true)
+                  local toSpawn = IsoThumpable.new(getCell(), sq, "MoonshineDistillery_0", false, nil)
+                  sq:AddTileObject(toSpawn)
+                  toSpawn:setName("Cooking Vat")
+                  toSpawn:setIsDismantable(false)
+                  toSpawn:setIsThumpable(true)
+                  toSpawn:setIsContainer(true)
+                  toSpawn:getContainer():setType("CookingVat")
+                  getPlayerInventory(0):refreshBackpacks()
+                  getPlayerLoot(0):refreshBackpacks()
+                  toSpawn:getContainer():setDrawDirty(true)
 
-                     toSpawn:getModData()['itemFullType'] = itemFullType or "Base.MetalDrum"
-                     toSpawn:transmitModData()
-                     getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
-                  end
+                  toSpawn:getModData()['itemFullType'] = itemFullType or "Base.MetalDrum"
+                  toSpawn:transmitModData()
+                  getSoundManager():PlayWorldSound("MoonshineBuild", getPlayer():getSquare(), 0, 5, 5, false)
+
                end)
                fireopt.iconTexture = getTexture("media/ui/CookingVat.png")
                if not item then
